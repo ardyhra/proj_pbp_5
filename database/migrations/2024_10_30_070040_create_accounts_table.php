@@ -24,14 +24,6 @@ return new class extends Migration
         });
         
         
-
-        // Migration for account_role pivot table
-        Schema::create('account_role', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('account_id')->constrained()->onDelete('cascade');
-            $table->foreignId('role_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
-        });
     }
 
 
