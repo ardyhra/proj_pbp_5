@@ -66,6 +66,15 @@
                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
                     <span>Rekap Mahasiswa</span>
                 </a>
+                
+                <!-- Tombol Switch Role -->
+                @if(Auth::user()->ketua_program_studi || Auth::user()->dekan)
+                <div class="mt-6">
+                    <a href="{{ route('switch.role') }}" class="flex items-center justify-center space-x-2 p-2 bg-green-500 rounded-xl text-white hover:bg-green-600">
+                        <span>Switch Role</span>
+                    </a>
+                </div>
+                @endif
             </nav>
         </aside>
 

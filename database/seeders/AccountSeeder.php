@@ -56,6 +56,27 @@ class AccountSeeder extends Seeder
                 'dekan' => false,
                 'bagian_akademik' => true,
             ],
+            // Akun dengan Peran Ganda
+            // Dosen sekaligus Kaprodi
+            [
+                'email' => 'dosen_kaprodi@example.com',
+                'password' => Hash::make('password123'),
+                'mahasiswa' => false,
+                'pembimbing_akademik' => true,
+                'ketua_program_studi' => true,
+                'dekan' => false,
+                'bagian_akademik' => false,
+            ],
+            // Dosen sekaligus Dekan
+            [
+                'email' => 'dosen_dekan@example.com',
+                'password' => Hash::make('password123'),
+                'mahasiswa' => false,
+                'pembimbing_akademik' => true,
+                'ketua_program_studi' => false,
+                'dekan' => true,
+                'bagian_akademik' => false,
+            ],
         ]);
     }
 }
