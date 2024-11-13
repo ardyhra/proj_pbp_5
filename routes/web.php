@@ -9,6 +9,9 @@ Route::get('/', function () {
 
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 
+// Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+// Route::post('/login', [AuthController::class, 'login']);
+
 //! Default route
 // Route::get('/', function () {
 //     return view('login');
@@ -19,8 +22,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::get('/about', function () {
     return view('about');
 });
-
-
 
 // Mahasiswa
 Route::get('/dashboard-mhs', function () {
@@ -50,8 +51,6 @@ Route::get('/nilai-doswal', function () {
     return view('doswal/nilai-doswal');
 });
 
-
-
 // Bagian Akademik
 Route::get('/dashboard-ba', function () {
     return view('ba/dashboard-ba');
@@ -64,10 +63,6 @@ Route::get('/buatusulan', function () {
 Route::get('/daftarusulan', function () {
     return view('ba/daftarusulan');
 });
-
-
-
-
 
 // Dekan
 Route::get('/dashboard-dekan', function () {
@@ -94,6 +89,7 @@ Route::get('/dashboard-kaprodi', function () {
 Route::get('/manajemen-jadwal-kaprodi', function () {
     return view('kaprodi/manajemen-jadwal-kaprodi');
 });
+//Route::get('/manajemen-jadwal-kaprodi', [AuthController::class, 'manajemen-jadwal-kaprodi'])->name('manajemen-jadwal-kaprodi');
 
 Route::get('/monitoring-kaprodi', function () {
     return view('kaprodi/monitoring-kaprodi');
@@ -104,15 +100,24 @@ Route::get('/konsultasi-kaprodi', function () {
 });
 
 
-//? Testing
+// //? Testing
 
-Route::get('/test', function () {
-    return view('tailwind');
-});
+// Route::get('/test', function () {
+//     return view('tailwind');
+// });
 
-Route::get('/test2', function () {
-    return view('dashboard-gakepake');
-});
+// Route::get('/test2', function () {
+//     return view('dashboard-gakepake');
+// });
 
 
 
+// use App\Http\Controllers\DashboardController;
+// Route::get('/dashboard-data', [DashboardController::class, 'getDashboardData']);
+
+// Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// routes/web.php
+use App\Http\Controllers\JadwalController;
+
+Route::get('/manajemen-jadwal', [JadwalController::class, 'index'])->name('manajemen-jadwal');
