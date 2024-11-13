@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RoleController;
 
 Route::get('/', function () {
     return view('login');
@@ -98,6 +99,9 @@ Route::get('/monitoring-kaprodi', function () {
 Route::get('/konsultasi-kaprodi', function () {
     return view('kaprodi/konsultasi-kaprodi');
 });
+
+// Role Ganda
+Route::get('/switch-role', [RoleController::class, 'switchRole'])->name('switch.role');
 
 
 // //? Testing
