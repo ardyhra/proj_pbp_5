@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RuangController;
+
 
 Route::get('/', function () {
     return view('login');
@@ -64,6 +66,15 @@ Route::get('/buatusulan', function () {
 Route::get('/daftarusulan', function () {
     return view('ba/daftarusulan');
 });
+
+// Route::get('/editruang', function () {
+//     return view('ba/editruang');
+// })->name('editruang');;
+
+Route::get('/editruang', [RuangController::class, 'index'])->name('editruang');
+Route::post('/editruang', [RuangController::class, 'store']);
+Route::put('/editruang/{id}', [RuangController::class, 'update']);
+Route::delete('/editruang/{id}', [RuangController::class, 'destroy']);
 
 // Dekan
 Route::get('/dashboard-dekan', function () {
