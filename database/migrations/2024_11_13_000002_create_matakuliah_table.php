@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('matakuliah', function (Blueprint $table) {
-            $table->id('kode_mk');
+            $table->string('kode_mk',10)->primary();
             $table->string('nama', 50);
             $table->integer('sks');
             $table->integer('plot_semester');

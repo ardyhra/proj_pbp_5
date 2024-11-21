@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengampu', function (Blueprint $table) {
-            $table->unsignedBigInteger('nidn');
-            $table->unsignedBigInteger('kode_mk');
+            $table->string('nidn',10);
+            $table->string('kode_mk',10);
 
             $table->foreign('nidn')->references('nidn')->on('dosen')->onDelete('cascade');
             $table->foreign('kode_mk')->references('kode_mk')->on('matakuliah')->onDelete('cascade');

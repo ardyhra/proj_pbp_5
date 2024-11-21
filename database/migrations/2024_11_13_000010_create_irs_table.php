@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('irs', function (Blueprint $table) {
             $table->string('status', 10);
-            $table->unsignedBigInteger('nim');
-            $table->unsignedBigInteger('id_jadwal');
+            $table->string('nim',14)->primary();
+            $table->string('id_jadwal');
 
             $table->foreign('nim')->references('nim')->on('mahasiswa')->onDelete('cascade');
             $table->foreign('id_jadwal')->references('id_jadwal')->on('jadwal')->onDelete('cascade');
