@@ -59,12 +59,24 @@
                 <span>Dashboard</span>
             </a>
             <a href="{{ url('/pengisianirs-mhs') }}"
-              class="flex items-center space-x-2 p-2 bg-gray-800 rounded-xl text-white hover:bg-opacity-70">
+              class="flex items-center space-x-2 p-2 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">
                 <span>Pengisian IRS</span>
             </a>
             <a href="{{ url('/irs-mhs') }}"
               class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
                 <span>IRS</span>
+            </a>
+            <a href="{{ url('/dashboard-mhs') }}"
+                class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
+                <span>KHS</span>
+            </a>
+            <a href="{{ url('/dashboard-mhs') }}"
+                class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
+                <span>Transkrip</span>
+            </a>
+            <a href="{{ url('/dashboard-mhs') }}"
+                class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
+                <span>Konsultasi</span>
             </a>
         </nav>
       </aside>
