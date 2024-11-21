@@ -7,18 +7,34 @@
     @vite('resources/css/app.css')
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Animation for sidebar */
-        .sidebar {
-            transition: transform 0.3s ease;
+        /* Full height flex layout */
+        .flex-container {
+            display: flex;
+            min-height: 100vh;
         }
 
+        /* Sidebar styling */
+        .sidebar {
+            transition: transform 0.3s ease;
+            width: 20%;
+            background-color: #0284c7; /* Tailwind's sky-500 */
+            color: white;
+        }
+
+        /* Sidebar closed */
         .sidebar-closed {
             transform: translateX(-100%);
+        }
+
+        /* Main content styling */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background-color: #f3f4f6; /* Tailwind's gray-100 */
         }
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
-
     <!-- Header -->
     <header class="bg-gradient-to-r from-sky-500 to-blue-600 text-white p-4 flex justify-between items-center">
         <div class="flex items-center space-x-3">
@@ -31,17 +47,17 @@
             <!-- App logo and title -->
             <h1 class="text-xl font-bold">SISKARA</h1>
         </div>
-        <!-- DIBUAT? -->
-        <nav class="space-x-4">
+        <!-- Navigation links -->
+        {{-- <nav class="space-x-4">
             <a href="{{ url('/') }}" class="hover:underline">Home</a>
             <a href="{{ url('/about') }}" class="hover:underline">About</a>
             <a href="{{ url('/profile') }}" class="hover:underline">Profile</a>
-        </nav>
+        </nav> --}}
     </header>
 
-    <div class="flex">
+    <div class="flex-container">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 h-screen p-4 text-white sidebar-closed fixed lg:static">
+        <aside id="sidebar" class="sidebar p-4 sidebar-closed fixed lg:static">
             <!-- Profile -->
             <div class="p-3 bg-gray-300 rounded-3xl text-center mb-6">
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3"></div>
@@ -50,47 +66,22 @@
                 <p class="text-sm bg-sky-700 rounded-full px-3 py-1 mt-2 font-semibold">Kaprodi</p>
                 <a href="{{ route('login') }}" class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
             </div>
-            {{-- <nav class="space-y-4">
-                <a href="/dashboard-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('dashboard') ?  'bg-sky-800 rounded-x1':'bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white' }}">Dashboard</a>
-                <a href="/manajemen-jadwal-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('manajemen-jadwal') ?'bg-sky-800 rounded-x1' : 'text-white hover:bg-opacity-70' }}">Manajemen Jadwal</a>
-                <a href="/monitoring-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('monitoring') ?'bg-sky-800 rounded-x1': 'bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white' }}">Monitoring</a>
-                <a href="/konsultasi-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('konsultasi') ? 'bg-sky-800 rounded-x1':'bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white' }}">Konsultasi</a>
-            </nav> --}}
             <nav class="space-y-4">
-                <a href="/dashboard-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('dashboard-kaprodi') ? 'bg-sky-800 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white' }}">Dashboard</a>
-                <a href="/manajemen-jadwal-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('manajemen-jadwal-kaprodi') ? 'bg-sky-800 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white' }}">Manajemen Jadwal</a>
-                <a href="/monitoring-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('monitoring-kaprodi') ? 'bg-sky-800 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white' }}">Monitoring</a>
-                <a href="/konsultasi-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('konsultasi-kaprodi') ? 'bg-sky-800 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white' }}">Konsultasi</a>
-                <a href="{{ url('/dashboard-kaprodi') }}"
-                    class="flex items-center space-x-2 p-2 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">
-                    <span>Dashboard</span>
-                </a>
-                <a href="{{ url('/manajemen-jadwal-kaprodi') }}"
-                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
-                    <span>Manajemen Jadwal</span>
-                </a>
-                <a href="{{ url('/monitoring-kaprodi') }}"
-                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
-                    <span>Monitoring</span>
-                </a>
-                <a href="{{ url('/konsultasi-kaprodi') }}"
-                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
-                    <span>Konsultasi</span>
-                </a>
-                <!-- Tombol Switch Role -->
+                <a href="{{ url('/dashboard-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">Dashboard</a>
+                <a href="{{ url('/manajemen-jadwal-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Manajemen Jadwal</a>
+                <a href="{{ url('/monitoring-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Monitoring</a>
+                <a href="{{ url('/konsultasi-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Konsultasi</a>
+                <!-- Role Switch -->
                 @if(Auth::user()->pembimbing_akademik)
                 <div class="mt-6">
-                    <a href="{{ route('switch.role') }}" class="flex items-center justify-center space-x-2 p-2 bg-green-500 rounded-xl text-white hover:bg-green-600">
-                        <span>Switch Role</span>
-                    </a>
+                    <a href="{{ route('switch.role') }}" class="flex items-center justify-center space-x-2 p-2 bg-green-500 rounded-xl text-white hover:bg-green-600">Switch Role</a>
                 </div>
                 @endif
             </nav>
         </aside>
 
         <!-- Main Content -->
-        <main class="w-full lg:w-4/5 lg:ml-auto p-8">
-            <!-- Page Title -->
+        <main class="main-content">
             <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
 
             <!-- Academic Year Section -->
@@ -130,7 +121,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gradient-to-r from-sky-500 to-blue-600 text-white text-center p-4 w-full mt-6">
+    <footer class="bg-gradient-to-r from-sky-500 to-blue-600 text-white text-center p-4 w-full">
         <hr class="mb-2">
         <p class="text-sm">&copy;2024 SISKARA</p>
         <p class="text-xs">Don't Forget Follow Diponegoro University Social Media!</p>
@@ -142,6 +133,5 @@
             document.getElementById('sidebar').classList.toggle('sidebar-closed');
         }
     </script>
-
 </body>
 </html>
