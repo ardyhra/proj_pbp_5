@@ -5,20 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class dosen extends Model
+class mahasiswa extends Model
 {
     use HasFactory;
 
-    protected $table = 'dosen';
-    protected $primaryKey = 'nidn';
+    protected $table = 'mahasiswa';
+    protected $primaryKey = 'nim';
     public $incrementing = false;
     protected $keyType = 'string';
 
-    // Relasi ke Mahasiswa
-    public function mahasiswa()
+    // Relasi ke Dosen
+    public function dosen()
     {
-        return $this->hasMany(Mahasiswa::class, 'nidn', 'nidn');
+        return $this->belongsTo(Dosen::class, 'nidn', 'nidn');
     }
-
-
 }

@@ -21,6 +21,28 @@
 
 <body class="bg-gray-100 font-sans">
 
+    @php
+    $menus = [
+        (object) [
+            "title" => "Dasboard",
+            "path" => "dashboard-doswal/".strval($dosen->nidn),
+        ],
+        (object) [
+            "title" => "Persetujuan IRS",
+            "path" => "persetujuanIRS-doswal/".strval($dosen->nidn),
+        ],
+        (object) [
+            "title" => "Rekap Mahasiswa",
+            "path" => "rekap-doswal/".strval($dosen->nidn),
+        ],
+        (object) [
+            "title" => "Konsultasi",
+            "path" => "konsultasi-doswal/".strval($dosen->nidn),
+        ],
+
+    ];
+@endphp
+
     <!-- Header -->
     <header class="bg-gradient-to-r from-sky-500 to-blue-600 text-white p-4 flex justify-between items-center">
         <div class="flex items-center space-x-3">
@@ -54,18 +76,12 @@
                 <a href="{{ route('login') }}" class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
             </div>
             <nav class="space-y-4">
-                <a href="{{ url('/dashboard-doswal') }}"
-                   class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
-                    <span>Dashboard</span>
+                @foreach ($menus as $menu)
+                <a href="{{ url($menu->path) }}"
+                   class="flex items-center space-x-2 p-2 {{ Str::startsWith(request()->path(), $menu->path) ? 'bg-sky-800 rounded-xl text-white hover:bg-opacity-70' : 'bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white' }}">
+                    <span>{{$menu->title}}</span>
                 </a>
-                <a href="{{ url('/persetujuanIRS-doswal') }}"
-                   class="flex items-center space-x-2 p-2 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">
-                    <span>Persetujuan IRS</span>
-                </a>
-                <a href="{{ url('/rekap-doswal') }}"
-                   class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
-                    <span>Rekap Mahasiswa</span>
-                </a>
+                @endforeach
             </nav>
         </aside>
 

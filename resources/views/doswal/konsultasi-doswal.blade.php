@@ -20,6 +20,7 @@
 </head>
 
 <body class="bg-gray-100 font-sans">
+
     @php
     $menus = [
         (object) [
@@ -40,8 +41,7 @@
         ],
 
     ];
-@endphp
-
+    @endphp
 
     <!-- Header -->
     <header class="bg-gradient-to-r from-sky-500 to-blue-600 text-white p-4 flex justify-between items-center">
@@ -88,7 +88,7 @@
         <!-- Main Content -->
         <main class="w-full lg:w-4/5 lg:ml-auto p-8 h-screen">
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-5xl font-bold">Konsultasi</h1>
+                <h1 class="text-5xl font-bold">Rekap Mahasiswa</h1>
                 <div class="relative">
                     <input type="text" placeholder="Search"
                            class="pl-4 pr-10 py-2 rounded-full bg-gray-200 text-gray-700 focus:outline-none">
@@ -116,6 +116,7 @@
                     <option value="semua" selected>Semua</option>
                     <option value="belum-irs">Belum IRS</option>
                     <option value="belum-disetujui">Belum Disetujui</option>
+                    <option value="sudah-disetujui">Sudah Disetujui</option>
                 </select>
             </form>
 

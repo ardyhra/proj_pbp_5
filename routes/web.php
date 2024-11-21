@@ -3,6 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\DosenController;
+use App\Http\Controllers\JadwalController;
+
+
+
+use App\Http\Controllers\RuangController;
+
 
 Route::get('/', function () {
     return view('login');
@@ -36,21 +43,13 @@ Route::get('/irs-mhs', function () {
 });
 
 // Pembimbing Akademik -- Doswal
-Route::get('/dashboard-doswal', function () {
-    return view('doswal/dashboard-doswal');
-})->name('dashboard-doswal');
+Route::get('/dashboard-doswal/{nidn}', [DosenController::class, 'showAll'])->name('dashboard-doswal');
 
-Route::get('/persetujuanIRS-doswal', function () {
-    return view('doswal/persetujuanIRS-doswal');
-});
+Route::get('/persetujuanIRS-doswal/{nidn}', [DosenController::class, 'showPersetujuan'])->name('persetujuanIRS-doswal');
 
-Route::get('/rekap-doswal', function () {
-    return view('doswal/rekap-doswal');
-});
+Route::get('/rekap-doswal/{nidn}', [DosenController::class, 'showRekap'])->name('rekap-doswal');
 
-Route::get('/nilai-doswal', function () {
-    return view('doswal/nilai-doswal');
-});
+Route::get('/konsultasi-doswal/{nidn}', [DosenController::class, 'showKonsultasi'])->name('konsultasi-doswal');
 
 // Bagian Akademik
 Route::get('/dashboard-ba', function () {
@@ -64,6 +63,15 @@ Route::get('/buatusulan', function () {
 Route::get('/daftarusulan', function () {
     return view('ba/daftarusulan');
 });
+
+// Route::get('/editruang', function () {
+//     return view('ba/editruang');
+// })->name('editruang');;
+
+Route::get('/editruang', [RuangController::class, 'index'])->name('editruang');
+Route::post('/editruang', [RuangController::class, 'store']);
+Route::put('/editruang/{id}', [RuangController::class, 'update']);
+Route::delete('/editruang/{id}', [RuangController::class, 'destroy']);
 
 // Dekan
 Route::get('/dashboard-dekan', function () {
@@ -122,6 +130,6 @@ Route::get('/switch-role', [RoleController::class, 'switchRole'])->name('switch.
 // Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // routes/web.php
-use App\Http\Controllers\JadwalController;
+
 
 Route::get('/manajemen-jadwal', [JadwalController::class, 'index'])->name('manajemen-jadwal');
