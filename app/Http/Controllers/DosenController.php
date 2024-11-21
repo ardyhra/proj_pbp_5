@@ -36,7 +36,7 @@ class DosenController extends Controller
     public function showRekap($nidn)
     {
         // Ambil data dosen beserta jumlah mahasiswa perwalian
-        $dosen = dosen::withCount('mahasiswa')->where('nidn', $nidn)->first();
+        $dosen = dosen::with('mahasiswa')->where('nidn', $nidn)->first();
 
         if (!$dosen) {
             return redirect()->back()->with('error', 'Dosen tidak ditemukan.');

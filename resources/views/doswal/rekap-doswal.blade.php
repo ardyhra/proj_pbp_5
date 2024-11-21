@@ -64,14 +64,14 @@
 
     <div class="flex">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 h-screen p-4 text-white sidebar-closed fixed lg:static">
+        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 h-screen p-4 text-white fixed lg:static">
             <!-- profil -->
             <div class="p-3 pb-1 bg-gray-300 rounded-3xl text-center mb-6">
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
-                     style="background-image: url(img/fsm.jpg)">
+                     style="background-image: url({{asset('img/fsm.jpg')}})">
                 </div>
-                <h2 class="text-lg text-black font-bold">Ucok, S.Kom</h2>
-                <p class="text-xs text-gray-800">NIDN 001</p>
+                <h2 class="text-lg text-black font-bold">{{$dosen->nama}}</h2>
+                <p class="text-xs text-gray-800">NIDN {{$dosen->nidn}}</p>
                 <p class="text-sm bg-sky-700 rounded-full px-3 py-1 mt-2 font-semibold">Dosen</p>
                 <a href="{{ route('login') }}" class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
             </div>
@@ -88,7 +88,7 @@
         <!-- Main Content -->
         <main class="w-full lg:w-4/5 lg:ml-auto p-8 h-screen">
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-5xl font-bold">Konsultasi</h1>
+                <h1 class="text-5xl font-bold">Rekap Mahasiswa</h1>
                 <div class="relative">
                     <input type="text" placeholder="Search"
                            class="pl-4 pr-10 py-2 rounded-full bg-gray-200 text-gray-700 focus:outline-none">
@@ -116,6 +116,7 @@
                     <option value="semua" selected>Semua</option>
                     <option value="belum-irs">Belum IRS</option>
                     <option value="belum-disetujui">Belum Disetujui</option>
+                    <option value="belum-disetujui">Sudah Disetujui</option>
                 </select>
             </form>
 
@@ -137,14 +138,12 @@
                     <!-- Table Body -->
                     <tbody>
                         <!-- Row-->
+                        @foreach ($dosen->mahasiswa as $mahasiswa)
                         <tr>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">1</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">Zikry
-                                Alfakhri Akram</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">
-                                24060122110001</td>
-                            </td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">5</td>
+                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">{{ $loop->iteration }}</td>
+                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">{{ $mahasiswa->nama }}</td>
+                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">{{ $mahasiswa->nim }}</td>
+                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">{{ $mahasiswa->semester }}</td>
                             <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">
                                 Belum IRS
                             </td>
@@ -152,7 +151,8 @@
                                 <a href="#" class="font-medium text-blue-600 dark:text-blue-700 hover:underline">Lihat</a>
                             </td>
                         </tr>
-                        <!-- Row-->
+                        @endforeach
+                        {{-- <!-- Row-->
                         <tr>
                             <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">2</td>
                             <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">Zikry
@@ -183,7 +183,7 @@
                             <td class="px-6 py-4 border-b border-gray-200 text-center text-sm">
                                 <a href="#" class="font-medium text-blue-600 dark:text-blue-700 hover:underline">Lihat</a>
                             </td>
-                        </tr>
+                        </tr> --}}
                     </tbody>
                 </table>
             </div>
