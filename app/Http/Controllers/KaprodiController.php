@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Http\Controllers;
+
 use App\Models\Ruang;
 use App\Models\Dosen;
 use App\Models\MataKuliah;

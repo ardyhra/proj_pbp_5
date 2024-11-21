@@ -9,5 +9,5 @@ class TahunAjaran extends Model
 {
     use HasFactory;
 
-    protected $table = 'tahunajaran'; // Pastikan nama tabel sesuai
+    protected $table = 'tahun_ajaran';
 }
