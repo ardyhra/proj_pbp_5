@@ -118,38 +118,6 @@ Route::get('/manajemen-jadwal/create', [KaprodiController::class, 'create'])->na
 Route::post('/manajemen-jadwal', [KaprodiController::class, 'store'])->name('manajemen-jadwal.store');
 Route::delete('/manajemen-jadwal/{id}', [KaprodiController::class, 'destroy'])->name('manajemen-jadwal.destroy');
 
-// use App\Http\Controllers\JadwalController;
-// use App\Http\Controllers\KaprodiController;
-
-// // Route untuk Dashboard Kaprodi
-// Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboard'])->name('dashboard-kaprodi');
-
-// // Route untuk Manajemen Jadwal Kaprodi
-// Route::get('/manajemen-jadwal-kaprodi', [KaprodiController::class, 'manajemenJadwal'])->name('manajemen-jadwal-kaprodi');
-
-// // Route untuk Lihat, Edit, dan Apply Jadwal
-// Route::get('/edit-jadwal', [JadwalController::class, 'edit'])->name('jadwal.edit');
-// Route::post('/update-jadwal', [JadwalController::class, 'update'])->name('jadwal.update');
-// Route::get('/view-jadwal', [JadwalController::class, 'view'])->name('jadwal.view');
-// Route::post('/apply-jadwal', [JadwalController::class, 'apply'])->name('jadwal.apply');
-
-// // Route CRUD Jadwal
-// Route::get('/manajemen-jadwal-kaprodi', [KaprodiController::class, 'index'])->name('manajemen-jadwal-kaprodi.index');
-// Route::get('/manajemen-jadwal/create', [KaprodiController::class, 'create'])->name('manajemen-jadwal.create');
-// Route::post('/manajemen-jadwal', [KaprodiController::class, 'store'])->name('manajemen-jadwal.store');
-// Route::delete('/manajemen-jadwal/{id}', [KaprodiController::class, 'destroy'])->name('manajemen-jadwal.destroy');
-
-// // Route untuk Lihat Jadwal
-// Route::get('/jadwal/view', [JadwalController::class, 'view'])->name('jadwal.view');
-
-// // Route untuk Edit Jadwal
-// Route::get('/jadwal/edit', [JadwalController::class, 'edit'])->name('jadwal.edit');
-
-// // Route untuk Apply Jadwal
-// Route::post('/jadwal/apply', [JadwalController::class, 'apply'])->name('jadwal.apply');
-
-
-
 
 
 // Route untuk Monitoring Kaprodi

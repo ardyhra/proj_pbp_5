@@ -10,28 +10,6 @@ use Illuminate\Http\Request;
 
 class KaprodiController extends Controller
 {
-    // public function manajemenJadwal(Request $request)
-    // {
-    //     // Ambil id_tahun dari parameter request
-    //     $id_tahun = $request->input('id_tahun');
-    
-    //     // Cari tahun ajaran berdasarkan id_tahun
-    //     $tahun = TahunAjaran::where('id_tahun', $id_tahun)->first();
-    
-    //     // Jika tidak ditemukan, gunakan tahun ajaran terbaru
-    //     if (!$tahun) {
-    //         $tahun = TahunAjaran::latest('id_tahun')->first();
-    //     }
-    
-    //     // Ambil jadwal berdasarkan id_tahun
-    //     $jadwals = Jadwal::where('id_tahun', $tahun->id_tahun)->get();
-    
-    //     // Kirim data ke view
-    //     return view('kaprodi.manajemen-jadwal-kaprodi', [
-    //         'tahun' => $tahun->tahun_ajaran,
-    //         'jadwals' => $jadwals
-    //     ]);
-    // }
     public function manajemenJadwal(Request $request)
     {
         $id_tahun = $request->query('id_tahun', '2023G'); // Default tahun
@@ -45,12 +23,15 @@ class KaprodiController extends Controller
     
         return view('kaprodi.manajemen-jadwal-kaprodi', compact('tahun', 'semesters', 'id_tahun'));
     }
+
+    
     
     // }
     public function dashboard()
     {
         return view('kaprodi/dashboard-kaprodi');
     }
+
 
     // public function manajemenJadwal()
     // {
@@ -197,5 +178,8 @@ class KaprodiController extends Controller
         return view('kaprodi/konsultasi-kaprodi');
     }
 
+
     
 }
+
+
