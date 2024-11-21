@@ -22,7 +22,7 @@
 </div>
 @endsection --}}
 
-@extends('layouts.app')
+{{-- @extends('layouts.app')
 
 @section('title', 'Manajemen Jadwal Kaprodi')
 
@@ -59,6 +59,42 @@
         @endforeach
     </div>
 </div>
+@endsection --}}
+
+{{-- fix --}}
+@extends('layouts.app')
+
+@section('title', 'Manajemen Jadwal Kaprodi')
+
+@section('content')
+<div class="p-8">
+    <h1 class="text-3xl font-bold mb-6">Manajemen Jadwal</h1>
+
+    <div class="flex space-x-4 mb-8">
+        <a href="{{ route('manajemen-jadwal-kaprodi.index', ['semester' => 'ganjil']) }}"
+           class="px-6 py-3 rounded-lg text-lg font-semibold {{ $semester === 'ganjil' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' }}">
+            2023/2024 Ganjil
+        </a>
+        <a href="{{ route('manajemen-jadwal-kaprodi.index', ['semester' => 'genap']) }}"
+           class="px-6 py-3 rounded-lg text-lg font-semibold {{ $semester === 'genap' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' }}">
+            2023/2024 Genap
+        </a>
+    </div>
+
+    <div class="grid gap-4">
+        @foreach($semesters as $sem)
+        <div class="flex justify-between items-center bg-gray-100 p-6 rounded-lg shadow-md">
+            <span class="text-xl font-semibold">Semester {{ $sem }}</span>
+            <div class="flex space-x-4">
+                <a href="{{ route('jadwal.view', ['semester' => $semester, 'section' => 'semester' . $sem]) }}" class="text-blue-500 hover:underline">Lihat</a>
+                <a href="{{ route('jadwal.edit', ['semester' => $semester, 'section' => 'semester' . $sem]) }}" class="text-yellow-500 hover:underline">Edit</a>
+                <a href="{{ route('jadwal.apply', ['semester' => $semester, 'section' => 'semester' . $sem]) }}" class="text-green-500 hover:underline">Apply</a>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
 @endsection
+
 
 
