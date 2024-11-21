@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\Ruang;
 use App\Models\Dosen;
 use App\Models\MataKuliah;
@@ -17,5 +15,6 @@ class KaprodiController extends Controller
         return view('dashboard.kaprodi', compact('jumlahRuang', 'jumlahDosen', 'jumlahMataKuliah'));
     }
 
-
 }
+
+
