@@ -81,7 +81,7 @@
 
     <div class="flex flex-container">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 p-4 text-white flex-none sidebar-closed fixed lg:static">
+        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 p-4 text-white flex-none sidebar fixed lg:static">
             <!-- Profil -->
             <div class="p-3 pb-1 bg-gray-300 rounded-3xl text-center mb-6">
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
@@ -104,6 +104,18 @@
                 <a href="{{ url('/irs-mhs') }}"
                   class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
                     <span>IRS</span>
+                </a>
+                <a href="{{ url('/dashboard-mhs') }}"
+                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
+                    <span>KHS</span>
+                </a>
+                <a href="{{ url('/dashboard-mhs') }}"
+                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
+                    <span>Transkrip</span>
+                </a>
+                <a href="{{ url('/dashboard-mhs') }}"
+                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
+                    <span>Konsultasi</span>
                 </a>
             </nav>
         </aside>

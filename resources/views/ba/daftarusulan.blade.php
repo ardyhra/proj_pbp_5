@@ -14,6 +14,10 @@
         .sidebar-closed {
             transform: translateX(-100%);
         }
+        /* Memastikan sidebar dan konten utama memenuhi tinggi layar */
+        .flex-container {
+            min-height: 100vh;
+        }
 
         /* Konten Utama */
         .table-container {
@@ -43,9 +47,9 @@
         </nav>
     </header>
 
-    <div class="flex">
+    <div class="flex flex-container">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 h-screen p-4 text-white sidebar-closed fixed lg:static">
+        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 h-screen p-4 text-white sidebar fixed lg:static">
             <!-- profil -->
             <div class="p-3 pb-1 bg-gray-300 rounded-3xl text-center mb-6">
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
@@ -58,6 +62,7 @@
             </div>
             <nav class="space-y-4">
                 <a href="/dashboard-ba" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Dashboard</a>
+                <a href="/editruang" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Edit Ruang Kuliah</a>
                 <a href="/buatusulan" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Buat Usulan</a>
                 <a href="/daftarusulan" class="block py-2 px-3 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">Daftar Usulan</a>
             </nav>

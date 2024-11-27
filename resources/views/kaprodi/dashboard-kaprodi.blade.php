@@ -66,12 +66,43 @@
                 <p class="text-sm bg-sky-700 rounded-full px-3 py-1 mt-2 font-semibold">Kaprodi</p>
                 <a href="{{ route('login') }}" class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
             </div>
+
             <nav class="space-y-4">
                 <a href="{{ url('/dashboard-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">Dashboard</a>
                 <a href="{{ url('/manajemen-jadwal-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Manajemen Jadwal</a>
                 <a href="{{ url('/monitoring-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Monitoring</a>
                 <a href="{{ url('/konsultasi-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Konsultasi</a>
                 <!-- Role Switch -->
+
+            <!-- {{-- <nav class="space-y-4">
+                <a href="/dashboard-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('dashboard') ?  'bg-sky-800 rounded-x1':'bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white' }}">Dashboard</a>
+                <a href="/manajemen-jadwal-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('manajemen-jadwal') ?'bg-sky-800 rounded-x1' : 'text-white hover:bg-opacity-70' }}">Manajemen Jadwal</a>
+                <a href="/monitoring-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('monitoring') ?'bg-sky-800 rounded-x1': 'bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white' }}">Monitoring</a>
+                <a href="/konsultasi-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('konsultasi') ? 'bg-sky-800 rounded-x1':'bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white' }}">Konsultasi</a>
+            </nav> --}} -->
+            <nav class="space-y-4">
+                <!-- <a href="/dashboard-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('dashboard-kaprodi') ? 'bg-sky-800 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white' }}">Dashboard</a>
+                <a href="/manajemen-jadwal-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('manajemen-jadwal-kaprodi') ? 'bg-sky-800 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white' }}">Manajemen Jadwal</a>
+                <a href="/monitoring-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('monitoring-kaprodi') ? 'bg-sky-800 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white' }}">Monitoring</a>
+                <a href="/konsultasi-kaprodi" class="block py-2 px-3 rounded-xl hover:bg-opacity-70 {{ request()->is('konsultasi-kaprodi') ? 'bg-sky-800 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white' }}">Konsultasi</a> -->
+                <a href="{{ url('/dashboard-kaprodi') }}"
+                    class="flex items-center space-x-2 p-2 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url('/manajemen-jadwal-kaprodi') }}"
+                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
+                    <span>Manajemen Jadwal</span>
+                </a>
+                <a href="{{ url('/monitoring-kaprodi') }}"
+                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
+                    <span>Monitoring</span>
+                </a>
+                <a href="{{ url('/konsultasi-kaprodi') }}"
+                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
+                    <span>Konsultasi</span>
+                </a>
+                <!-- Tombol Switch Role -->
+
                 @if(Auth::user()->pembimbing_akademik)
                 <div class="mt-6">
                     <a href="{{ route('switch.role') }}" class="flex items-center justify-center space-x-2 p-2 bg-green-500 rounded-xl text-white hover:bg-green-600">Switch Role</a>
