@@ -56,14 +56,14 @@
             <h1 class="text-xl font-bold">SISKARA</h1>
         </div>
         <nav class="space-x-4">
-            <a href="{{ url('/') }}" class="hover:underline">Home</a>
+            <a href="{{ url(($menus[0]->path)) }}" class="hover:underline">Home</a>
             <a href="{{ url('/about') }}" class="hover:underline">About</a>
         </nav>
     </header>
 
     <div class="flex">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 h-screen p-4 text-white sidebar-closed fixed lg:static">
+        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 h-screen p-4 text-white fixed lg:static">
             <!-- profil -->
             <div class="p-3 pb-1 bg-gray-300 rounded-3xl text-center mb-6">
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
@@ -126,15 +126,15 @@
             <div class="grid grid-cols-3 gap-4 mt-4">
                 <button class="p-6 bg-gray-300 rounded-lg text-center hover:bg-gray-400 hover:text-white active:bg-opacity-80">
                     <p class="text-lg">Belum mengumpulkan IRS</p>
-                    <p class="text-4xl font-bold">10</p>
+                    <p class="text-4xl font-bold">99</p>
                 </button>
                 <button class="p-6 bg-gray-300 rounded-lg text-center hover:bg-gray-400 hover:text-white active:bg-opacity-80">
                     <p class="text-lg">IRS belum disetujui</p>
-                    <p class="text-4xl font-bold">17</p>
+                    <p class="text-4xl font-bold">99</p>
                 </button>
                 <button class="p-6 bg-gray-300 rounded-lg text-center hover:bg-gray-400 hover:text-white active:bg-opacity-80">
                     <p class="text-lg">IRS Disetujui</p>
-                    <p class="text-4xl font-bold">23</p>
+                    <p class="text-4xl font-bold">99</p>
                 </button>
             </div>
         </main>
