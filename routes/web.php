@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\JadwalController;
+use Illuminate\Http\Request;
 
 
 
@@ -91,7 +92,7 @@ Route::get('/usulanjadwal', function () {
     return view('dekan/usulanjadwal');
 });
 
-use App\Http\Controllers\JadwalController;
+
 use App\Http\Controllers\KaprodiController;
 
 // Route untuk Dashboard Kaprodi
