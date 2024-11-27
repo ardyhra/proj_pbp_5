@@ -11,12 +11,13 @@ use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\RuangController;
 
 
+
 Route::get('/', function () {
     return view('login');
 })->name('login');
 
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
-
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 // Route::post('/login', [AuthController::class, 'login']);
 
@@ -90,23 +91,85 @@ Route::get('/usulanjadwal', function () {
     return view('dekan/usulanjadwal');
 });
 
-// Ketua Program Studi
-Route::get('/dashboard-kaprodi', function () {
-    return view('kaprodi/dashboard-kaprodi');
-})->name('dashboard-kaprodi');
+use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\KaprodiController;
 
-Route::get('/manajemen-jadwal-kaprodi', function () {
-    return view('kaprodi/manajemen-jadwal-kaprodi');
-});
-//Route::get('/manajemen-jadwal-kaprodi', [AuthController::class, 'manajemen-jadwal-kaprodi'])->name('manajemen-jadwal-kaprodi');
+// Route untuk Dashboard Kaprodi
+Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboard'])->name('dashboard-kaprodi');
+Route::get('/manajemen-jadwal-kaprodi', [KaprodiController::class, 'manajemenJadwal'])->name('manajemen-jadwal-kaprodi');
 
-Route::get('/monitoring-kaprodi', function () {
-    return view('kaprodi/monitoring-kaprodi');
-});
+// Route untuk Manajemen Jadwal Kaprodi
+// Route::get('/manajemen-jadwal-kaprodi', [KaprodiController::class, 'manajemenJadwal'])->name('manajemen-jadwal-kaprodi');
+Route::get('/manajemen-jadwal-kaprodi', [KaprodiController::class, 'index'])->name('manajemen-jadwal-kaprodi.index');
 
-Route::get('/konsultasi-kaprodi', function () {
-    return view('kaprodi/konsultasi-kaprodi');
-});
+// Route untuk Lihat, Edit, dan Apply Jadwal
+Route::get('/jadwal/view', [JadwalController::class, 'view'])->name('jadwal.view');
+// Route::get('/jadwal/edit', [JadwalController::class, 'edit'])->name('jadwal.edit');
+Route::post('/jadwal/apply', [JadwalController::class, 'apply'])->name('jadwal.apply');
+Route::get('/edit-jadwal/{semester}/{section}', [JadwalController::class, 'edit'])->name('jadwal.edit');
+
+//coba
+// Route untuk Lihat Jadwal
+Route::get('/jadwal/view/{id}', [JadwalController::class, 'view'])->name('jadwal.view');
+
+// Route untuk Edit Jadwal
+Route::get('/jadwal/edit/{id}', [JadwalController::class, 'edit'])->name('jadwal.edit');
+
+// Route untuk Update Jadwal
+Route::post('/jadwal/update/{id}', [JadwalController::class, 'update'])->name('jadwal.update');
+
+//batas coba
+
+
+// Route CRUD Jadwal (jika memang diperlukan)
+Route::get('/manajemen-jadwal/create', [KaprodiController::class, 'create'])->name('manajemen-jadwal.create');
+Route::post('/manajemen-jadwal', [KaprodiController::class, 'store'])->name('manajemen-jadwal.store');
+Route::delete('/manajemen-jadwal/{id}', [KaprodiController::class, 'destroy'])->name('manajemen-jadwal.destroy');
+
+
+
+// Route untuk Monitoring Kaprodi
+Route::get('/monitoring-kaprodi', [KaprodiController::class, 'monitoring'])->name('monitoring-kaprodi');
+
+// Route untuk Aksi "Lihat", "Edit", dan "Hapus"
+Route::get('/monitoring/view/{id}', [KaprodiController::class, 'viewMonitoring'])->name('monitoring.view');
+Route::get('/monitoring/edit/{id}', [KaprodiController::class, 'editMonitoring'])->name('monitoring.edit');
+Route::get('/monitoring/delete/{id}', [KaprodiController::class, 'deleteMonitoring'])->name('monitoring.delete');
+
+
+Route::get('/manajemen-jadwal/edit/{id}', [KaprodiController::class, 'editJadwal'])->name('manajemen-jadwal.edit');
+Route::post('/manajemen-jadwal/update/{id}', [KaprodiController::class, 'updateJadwal'])->name('manajemen-jadwal.update');
+
+// Route untuk halaman edit jadwal
+Route::get('/edit-jadwal', function (Illuminate\Http\Request $request) {
+    $semester = $request->query('semester'); // Mengambil parameter 'semester'
+    $section = $request->query('section');  // Mengambil parameter 'section'
+
+    // Ambil data jadwal dari database (jika diperlukan)
+    $jadwal = \App\Models\Jadwal::where('semester', $semester)->where('section', $section)->get();
+
+    return view('kaprodi.edit-jadwal', compact('semester', 'section', 'jadwal'));
+})->name('edit-jadwal');
+
+
+Route::post('/update-jadwal', function (Request $request) {
+    $jadwal = $request->all();
+
+    // Simpan data ke database (contoh sederhana)
+    foreach ($jadwal['mata_kuliah'] as $index => $namaMataKuliah) {
+        \App\Models\Jadwal::where('id', $jadwal['id'][$index])
+            ->update([
+                'nama_mata_kuliah' => $namaMataKuliah,
+                'waktu_mulai' => $jadwal['waktu_mulai'][$index],
+                'waktu_selesai' => $jadwal['waktu_selesai'][$index],
+            ]);
+    }
+
+    return redirect()->route('manajemen-jadwal-kaprodi.index')->with('success', 'Jadwal berhasil diperbarui!');
+})->name('update-jadwal');
+
+// Konsultasi
+Route::get('/konsultasi-kaprodi', [KaprodiController::class, 'konsultasi'])->name('konsultasi-kaprodi');
 
 // Role Ganda
 Route::get('/switch-role', [RoleController::class, 'switchRole'])->name('switch.role');
@@ -133,3 +196,4 @@ Route::get('/switch-role', [RoleController::class, 'switchRole'])->name('switch.
 
 
 Route::get('/manajemen-jadwal', [JadwalController::class, 'index'])->name('manajemen-jadwal');
+

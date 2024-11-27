@@ -15,6 +15,11 @@
         .sidebar-closed {
             transform: translateX(-100%);
         }
+
+        /* Sidebar terbuka */
+        .sidebar-open {
+            transform: translateX(0);
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -44,8 +49,7 @@
             <!-- profil -->
             <div class="p-3 pb-1 bg-gray-300 rounded-3xl text-center mb-6">
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
-                     style="background-image: url(img/fsm.jpg)">
-                </div>
+                     style="background-image: url(img/fsm.jpg)"></div>
                 <h2 class="text-lg text-black font-bold">Budi</h2>
                 <p class="text-xs text-gray-800">NIM 24060122120033</p>
                 <p class="text-sm bg-sky-700 rounded-full px-3 py-1 mt-2 font-semibold">Mahasiswa</p>
@@ -87,7 +91,7 @@
                 <p>Dosen Wali: Adit Saputra, S.Kom, M.Kom (NIP: 122341431414143415)</p>
                 <p>Semester Akademik Sekarang: 2024/2025 Ganjil</p>
                 <p>Semester Studi: 4</p>
-                <p>Status: -</p>
+                <p>Status: Aktif</p>
             </div>
 
             <!-- Prestasi Akademik -->
@@ -150,15 +154,6 @@
                             <td class="py-2 px-4"></td>
                             <td class="py-2 px-4"></td>
                         </tr>
-                        <tr>
-                            <td class="py-2 px-4">13:00 Teori Bah...</td>
-                            <td class="py-2 px-4">09:40 Pembelaj...</td>
-                            <td class="py-2 px-4">09:40 Pembelaj...</td>
-                            <td class="py-2 px-4">15:40 Komputas...</td>
-                            <td class="py-2 px-4">07:00 Sistem In...</td>
-                            <td class="py-2 px-4"></td>
-                            <td class="py-2 px-4"></td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -174,9 +169,10 @@
     <!-- Script untuk toggle sidebar -->
     <script>
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('sidebar-closed');
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('sidebar-open');
+            sidebar.classList.toggle('sidebar-closed');
         }
     </script>
-    
 </body>
 </html>

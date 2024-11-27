@@ -3,33 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'SISKARA')</title>
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet"> <!-- Assumes Tailwind CSS is compiled here -->
+    <title>@yield('title')</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js']) <!-- Pastikan Vite sudah diatur -->
 </head>
-<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+<body class="bg-gray-100">
+    <div class="flex">
+        <!-- Sidebar -->
+        @include('components.sidebar') <!-- Sidebar disisipkan di sini -->
 
-    <!-- Navbar -->
-    <nav class="bg-white shadow-md p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="text-xl font-bold text-blue-500">SISKARA</a>
-            <div class="flex items-center space-x-4">
-                <a href="#" class="text-gray-700">Home</a>
-                <a href="#" class="text-gray-700">About</a>
-                <a href="#" class="text-gray-700">Profile</a>
-            </div>
+        <!-- Main Content -->
+        <div class="w-3/4">
+            @yield('content') <!-- Konten halaman -->
         </div>
-    </nav>
-
-    <!-- Content -->
-    <div class="container mx-auto flex mt-6">
-        @yield('content')
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-gray-100 text-center py-4 mt-8 text-gray-600 text-sm">
-        <p>©2024 SISKARA</p>
-        <p>Don't Forget Follow Diponegoro University Social Media!</p>
-    </footer>
-
 </body>
 </html>
+
+
