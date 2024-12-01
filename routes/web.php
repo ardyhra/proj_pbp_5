@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\DashboardControllerBA;
 use App\Http\Controllers\UsulanController;
 use App\Http\Controllers\RuangController;
+use App\Http\Controllers\DekanController;
+
+
 
 
 
@@ -109,6 +112,19 @@ Route::get('/usulanruang', function () {
 Route::get('/usulanjadwal', function () {
     return view('dekan/usulanjadwal');
 });
+
+// Halaman usulan ruang kuliah untuk Dekan
+Route::get('/usulanruang', [DekanController::class, 'indexDekan'])->name('usulanruang.dekan');
+
+// Mengupdate status usulan oleh Dekan
+Route::post('/usulanruang/{id_tahun}/update-status', [DekanController::class, 'updateStatusUsulanDekan'])->name('usulanruang.updateStatusDekan');
+
+// Endpoint untuk mendapatkan data usulan
+Route::get('/get-usulan/{id_tahun}', [DekanController::class, 'getUsulan'])->name('usulanruang.getUsulan');
+
+// Endpoint untuk mendapatkan detail usulan
+Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [DekanController::class, 'getUsulanDetail'])->name('usulanruang.getUsulanDetail');
+
 
 
 use App\Http\Controllers\KaprodiController;
