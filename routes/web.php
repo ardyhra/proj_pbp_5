@@ -7,8 +7,8 @@ use App\Http\Controllers\DosenController;
 use App\Http\Controllers\JadwalController;
 use Illuminate\Http\Request;
 
-
-
+use App\Http\Controllers\DashboardControllerBA;
+use App\Http\Controllers\UsulanController;
 use App\Http\Controllers\RuangController;
 
 
@@ -70,10 +70,28 @@ Route::get('/daftarusulan', function () {
 //     return view('ba/editruang');
 // })->name('editruang');;
 
+Route::get('/dashboard-ba', [DashboardControllerBA::class, 'index'])->name('dashboard-ba');
+
 Route::get('/editruang', [RuangController::class, 'index'])->name('editruang');
 Route::post('/editruang', [RuangController::class, 'store']);
 Route::put('/editruang/{id}', [RuangController::class, 'update']);
 Route::delete('/editruang/{id}', [RuangController::class, 'destroy']);
+
+
+
+Route::get('/buatusulan', [UsulanController::class, 'create'])->name('buatusulan');
+Route::post('/buatusulan', [UsulanController::class, 'store']);
+
+Route::get('/daftarusulan', [UsulanController::class, 'index'])->name('daftarusulan');
+
+Route::get('/get-usulan/{id_tahun}', [UsulanController::class, 'getUsulanByTahun']);
+Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [UsulanController::class, 'getUsulanDetail']);
+
+Route::post('/usulan/{id_tahun}/update-status', [UsulanController::class, 'updateStatusUsulan'])->name('usulan.updateStatus');
+
+// Mengupdate status usulan oleh dekan (disetujui atau ditolak)
+// Route::patch('/usulan-ruang-kuliah/{id}/status', [UsulanController::class, 'updateStatus']);
+
 
 // Dekan
 Route::get('/dashboard-dekan', function () {

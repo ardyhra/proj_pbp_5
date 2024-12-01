@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite('resources/css/app.css')
     <title>SISKARA - Buat Usulan</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,6 +21,9 @@
             min-height: 100vh;
         }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
 </head>
 <body class="bg-gray-100 font-sans">
 
@@ -72,30 +76,40 @@
             <div class="bg-gray-200 p-6 rounded-lg mb-6">
                 <!-- Tahun Ajaran -->
                 <div class="mb-4">
-                    <label class="block text-lg font-semibold text-gray-700 mb-2">Tahun Ajaran</label>
-                    <p class="p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">2024/2025 Ganjil</p>
+                    <label for="tahun-ajaran" class="block text-lg font-semibold text-gray-700 mb-2">Tahun Ajaran</label>
+                    <select id="tahun-ajaran" class="w-full p-2 border border-gray-300 rounded-lg">
+                        @foreach($tahunAjaranList as $tahunAjaran)
+                            <option value="{{ $tahunAjaran->id_tahun }}">{{ $tahunAjaran->tahun_ajaran }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
-                <!-- Program Studi -->
+                <!-- Dropdown Program Studi -->
                 <div class="mb-4">
                     <label for="program-studi" class="block text-lg font-semibold text-gray-700 mb-2">Program Studi</label>
                     <select id="program-studi" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="Informatika">Informatika</option>
-                        <option value="Sistem Informasi">Sistem Informasi</option>
-                        <option value="Teknik Elektro">Teknik Elektro</option>
+                        @foreach($programStudiList as $prodi)
+                            <option value="{{ $prodi->id_prodi }}">{{ $prodi->nama_prodi }}</option>
+                        @endforeach
                     </select>
                 </div>
 
+
                 <!-- Ruang Kuliah -->
                 <div class="mb-4">
-                    <label for="ruang-kuliah" class="block text-lg font-semibold text-gray-700 mb-2">Ruang Kuliah</label>
-                    <select id="ruang-kuliah" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="A101">A101</option>
-                        <option value="B202">B202</option>
-                        <option value="C303">C303</option>
-                        <option value="D404">D404</option>
-                    </select>
+                    <label class="block text-lg font-semibold text-gray-700 mb-2">Ruang Kuliah</label>
+                    <div id="daftar-ruang" class="grid grid-cols-2 gap-2">
+                        @foreach($ruangList as $ruang)
+                            <label class="flex items-center">
+                                <input type="checkbox" name="ruang-kuliah" value="{{ $ruang->id_ruang }}" class="mr-2">
+                                {{ $ruang->id_ruang }}
+                            </label>
+                        @endforeach
+                    </div>
                 </div>
+
+                
+
 
                 <!-- Tombol Tambah ke Kanan -->
                 <div class="flex justify-end">
@@ -105,48 +119,47 @@
 
             <!-- Tabel Rekap Ruang per Program Studi -->
             <h2 class="text-2xl font-bold mb-4">Rekap Ruang Kuliah per Program Studi</h2>
-            <table class="table-auto min-w-full bg-white border border-gray-200 text-sm">
+            <div class="mb-4">
+                <label for="filter-status" class="block text-lg font-semibold text-gray-700 mb-2">Filter Status Ruang</label>
+                <select id="filter-status" class="w-full p-2 border border-gray-300 rounded-lg">
+                    <option value="">Semua</option>
+                    <option value="Sudah Ada">Sudah Ada Ruang</option>
+                    <option value="Belum Ada">Belum Ada Ruang</option>
+                </select>
+            </div>
+            <table id="rekap-ruang-table" class="table-auto min-w-full bg-white border border-gray-200 text-sm">
                 <thead class="bg-gray-300">
                     <tr>
                         <th class="px-2 py-2 border-b border-gray-200 text-center text-sm font-semibold text-gray-700">No</th>
                         <th class="px-2 py-2 border-b border-gray-200 text-center text-sm font-semibold text-gray-700">Program Studi</th>
                         <th class="px-2 py-2 border-b border-gray-200 text-center text-sm font-semibold text-gray-700">Jumlah Ruang</th>
                         <th class="px-2 py-2 border-b border-gray-200 text-center text-sm font-semibold text-gray-700">Aksi</th>
+                        <th class="px-2 py-2 border-b border-gray-200 text-center text-sm font-semibold text-gray-700">Status</th>
                     </tr>
                 </thead>
                 <tbody id="rekap-ruang">
-                    <!-- Program Studi dengan Daftar Ruang Kosong -->
-                    <tr>
-                        <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">1</td>
-                        <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">Informatika</td>
-                        <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center" id="jumlah-Informatika">0</td>
-                        <td class="px-2 py-2 border-b border-gray-200 text-center">
-                            <button onclick="tampilkanDetail('Informatika')" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">Detail</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">2</td>
-                        <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">Sistem Informasi</td>
-                        <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center" id="jumlah-Sistem Informasi">0</td>
-                        <td class="px-2 py-2 border-b border-gray-200 text-center">
-                            <button onclick="tampilkanDetail('Sistem Informasi')" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">Detail</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">3</td>
-                        <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">Teknik Elektro</td>
-                        <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center" id="jumlah-Teknik Elektro">0</td>
-                        <td class="px-2 py-2 border-b border-gray-200 text-center">
-                            <button onclick="tampilkanDetail('Teknik Elektro')" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">Detail</button>
-                        </td>
-                    </tr>
+                    @foreach($programStudiList as $index => $prodi)
+                        <tr>
+                            <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">{{ $index + 1 }}</td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">{{ $prodi->nama_prodi }}</td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center" id="jumlah-{{ $prodi->id_prodi }}">0</td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-center">
+                                <button onclick="tampilkanDetail('{{ $prodi->id_prodi }}')" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">Detail</button>
+                            </td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center" id="status-{{ $prodi->id_prodi }}">Belum Ada</td>
+
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
 
+
             <!-- Tabel Detail Ruang Kuliah per Program Studi -->
+            
+            
             <div class="mt-6" id="detail-ruang-container" style="display: none;">
                 <h3 class="text-xl font-bold mb-4" id="program-studi-judul"></h3>
-                <table class="table-auto min-w-full bg-white border border-gray-200 text-sm">
+                <table id="rekap-ruang-table" class="table-auto min-w-full bg-white border border-gray-200 text-sm">
                     <thead class="bg-gray-300">
                         <tr>
                             <th class="px-2 py-2 border-b border-gray-200 text-center text-sm font-semibold text-gray-700">No</th>
@@ -173,71 +186,185 @@
         <p class="text-sm text-center">&copy; Siskara Inc. All rights reserved.</p>
     </footer>
 
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
         const programStudiRuang = {};
-
+    
         function tambahRuang() {
-            const programStudi = document.getElementById('program-studi').value;
-            const ruangKuliah = document.getElementById('ruang-kuliah').value;
+            const programStudiId = $('#program-studi').val();
+            const programStudiText = $('#program-studi option:selected').text();
 
-            if (!programStudiRuang[programStudi]) {
-                programStudiRuang[programStudi] = [];
-            }
+            const ruangKuliahCheckboxes = document.querySelectorAll('input[name="ruang-kuliah"]:checked');
+            const selectedRuang = Array.from(ruangKuliahCheckboxes).map(checkbox => checkbox.value);
 
-            if (programStudiRuang[programStudi].includes(ruangKuliah)) {
-                alert('Ruang ini sudah ditambahkan untuk program studi ini.');
+            if (!programStudiId) {
+                alert('Silakan pilih program studi.');
                 return;
             }
 
-            programStudiRuang[programStudi].push(ruangKuliah);
-            updateJumlahRuang(programStudi);
-            updateDetailTabel(programStudi);
+            if (selectedRuang.length === 0) {
+                alert('Silakan pilih minimal satu ruang kuliah.');
+                return;
+            }
+
+            if (!programStudiRuang[programStudiId]) {
+                programStudiRuang[programStudiId] = {
+                    nama_prodi: programStudiText,
+                    ruang: []
+                };
+            }
+
+            selectedRuang.forEach(ruangKuliah => {
+                if (!programStudiRuang[programStudiId].ruang.includes(ruangKuliah)) {
+                    programStudiRuang[programStudiId].ruang.push(ruangKuliah);
+                }
+            });
+
+            updateJumlahRuang(programStudiId);
+            updateDetailTabel(programStudiId);
+
+            // Reset checkbox setelah menambahkan
+            document.querySelectorAll('input[name="ruang-kuliah"]').forEach(checkbox => checkbox.checked = false);
         }
 
-        function updateJumlahRuang(programStudi) {
-            document.getElementById(`jumlah-${programStudi}`).textContent = programStudiRuang[programStudi].length;
+
+    
+        function updateJumlahRuang(programStudiId) {
+            const jumlah = programStudiRuang[programStudiId].ruang.length;
+            document.getElementById(`jumlah-${programStudiId}`).textContent = jumlah;
+            const statusElement = document.getElementById(`status-${programStudiId}`);
+            if (statusElement) {
+                statusElement.textContent = jumlah > 0 ? 'Sudah Ada' : 'Belum Ada';
+            }
         }
 
-        function tampilkanDetail(programStudi) {
+    
+        function tampilkanDetail(programStudiId) {
+            if (!programStudiRuang[programStudiId]) {
+                alert('Tidak ada usulan ruang kuliah untuk program studi ini.');
+                return;
+            }
+
             document.getElementById('detail-ruang-container').style.display = 'block';
-            document.getElementById('program-studi-judul').textContent = `Detail Ruang Kuliah untuk Program Studi ${programStudi}`;
-            updateDetailTabel(programStudi);
+            const namaProdi = programStudiRuang[programStudiId].nama_prodi;
+            document.getElementById('program-studi-judul').textContent = `Detail Ruang Kuliah untuk Program Studi ${namaProdi}`;
+            updateDetailTabel(programStudiId);
         }
-
-        function updateDetailTabel(programStudi) {
+        
+        function updateDetailTabel(programStudiId) {
             const detailRuangContainer = document.getElementById('detail-ruang');
             detailRuangContainer.innerHTML = '';
-
-            programStudiRuang[programStudi].forEach((ruang, index) => {
+    
+            programStudiRuang[programStudiId].ruang.forEach((ruang, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">${index + 1}</td>
                     <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">${ruang}</td>
                     <td class="px-2 py-2 border-b border-gray-200 text-center">
-                        <button onclick="hapusRuang('${programStudi}', '${ruang}')" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600">Hapus</button>
+                        <button onclick="hapusRuang('${programStudiId}', '${ruang}')" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600">Hapus</button>
                     </td>
                 `;
                 detailRuangContainer.appendChild(row);
             });
         }
-
-        function hapusRuang(programStudi, ruang) {
-            const index = programStudiRuang[programStudi].indexOf(ruang);
+    
+        function hapusRuang(programStudiId, ruang) {
+            const index = programStudiRuang[programStudiId].ruang.indexOf(ruang);
             if (index !== -1) {
-                programStudiRuang[programStudi].splice(index, 1);
-                updateJumlahRuang(programStudi);
-                updateDetailTabel(programStudi);
+                programStudiRuang[programStudiId].ruang.splice(index, 1);
+                updateJumlahRuang(programStudiId);
+                updateDetailTabel(programStudiId);
             }
         }
-
+    
         function simpanUsulan() {
-            console.log('Usulan berhasil disimpan:', programStudiRuang);
-            alert('Usulan ruang kuliah berhasil disimpan.');
+            const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfTokenMeta) {
+                alert('CSRF token tidak ditemukan.');
+                return;
+            }
+
+            const csrfToken = csrfTokenMeta.getAttribute('content');
+
+            const id_tahun = document.getElementById('tahun-ajaran').value;
+
+            if (!id_tahun) {
+                alert('Silakan pilih tahun ajaran.');
+                return;
+            }
+
+            fetch('/buatusulan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: programStudiRuang,
+                    id_tahun: id_tahun
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Usulan ruang kuliah berhasil disimpan.');
+                    // Reset data if needed
+                } else {
+                    return response.json().then(data => {
+                        alert('Gagal menyimpan usulan: ' + (data.message || ''));
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menyimpan usulan.');
+            });
         }
 
+
+    
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('sidebar-closed');
         }
     </script>
+    <script>
+        $(document).ready(function() {
+            $('#program-studi').select2({
+                placeholder: 'Pilih Program Studi',
+                allowClear: true
+            });
+        });
+
+        $(document).ready(function () {
+            const table = $('#rekap-ruang-table').DataTable({
+                paging: false,
+                info: false,
+                searching: true,
+                columnDefs: [
+                    { orderable: false, targets: [3, 4] },
+                ],
+            });
+
+            $('#filter-status').on('change', function () {
+                const selectedStatus = $(this).val();
+
+                table.rows().every(function () {
+                    const jumlahRuang = parseInt($(this.node()).find('td:eq(2)').text().trim(), 10);
+                    const shouldShow =
+                        selectedStatus === '' ||
+                        (selectedStatus === 'Sudah Ada' && jumlahRuang > 0) ||
+                        (selectedStatus === 'Belum Ada' && jumlahRuang === 0);
+
+                    $(this.node()).toggle(shouldShow);
+                });
+            });
+        });
+
+
+    </script>
+    
 </body>
 </html>

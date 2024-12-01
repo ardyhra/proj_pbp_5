@@ -12,6 +12,7 @@ class ruang extends Model
     protected $primaryKey = 'id_ruang'; // Primary key tabel
     public $incrementing = false; // Karena id_ruang bukan auto-increment
     protected $keyType = 'string'; // Tipe primary key
+    public $timestamps = false; // Nonaktifkan timestamps
 
     protected $fillable = ['id_ruang', 'blok_gedung', 'lantai', 'kapasitas'];
 }
