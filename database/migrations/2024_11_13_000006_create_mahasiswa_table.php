@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama', 100);
             $table->integer('semester');
             $table->integer('angkatan');
+            $table->string('status', 9);
             $table->unsignedBigInteger('id_prodi');
             $table->string('nidn',10);
 

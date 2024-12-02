@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('irs', function (Blueprint $table) {
-            $table->string('status', 10);
-            $table->float('nilai', 5, 2)->nullable();
-            $table->string('nim',14);
-            $table->string('id_jadwal');
+        Schema::create('riwayat_status', function (Blueprint $table) {
+            $table->string('status', 9);
+            $table->string('nim', 14);
+            $table->string('id_tahun', 5);
 
             $table->foreign('nim')->references('nim')->on('mahasiswa')->onDelete('cascade');
-            $table->foreign('id_jadwal')->references('id_jadwal')->on('jadwal')->onDelete('cascade');
-            $table->timestamps();
+            $table->foreign('id_tahun')->references('id_tahun')->on('tahun_ajaran')->onDelete('cascade');
         });
     }
 
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('irs');
+        Schema::dropIfExists('riwayat_status');
     }
 };

@@ -51,6 +51,9 @@ class DosenSeeder extends Seeder
             ['nidn' => '0611048402', 'nama' => 'Fajar Agung Nugroho, S.Kom., M.Cs.', 'id_prodi' => 2007],
             ['nidn' => '0622038802', 'nama' => 'Prajanto Wahyu Adi, M.Kom.', 'id_prodi' => 2007],
             ['nidn' => '0627128001', 'nama' => 'Guruh Aryotejo, S.Kom., M.Sc.', 'id_prodi' => 2007],
+            ['nidn' => '0012345678', 'nama' => 'Adhe Setya Pramayoga, M.T.', 'id_prodi' => 2007],
+            ['nidn' => '0123456789', 'nama' => 'Suparno, S.Ag., M.S.I.', 'id_prodi' => 2007],
+            ['nidn' => '0007085506', 'nama' => 'Drs. Sugiyarto, M.Hum', 'id_prodi' => 2007],
         ]);
     }
 }
