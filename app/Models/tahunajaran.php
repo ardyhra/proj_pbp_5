@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,19 +9,15 @@ class TahunAjaran extends Model
 {
     use HasFactory;
 
-    // Tabel yang digunakan oleh model
-    protected $table = 'tahunajaran';
+    // Nama tabel
+    protected $table = 'tahun_ajaran';
 
-    // Kolom yang bisa diisi (fillable)
-    protected $fillable = [
-        'id_tahun',
-        'tahun_ajaran'
-    ];
+    // Primary key
+    protected $primaryKey = 'id_tahun';
 
-    // Relasi dengan model Jadwal
-    public function jadwals()
+    // Relasi ke model Jadwal
+    public function jadwal()
     {
         return $this->hasMany(Jadwal::class, 'id_tahun', 'id_tahun');
     }
 }
-
