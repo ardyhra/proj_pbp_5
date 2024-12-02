@@ -196,7 +196,7 @@ class IrsController extends Controller
 
         $arr_tahun = ['20242', '20241', '20232', '20231', '20222', '20221', '20212', '20211', '20202', '20201'];
 
-        dd($irs_filter->where('j.id_tahun', '=', '20221')->get());
+        // dd($irs_filter->where('j.id_tahun', '=', '20221')->get());
         
         // Terapkan filter
         $irs = $irs_filter->where('j.id_tahun', '=', $arr_tahun[$semester-$filter])->get();
