@@ -31,8 +31,11 @@ class RuangSeeder extends Seeder
             ['id_ruang' => 'E101', 'blok_gedung' => 'E', 'lantai' => 1, 'kapasitas' => 50],
             ['id_ruang' => 'E102', 'blok_gedung' => 'E', 'lantai' => 1, 'kapasitas' => 50],
             ['id_ruang' => 'E103', 'blok_gedung' => 'E', 'lantai' => 1, 'kapasitas' => 50],
+            ['id_ruang' => 'G204', 'blok_gedung' => 'G', 'lantai' => 2, 'kapasitas' => 50],
+            ['id_ruang' => 'K101', 'blok_gedung' => 'K', 'lantai' => 1, 'kapasitas' => 50],
             ['id_ruang' => 'K102', 'blok_gedung' => 'K', 'lantai' => 1, 'kapasitas' => 50],
             ['id_ruang' => 'K202', 'blok_gedung' => 'K', 'lantai' => 1, 'kapasitas' => 50],
+            ['id_ruang' => '0000', 'blok_gedung' => 'O', 'lantai' => 1, 'kapasitas' => 50],
         ]);
     }
 }
