@@ -23,13 +23,21 @@ class AuthController extends Controller
     
             // Redirect berdasarkan role
             if ($account->mahasiswa) {
-                return redirect()->route('dashboard-mhs');
+                $nim = $account->related_id;
+                session(['nim' => $nim]);
+                return redirect()->route('dashboard-mhs', ['nim' => $nim]);
             } elseif ($account->pembimbing_akademik) {
-                return redirect()->route('dashboard-doswal');
+                $nidn = $account->related_id;
+                session(['nidn' => $nidn]);
+                return redirect()->route('dashboard-doswal', ['nidn' => $nidn]);
             } elseif ($account->ketua_program_studi) {
-                return redirect()->route('dashboard-kaprodi');
+                $nidn = $account->related_id;
+                session(['nidn' => $nidn]);
+                return redirect()->route('dashboard-kaprodi', ['nidn' => $nidn]);
             } elseif ($account->dekan) {
-                return redirect()->route('dashboard-dekan');
+                $nidn = $account->related_id;
+                session(['nidn' => $nidn]);
+                return redirect()->route('dashboard-dekan', ['nidn' => $nidn]);
             } elseif ($account->bagian_akademik) {
                 return redirect()->route('dashboard-ba');
             }

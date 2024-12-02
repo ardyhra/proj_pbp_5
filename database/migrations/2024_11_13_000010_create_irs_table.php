@@ -16,6 +16,7 @@ return new class extends Migration
             $table->float('nilai', 5, 2)->nullable();
             $table->string('nim',14);
             $table->string('id_jadwal');
+            $table->date('tanggal_disetujui')->nullable($value = true);
 
             $table->foreign('nim')->references('nim')->on('mahasiswa')->onDelete('cascade');
             $table->foreign('id_jadwal')->references('id_jadwal')->on('jadwal')->onDelete('cascade');

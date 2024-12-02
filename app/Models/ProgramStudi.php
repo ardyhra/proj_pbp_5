@@ -22,4 +22,9 @@ class ProgramStudi extends Model
         return $this->hasMany(UsulanRuangKuliah::class, 'id_prodi', 'id_prodi');
     }
 
+    public function jadwal()
+    {
+        return $this->hasMany(jadwal::class, 'id_prodi', 'id_prodi');
+    }
+
 }

@@ -25,19 +25,15 @@
     $menus = [
         (object) [
             "title" => "Dasboard",
-            "path" => "dashboard-doswal/".strval($dosen->nidn),
+            "path" => "dashboard-doswal",
         ],
         (object) [
             "title" => "Persetujuan IRS",
-            "path" => "persetujuanIRS-doswal/".strval($dosen->nidn),
+            "path" => "persetujuanIRS-doswal",
         ],
         (object) [
             "title" => "Rekap Mahasiswa",
-            "path" => "rekap-doswal/".strval($dosen->nidn),
-        ],
-        (object) [
-            "title" => "Konsultasi",
-            "path" => "konsultasi-doswal/".strval($dosen->nidn),
+            "path" => "rekap-doswal",
         ],
 
     ];
@@ -85,13 +81,13 @@
                 @endforeach
                 
                 <!-- Tombol Switch Role -->
-                @if(Auth::user()->ketua_program_studi || Auth::user()->dekan)
+                {{-- @if(Auth::user()->ketua_program_studi || Auth::user()->dekan)
                 <div class="mt-6">
                     <a href="{{ route('switch.role') }}" class="flex items-center justify-center space-x-2 p-2 bg-green-500 rounded-xl text-white hover:bg-green-600">
                         <span>Switch Role</span>
                     </a>
                 </div>
-                @endif
+                @endif --}}
             </nav>
         </aside>
 
@@ -114,7 +110,7 @@
             <div class="mb-6">
                 <div class="p-4 bg-gray-200 rounded-lg text-gray-700">
                     <p class="text-lg">Tahun Ajaran</p>
-                    <p class="text-2xl font-semibold">2024/2025 Ganjil</p>
+                    <p class="text-2xl font-semibold">{{ $tahun->tahun_ajaran }}</p>
                 </div>
             </div>
 
@@ -125,16 +121,16 @@
             </button>
             <div class="grid grid-cols-3 gap-4 mt-4">
                 <button class="p-6 bg-gray-300 rounded-lg text-center hover:bg-gray-400 hover:text-white active:bg-opacity-80">
-                    <p class="text-lg">Belum mengumpulkan IRS</p>
-                    <p class="text-4xl font-bold">99</p>
+                    <a href="{{ route('irs.filter.dashboard') }}?filter=belum-irs"><p class="text-lg hover:underline ">Belum mengumpulkan IRS</p></a>
+                    <p class="text-4xl font-bold">{{ $belum_irs }}</p>
                 </button>
                 <button class="p-6 bg-gray-300 rounded-lg text-center hover:bg-gray-400 hover:text-white active:bg-opacity-80">
-                    <p class="text-lg">IRS belum disetujui</p>
-                    <p class="text-4xl font-bold">99</p>
+                    <a href="{{ route('irs.filter.dashboard') }}?filter=belum-disetujui"><p class="text-lg hover:underline">IRS Belum Disetujui</p></a>
+                    <p class="text-4xl font-bold">{{ $belum_disetujui }}</p>
                 </button>
                 <button class="p-6 bg-gray-300 rounded-lg text-center hover:bg-gray-400 hover:text-white active:bg-opacity-80">
-                    <p class="text-lg">IRS Disetujui</p>
-                    <p class="text-4xl font-bold">99</p>
+                    <a href="{{ route('irs.filter.dashboard') }}?filter=sudah-disetujui"><p class="text-lg hover:underline">IRS Disetujui</p></a>
+                    <p class="text-4xl font-bold">{{ $sudah_disetujui }}</p>
                 </button>
             </div>
         </main>

@@ -13,7 +13,8 @@ class Account extends Authenticatable
         'pembimbing_akademik', 
         'ketua_program_studi', 
         'dekan', 
-        'bagian_akademik'
+        'bagian_akademik',
+        'related_id',
     ];
 
     protected $hidden = [
