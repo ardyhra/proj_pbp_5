@@ -20,6 +20,8 @@ return new class extends Migration
             $table->boolean('ketua_program_studi')->default(false);
             $table->boolean('dekan')->default(false);
             $table->boolean('bagian_akademik')->default(false);
+            $table->string('related_id');
+        
             $table->timestamps();
         });
         

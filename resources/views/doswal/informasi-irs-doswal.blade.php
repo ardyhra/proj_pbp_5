@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite('resources/css/app.css')
-    <title>SISKARA Rekap Doswal</title>
+    <title>SISKARA informasi IRS Mahasiswa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Animasi untuk sidebar */
@@ -83,8 +83,10 @@
 
         <!-- Main Content -->
         <main class="w-full lg:w-4/5 lg:ml-auto p-8 h-screen">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-5xl font-bold">Rekap Mahasiswa</h1>
+            <div class="flex justify-between items-center mb-3">
+                <h1 class="text-5xl text-blue-500 font-bold">
+                    <a href="{{ route('rekap-doswal') }}">< Rekap Mahasiswa</a>
+                </h1>
                 <div class="relative">
                     <input type="text" placeholder="Search"
                            class="pl-4 pr-10 py-2 rounded-full bg-gray-200 text-gray-700 focus:outline-none">
@@ -96,66 +98,83 @@
                 </div>
             </div>
 
-            <!-- Year Info -->
+            {{-- <!-- Year Info -->
             <div class="mb-3">
                 <div class="p-4 bg-gray-200 rounded-lg text-gray-700">
                     <p class="text-lg">Tahun Ajaran</p>
                     <p class="text-2xl font-semibold">{{ $tahun->tahun_ajaran }}</p>
                 </div>
+            </div> --}}
+
+            {{-- code starts here --}}
+
+            <!-- Informasi Mahasiswa -->
+            <section class="container bg-gray-100 p-3 rounded-lg shadow mb-3">
+                <h3 class="text-xl font-semibold mb-4">Informasi Mahasiswa</h3>
+                <div class="grid grid-cols-3 gap-2 text-sm">
+                    <div><strong>Nama: </strong>{{ $result->nama }}</div>
+                    <div><strong>NIM: </strong>{{ $result->nim }}</div>
+                    <div><strong>Program Studi: </strong>Informatika</div>
+                    <div><strong>Semester: </strong> {{ $result->semester }}</div>
+                    {{-- <div><strong>Maksimum SKS:</strong> 24</div> --}}
+                    {{-- <div><strong>IPS Sebelumnya:</strong> 3.7</div> --}}
+                    <div><strong>Dosen Wali: </strong>{{ $dosen->nama }}</div>
+                    <div><strong>Status IRS semester ini: </strong> <span class="bg-yellow-300 px-2 py-1 rounded">{{$result->status}}</span></div>
+                </div>
+            </section>
+            
+            <div class="container flex justify-between">
+                {{-- {{ route('irs.filter.mhs') }} --}}
+                {{-- Dropdown filter semester --}}
+                <form method="GET" action="#" class="w-1/5 mb-3">
+                    <label for="kategori-irs-mahasiswa" class="block mb-2 text-sm font-medium text-gray-900">Pilih Semester</label>
+                    <select id="kategori-irs-mahasiswa" name="filter"
+                            onchange="this.form.submit()"
+                            class="border text-sm rounded-lg block w-full p-2.5 bg-slate-600 border-gray-300 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                        @for ($i = 1; $i <= $result->semester; $i++)
+                        <option value="semester_{i}" {{ request('filter_semester') == '{i}' ? 'selected' : '' }}>{{$i}}</option>
+                        @endfor
+                    </select>
+                </form>
+
+                {{-- jumlah sks --}}
+                <div class="container flex flex-col justify-center w-auto">
+                    <p class="jml-sks block mb-2 text-sm font-medium text-gray-900 border-gray-300 border-2 rounded-lg bg-gray-200 p-3 round">Jumlah SKS : {{$sum_sks}}</p>
+                </div>
             </div>
 
-            <!-- Dropdown filter kategori mahasiswa -->
-            <form method="GET" action="{{ route('irs.filter') }}" class="w-1/5 mb-3">
-                <label for="kategori-irs-mahasiswa" class="block mb-2 text-sm font-medium text-gray-900">Pilih Kategori</label>
-                <select id="kategori-irs-mahasiswa" name="filter"
-                        onchange="this.form.submit()"
-                        class="border text-sm rounded-lg block w-full p-2.5 bg-slate-600 border-gray-300 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                    <option value="semua" {{ request('filter') == 'semua' ? 'selected' : '' }}>Semua</option>
-                    <option value="belum-irs" {{ request('filter') == 'belum-irs' ? 'selected' : '' }}>Belum IRS</option>
-                    <option value="belum-disetujui" {{ request('filter') == 'belum-disetujui' ? 'selected' : '' }}>Belum Disetujui</option>
-                    <option value="sudah-disetujui" {{ request('filter') == 'sudah-disetujui' ? 'selected' : '' }}>Sudah Disetujui</option>
-                </select>
-            </form>
-            
-
-            <!-- Tabel Mahasiswa -->
-            <div class="container overflow-y-auto h-3/5">
-                <table class="table-auto min-w-full bg-white border border-gray-200">
-                    <!-- Table Header (sticky) -->
-                    <thead class="bg-gray-300 sticky top-0">
-                        <tr>
-                            <th class="px-6 py-3 border-b border-gray-200 text-center text-sm font-semibold text-gray-700">No</th>
-                            <th class="px-6 py-3 border-b border-gray-200 text-center text-sm font-semibold text-gray-700">Nama</th>
-                            <th class="px-6 py-3 border-b border-gray-200 text-center text-sm font-semibold text-gray-700">NIM</th>
-                            <th class="px-6 py-3 border-b border-gray-200 text-center text-sm font-semibold text-gray-700">Semester</th>
-                            <th class="px-6 py-3 border-b border-gray-200 text-center text-sm font-semibold text-gray-700">Status</th>
-                            <th class="px-6 py-3 border-b border-gray-200 text-center text-sm font-semibold text-gray-700">History IRS</th>
+            <!-- Daftar IRS -->
+            <section class="container overflow-y-auto h-3/5">
+                <table class="w-full bg-white rounded-lg shadow text-sm text-left">
+                    <thead class="sticky top-0">
+                        <tr class="bg-blue-600 text-white">
+                            <th class="p-4">No</th>
+                            <th>Kode MK</th>
+                            <th>Mata Kuliah</th>
+                            <th>SKS</th>
+                            <th>Kelas</th>
+                            <th>Ruang</th>
+                            <th>Status</th>
+                            <th>Jadwal</th>
                         </tr>
                     </thead>
-
-                    <!-- Table Body -->
                     <tbody>
-                        <!-- Row-->
-                        @foreach ($result as $mahasiswa)
+                        @foreach ($irs as $row)
                         <tr>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">{{ $loop->iteration }}</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">
-                                {{ $mahasiswa->nama }}
-                            </td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">{{ $mahasiswa->nim }}</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">{{ $mahasiswa->semester }}</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">
-                                {{$mahasiswa->status}}
-                            </td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-center text-sm">
-                                <a href="{{ route('rekap-doswal.informasi-irs', ['nim' => $mahasiswa->nim]) }}" class="font-medium text-blue-600 dark:text-blue-700 hover:underline">Lihat</a>
-                            </td>
+                            <td class="p-4">{{$loop->iteration}}</td>
+                            <td>{{$row->kode_mk}}</td>
+                            <td>{{$row->nama}}</td>
+                            <td>{{$row->sks}}</td>
+                            <td>{{$row->kelas}}</td>
+                            <td>{{$row->id_ruang}}</td>
+                            <td>{{$row->status}}</td>
+                            <td>{{$row->hari}}, {{$row->waktu_mulai}}-{{$row->waktu_selesai}}</td>
                         </tr>
                         @endforeach
-                        
                     </tbody>
                 </table>
-            </div>
+            </section>
+
         </main>
     </div>
 
