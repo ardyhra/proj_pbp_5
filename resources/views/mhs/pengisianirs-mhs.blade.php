@@ -225,7 +225,7 @@
 
         // Tanggal Mulai dan Berakhir Pengisian IRS
         let fillingStartDate = new Date('2024-11-01');
-        let fillingEndDate = new Date('2024-11-31');
+        let fillingEndDate = new Date('2024-12-31');
 
         // Tanggal untuk periode perbaikan dan pembatalan
         let twoWeeksAfterEnd = new Date(fillingEndDate.getTime() + (14 * 24 * 60 * 60 * 1000));

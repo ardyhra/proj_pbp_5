@@ -11,7 +11,7 @@ use App\Http\Controllers\DosenController;
 use App\Http\Controllers\RuangController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\UsulanController;
-
+use App\Http\Controllers\DashboardControllerBA;
 
 Route::get('/', function () {
     return view('login');
@@ -148,7 +148,7 @@ Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [DekanController::class, 
 // ========================================================================================================================
 
 use App\Http\Controllers\KaprodiController;
-use App\Http\Controllers\DashboardControllerBA;
+
 
 // Route untuk Dashboard Kaprodi
 Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboard'])->name('dashboard-kaprodi');
