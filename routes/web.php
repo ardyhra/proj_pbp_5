@@ -6,6 +6,7 @@ use App\Http\Controllers\IrsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\DekanController;
+use App\Http\Controllers\DashboardControllerBA;
 
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\RuangController;
@@ -58,11 +59,15 @@ Route::get('/rekap-doswal', [DosenController::class, 'showRekap'])->name('rekap-
 
 Route::get('/rekap-doswal/informasi-irs/{nim}', [DosenController::class, 'showInformasi'])->name('rekap-doswal.informasi-irs');
 
+Route::get('/rekap-doswal/informasi-irs-fromPersetujuan/{nim}', [DosenController::class, 'showInformasiLite'])->name('rekap-doswal.informasi-irs-fromPersetujuan');
+
 Route::post('/irs/setuju/{nim}', [IrsController::class, 'approve'])->name('irs.approve');
 
 Route::post('/irs/izin/{nim}', [IrsController::class, 'izin'])->name('irs.izin');
 
 Route::get('/irs/filter', [IrsController::class, 'filter'])->name('irs.filter');
+
+Route::get('/irs/filter/semester', [IrsController::class, 'filter_semester'])->name('irs.filter.semester');
 
 Route::get('/irs/filter/dashboard', [IrsController::class, 'filter_dashboard'])->name('irs.filter.dashboard');
 
@@ -148,7 +153,6 @@ Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [DekanController::class, 
 // ========================================================================================================================
 
 use App\Http\Controllers\KaprodiController;
-use App\Http\Controllers\DashboardControllerBA;
 
 // Route untuk Dashboard Kaprodi
 Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboard'])->name('dashboard-kaprodi');

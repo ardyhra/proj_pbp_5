@@ -85,7 +85,7 @@
         <main class="w-full lg:w-4/5 lg:ml-auto p-8 h-screen">
             <div class="flex justify-between items-center mb-3">
                 <h1 class="text-5xl text-blue-500 font-bold">
-                    <a href="{{ route('rekap-doswal') }}">< Rekap Mahasiswa</a>
+                    <a href="{{ route('persetujuanIRS-doswal') }}">< Persetujuan IRS</a>
                 </h1>
                 <div class="relative">
                     <input type="text" placeholder="Search"
@@ -97,6 +97,14 @@
                     </svg>
                 </div>
             </div>
+
+            {{-- <!-- Year Info -->
+            <div class="mb-3">
+                <div class="p-4 bg-gray-200 rounded-lg text-gray-700">
+                    <p class="text-lg">Tahun Ajaran</p>
+                    <p class="text-2xl font-semibold">{{ $tahun->tahun_ajaran }}</p>
+                </div>
+            </div> --}}
 
             {{-- code starts here --}}
 
@@ -116,39 +124,6 @@
             </section>
             
             <div class="container flex justify-between">
-                {{-- {{ route('irs.filter.mhs') }} --}}
-                {{-- Dropdown filter semester --}}
-
-                {{-- <form method="GET" action="#" class="w-1/5 mb-3">
-                    <label for="kategori-semester" class="block mb-2 text-sm font-medium text-gray-900">Pilih Semester</label>
-                    <select id="kategori-semester" name="filter_semester"
-                            onchange="this.form.submit()"
-                            class="border text-sm rounded-lg block w-full p-2.5 bg-slate-600 border-gray-300 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                        @for ($i = $result->semester; $i >= 1 ; $i--)
-                        <option value="semester_{i}" {{ request('filter_semester') == '{i}' ? 'selected' : '' }}>{{$i}}</option>
-                        @endfor
-                    </select>
-                </form> --}}
-
-                {{-- uji coba --}}
-                <form method="GET" action="{{ route('irs.filter.semester') }}" class="w-1/5 mb-3">
-                    <label for="kategori-semester" class="block mb-2 text-sm font-medium text-gray-900">Pilih Semester</label>
-                    <select id="kategori-semester" name="filter_semester"
-                            onchange="this.form.submit()"
-                            class="border text-sm rounded-lg block w-full p-2.5 bg-slate-600 border-gray-300 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                        @for ($i = 1; $i <= $result->semester; $i++)
-                            <option value="{{ $i }}" {{ request('filter_semester') == "$i" ? 'selected' : '' }}>
-                                Semester {{ $i }}
-                            </option>
-                        @endfor
-                    </select>
-                    
-                    <!-- Input hidden untuk mengirimkan nim -->
-                    <input type="hidden" name="nim" value="{{ $result->nim }}">
-                </form>
-                
-                
-
                 {{-- jumlah sks --}}
                 <div class="container flex flex-col justify-center w-auto">
                     <p class="jml-sks block mb-2 text-sm font-medium text-gray-900 border-gray-300 border-2 rounded-lg bg-gray-200 p-3 round">Jumlah SKS : {{$sum_sks}}</p>

@@ -160,7 +160,9 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 border-b border-gray-200 text-center text-sm">
-                                <a href="#" class="font-medium text-blue-600 dark:text-blue-700 hover:underline">Lihat IRS</a>
+                                <a href="{{ route('rekap-doswal.informasi-irs-fromPersetujuan', ['nim' => $mahasiswa->nim]) }}" class="font-medium text-blue-600 dark:text-blue-700 hover:underline">
+                                    Lihat IRS
+                                </a>
                             </td>
                         </tr>
                         @endforeach
