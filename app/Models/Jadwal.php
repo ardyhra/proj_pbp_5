@@ -18,6 +18,7 @@ class Jadwal extends Model
         'hari',
         'waktu_mulai',
         'waktu_selesai',
+        'kuota',
         'id_ruang',
         'id_prodi',
         'id_tahun',
@@ -31,6 +32,27 @@ class Jadwal extends Model
     public function matakuliah()
     {
         return $this->belongsTo(matakuliah::class, 'kode_mk', 'kode_mk');
-    }
-}
 
+    }
+
+    public function ruang()
+    {
+        return $this->belongsTo(ruang::class, 'id_ruang', 'id_ruang');
+    }
+    
+    public function matkul()
+    {
+        return $this->belongsTo(matakuliah::class, 'kode_mk', 'kode_mk');
+    }
+    
+    public function prodi()
+    {
+        return $this->belongsTo(ProgramStudi::class, 'id_prodi', 'id_prodi');
+    }
+    
+    public function irs()
+    {
+        return $this->hasMany(irs::class, 'id_jadwal', 'id_jadwal');
+    }
+
+}

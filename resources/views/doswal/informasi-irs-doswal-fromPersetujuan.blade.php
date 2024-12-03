@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite('resources/css/app.css')
-    <title>SISKARA Dashboard Doswal</title>
+    <title>SISKARA informasi IRS Mahasiswa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Animasi untuk sidebar */
@@ -20,8 +20,7 @@
 </head>
 
 <body class="bg-gray-100 font-sans">
-
-@php
+    @php
     $menus = [
         (object) [
             "title" => "Dasboard",
@@ -38,6 +37,8 @@
 
     ];
 @endphp
+
+
     <!-- Header -->
     <header class="bg-gradient-to-r from-sky-500 to-blue-600 text-white p-4 flex justify-between items-center">
         <div class="flex items-center space-x-3">
@@ -45,14 +46,14 @@
             <button onclick="toggleSidebar()" class="focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 6h16M4 12h16M4 18h16"></path>
+                          d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
             <!-- Logo dan judul aplikasi -->
             <h1 class="text-xl font-bold">SISKARA</h1>
         </div>
         <nav class="space-x-4">
-            <a href="{{ url(($menus[0]->path)) }}" class="hover:underline">Home</a>
+            <a href="{{ url('/') }}" class="hover:underline">Home</a>
             <a href="{{ url('/about') }}" class="hover:underline">About</a>
         </nav>
     </header>
@@ -63,38 +64,29 @@
             <!-- profil -->
             <div class="p-3 pb-1 bg-gray-300 rounded-3xl text-center mb-6">
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
-                    style="background-image: url({{ asset('img/fsm.jpg')  }})">
+                     style="background-image: url({{asset('img/fsm.jpg')}})">
                 </div>
                 <h2 class="text-lg text-black font-bold">{{$dosen->nama}}</h2>
-                <p class="text-xs text-gray-800">NIDN {{ $dosen->nidn }}</p>
+                <p class="text-xs text-gray-800">NIDN {{$dosen->nidn}}</p>
                 <p class="text-sm bg-sky-700 rounded-full px-3 py-1 mt-2 font-semibold">Dosen</p>
                 <a href="{{ route('login') }}" class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
             </div>
             <nav class="space-y-4">
-                {{-- active : bg-sky-800 rounded-xl text-white hover:bg-opacity-70 --}}
-                {{-- passive : bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white --}}
                 @foreach ($menus as $menu)
                 <a href="{{ url($menu->path) }}"
                    class="flex items-center space-x-2 p-2 {{ Str::startsWith(request()->path(), $menu->path) ? 'bg-sky-800 rounded-xl text-white hover:bg-opacity-70' : 'bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white' }}">
                     <span>{{$menu->title}}</span>
                 </a>
                 @endforeach
-                
-                <!-- Tombol Switch Role -->
-                {{-- @if(Auth::user()->ketua_program_studi || Auth::user()->dekan)
-                <div class="mt-6">
-                    <a href="{{ route('switch.role') }}" class="flex items-center justify-center space-x-2 p-2 bg-green-500 rounded-xl text-white hover:bg-green-600">
-                        <span>Switch Role</span>
-                    </a>
-                </div>
-                @endif --}}
             </nav>
         </aside>
 
         <!-- Main Content -->
-        <main class="w-full lg:w-4/5 lg:ml-auto p-8">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-5xl font-bold">Overview</h1>
+        <main class="w-full lg:w-4/5 lg:ml-auto p-8 h-screen">
+            <div class="flex justify-between items-center mb-3">
+                <h1 class="text-5xl text-blue-500 font-bold">
+                    <a href="{{ route('persetujuanIRS-doswal') }}">< Persetujuan IRS</a>
+                </h1>
                 <div class="relative">
                     <input type="text" placeholder="Search"
                            class="pl-4 pr-10 py-2 rounded-full bg-gray-200 text-gray-700 focus:outline-none">
@@ -106,33 +98,70 @@
                 </div>
             </div>
 
-            <!-- Year Info -->
-            <div class="mb-6">
+            {{-- <!-- Year Info -->
+            <div class="mb-3">
                 <div class="p-4 bg-gray-200 rounded-lg text-gray-700">
                     <p class="text-lg">Tahun Ajaran</p>
                     <p class="text-2xl font-semibold">{{ $tahun->tahun_ajaran }}</p>
                 </div>
+            </div> --}}
+
+            {{-- code starts here --}}
+
+            <!-- Informasi Mahasiswa -->
+            <section class="container bg-gray-100 p-3 rounded-lg shadow mb-3">
+                <h3 class="text-xl font-semibold mb-4">Informasi Mahasiswa</h3>
+                <div class="grid grid-cols-3 gap-2 text-sm">
+                    <div><strong>Nama: </strong>{{ $result->nama }}</div>
+                    <div><strong>NIM: </strong>{{ $result->nim }}</div>
+                    <div><strong>Program Studi: </strong>Informatika</div>
+                    <div><strong>Semester: </strong> {{ $result->semester }}</div>
+                    {{-- <div><strong>Maksimum SKS:</strong> 24</div> --}}
+                    {{-- <div><strong>IPS Sebelumnya:</strong> 3.7</div> --}}
+                    <div><strong>Dosen Wali: </strong>{{ $dosen->nama }}</div>
+                    <div><strong>Status IRS semester ini: </strong> <span class="bg-yellow-300 px-2 py-1 rounded">{{$result->status}}</span></div>
+                </div>
+            </section>
+            
+            <div class="container flex justify-between">
+                {{-- jumlah sks --}}
+                <div class="container flex flex-col justify-center w-auto">
+                    <p class="jml-sks block mb-2 text-sm font-medium text-gray-900 border-gray-300 border-2 rounded-lg bg-gray-200 p-3 round">Jumlah SKS : {{$sum_sks}}</p>
+                </div>
             </div>
 
-            <!-- Statistics -->
-            <button class="p-6 w-full bg-gray-300 rounded-lg text-center hover:bg-gray-400 hover:text-white active:bg-opacity-80">
-                <p class="text-lg">Total Mahasiswa Perwalian</p>
-                <p class="text-4xl font-bold">{{ $dosen->mahasiswa_count }}</p>
-            </button>
-            <div class="grid grid-cols-3 gap-4 mt-4">
-                <button class="p-6 bg-gray-300 rounded-lg text-center hover:bg-gray-400 hover:text-white active:bg-opacity-80">
-                    <a href="{{ route('irs.filter.dashboard') }}?filter=belum-irs"><p class="text-lg hover:underline ">Belum mengumpulkan IRS</p></a>
-                    <p class="text-4xl font-bold">{{ $belum_irs }}</p>
-                </button>
-                <button class="p-6 bg-gray-300 rounded-lg text-center hover:bg-gray-400 hover:text-white active:bg-opacity-80">
-                    <a href="{{ route('irs.filter.dashboard') }}?filter=belum-disetujui"><p class="text-lg hover:underline">IRS Belum Disetujui</p></a>
-                    <p class="text-4xl font-bold">{{ $belum_disetujui }}</p>
-                </button>
-                <button class="p-6 bg-gray-300 rounded-lg text-center hover:bg-gray-400 hover:text-white active:bg-opacity-80">
-                    <a href="{{ route('irs.filter.dashboard') }}?filter=sudah-disetujui"><p class="text-lg hover:underline">IRS Disetujui</p></a>
-                    <p class="text-4xl font-bold">{{ $sudah_disetujui }}</p>
-                </button>
-            </div>
+            <!-- Daftar IRS -->
+            <section class="container overflow-y-auto h-3/5">
+                <table class="w-full bg-white rounded-lg shadow text-sm text-left">
+                    <thead class="sticky top-0">
+                        <tr class="bg-blue-600 text-white">
+                            <th class="p-4">No</th>
+                            <th>Kode MK</th>
+                            <th>Mata Kuliah</th>
+                            <th>SKS</th>
+                            <th>Kelas</th>
+                            <th>Ruang</th>
+                            <th>Status</th>
+                            <th>Jadwal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($irs as $row)
+                        <tr>
+                            <td class="p-4">{{$loop->iteration}}</td>
+                            <td>{{$row->kode_mk}}</td>
+                            <td>{{$row->nama}}</td>
+                            <td>{{$row->sks}}</td>
+                            <td>{{$row->kelas}}</td>
+                            <td>{{$row->id_ruang}}</td>
+                            <td>{{$row->status}}</td>
+                            <td>{{$row->hari}}, {{$row->waktu_mulai}}-{{$row->waktu_selesai}}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </section>
+
         </main>
     </div>
 

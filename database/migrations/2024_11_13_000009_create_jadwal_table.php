@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('hari',1);
             $table->time('waktu_mulai');
             $table->time('waktu_selesai');
+            $table->integer('kuota')->default(50);
             $table->string('kode_mk',10);
             $table->string('id_ruang',4);
             $table->string('id_tahun',5);

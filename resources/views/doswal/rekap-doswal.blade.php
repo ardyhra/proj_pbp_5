@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite('resources/css/app.css')
-    <title>SISKARA Dashboard Doswal</title>
+    <title>SISKARA Rekap Doswal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Animasi untuk sidebar */
@@ -24,19 +24,15 @@
     $menus = [
         (object) [
             "title" => "Dasboard",
-            "path" => "dashboard-doswal/".strval($dosen->nidn),
+            "path" => "dashboard-doswal",
         ],
         (object) [
             "title" => "Persetujuan IRS",
-            "path" => "persetujuanIRS-doswal/".strval($dosen->nidn),
+            "path" => "persetujuanIRS-doswal",
         ],
         (object) [
             "title" => "Rekap Mahasiswa",
-            "path" => "rekap-doswal/".strval($dosen->nidn),
-        ],
-        (object) [
-            "title" => "Konsultasi",
-            "path" => "konsultasi-doswal/".strval($dosen->nidn),
+            "path" => "rekap-doswal",
         ],
 
     ];
@@ -104,21 +100,23 @@
             <div class="mb-3">
                 <div class="p-4 bg-gray-200 rounded-lg text-gray-700">
                     <p class="text-lg">Tahun Ajaran</p>
-                    <p class="text-2xl font-semibold">2024/2025 Ganjil</p>
+                    <p class="text-2xl font-semibold">{{ $tahun->tahun_ajaran }}</p>
                 </div>
             </div>
 
             <!-- Dropdown filter kategori mahasiswa -->
-            <form class="w-1/5 mb-3">
+            <form method="GET" action="{{ route('irs.filter') }}" class="w-1/5 mb-3">
                 <label for="kategori-irs-mahasiswa" class="block mb-2 text-sm font-medium text-gray-900">Pilih Kategori</label>
-                <select id="kategori-irs-mahasiswa"
+                <select id="kategori-irs-mahasiswa" name="filter"
+                        onchange="this.form.submit()"
                         class="border text-sm rounded-lg block w-full p-2.5 bg-slate-600 border-gray-300 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                    <option value="semua" selected>Semua</option>
-                    <option value="belum-irs">Belum IRS</option>
-                    <option value="belum-disetujui">Belum Disetujui</option>
-                    <option value="belum-disetujui">Sudah Disetujui</option>
+                    <option value="semua" {{ request('filter') == 'semua' ? 'selected' : '' }}>Semua</option>
+                    <option value="belum-irs" {{ request('filter') == 'belum-irs' ? 'selected' : '' }}>Belum IRS</option>
+                    <option value="belum-disetujui" {{ request('filter') == 'belum-disetujui' ? 'selected' : '' }}>Belum Disetujui</option>
+                    <option value="sudah-disetujui" {{ request('filter') == 'sudah-disetujui' ? 'selected' : '' }}>Sudah Disetujui</option>
                 </select>
             </form>
+            
 
             <!-- Tabel Mahasiswa -->
             <div class="container overflow-y-auto h-3/5">
@@ -138,52 +136,23 @@
                     <!-- Table Body -->
                     <tbody>
                         <!-- Row-->
-                        @foreach ($dosen->mahasiswa as $mahasiswa)
+                        @foreach ($result as $mahasiswa)
                         <tr>
                             <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">{{ $loop->iteration }}</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">{{ $mahasiswa->nama }}</td>
+                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">
+                                {{ $mahasiswa->nama }}
+                            </td>
                             <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">{{ $mahasiswa->nim }}</td>
                             <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">{{ $mahasiswa->semester }}</td>
                             <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">
-                                Belum IRS
+                                {{$mahasiswa->status}}
                             </td>
                             <td class="px-6 py-4 border-b border-gray-200 text-center text-sm">
-                                <a href="#" class="font-medium text-blue-600 dark:text-blue-700 hover:underline">Lihat</a>
+                                <a href="{{ route('rekap-doswal.informasi-irs', ['nim' => $mahasiswa->nim]) }}" class="font-medium text-blue-600 dark:text-blue-700 hover:underline">Lihat</a>
                             </td>
                         </tr>
                         @endforeach
-                        {{-- <!-- Row-->
-                        <tr>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">2</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">Zikry
-                                Alfakhri Akram</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">
-                                24060122110001</td>
-                            </td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">5</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">
-                                Belum Disetujui
-                            </td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-center text-sm">
-                                <a href="#" class="font-medium text-blue-600 dark:text-blue-700 hover:underline">Lihat</a>
-                            </td>
-                        </tr>
-                        <!-- Row-->
-                        <tr>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">3</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-800 text-center">Zikry
-                                Alfakhri Akram</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">
-                                24060122110001</td>
-                            </td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">5</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-sm text-gray-600 text-center">
-                                Sudah Disetujui
-                            </td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-center text-sm">
-                                <a href="#" class="font-medium text-blue-600 dark:text-blue-700 hover:underline">Lihat</a>
-                            </td>
-                        </tr> --}}
+                        
                     </tbody>
                 </table>
             </div>

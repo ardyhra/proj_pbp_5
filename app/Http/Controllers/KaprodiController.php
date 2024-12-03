@@ -142,22 +142,33 @@ class KaprodiController extends Controller
 
     // Menyimpan jadwal baru ke database
     public function store(Request $request)
-    {
-        $request->validate([
-            'kelas' => 'required',
-            'hari' => 'required',
-            'waktu_mulai' => 'required',
-            'waktu_selesai' => 'required',
-            'nidn' => 'required',
-            'kode_mk' => 'required',
-            'id_ruang' => 'required',
-            'id_tahunajaran' => 'required',
-        ]);
+{
+    $request->validate([
+        'kelas' => 'required',
+        'hari' => 'required',
+        'waktu_mulai' => 'required',
+        'waktu_selesai' => 'required',
+        'kode_mk' => 'required',
+        'id_ruang' => 'required',
+        'id_tahun' => 'required',
+        'id_prodi' => 'required',
+        'kuota' => 'required|integer',  // Validasi kuota
+    ]);
 
-        Jadwal::create($request->all());
+    Jadwal::create([
+        'kelas' => $request->kelas,
+        'hari' => $request->hari,
+        'waktu_mulai' => $request->waktu_mulai,
+        'waktu_selesai' => $request->waktu_selesai,
+        'kode_mk' => $request->kode_mk,
+        'id_ruang' => $request->id_ruang,
+        'id_tahun' => $request->id_tahun,
+        'id_prodi' => $request->id_prodi,
+        'kuota' => $request->kuota,  // Mengisi kolom kuota
+    ]);
 
-        return redirect()->route('manajemen-jadwal-kaprodi.index')->with('success', 'Jadwal berhasil ditambahkan!');
-    }
+    return redirect()->route('manajemen-jadwal-kaprodi.index')->with('success', 'Jadwal berhasil ditambahkan!');
+}
 
     // Menghapus jadwal
     public function destroy($id)

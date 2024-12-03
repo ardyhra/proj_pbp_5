@@ -1,20 +1,21 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\IrsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
+
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KaprodiController;
 use App\Http\Controllers\RuangController;
-use Illuminate\Http\Request;
 
 
 use App\Http\Controllers\DashboardControllerBA;
 use App\Http\Controllers\UsulanController;
+
 use App\Http\Controllers\DekanController;
-
-
 
 
 
@@ -38,6 +39,8 @@ Route::get('/about', function () {
     return view('about');
 });
 
+// ========================================================================================================================
+
 // Mahasiswa
 Route::get('/dashboard-mhs', function () {
     return view('mhs/dashboard-mhs');
@@ -49,14 +52,39 @@ Route::get('/irs-mhs', function () {
     return view('mhs/irs-mhs');
 });
 
+// ========================================================================================================================
+
 // Pembimbing Akademik -- Doswal
-Route::get('/dashboard-doswal/{nidn}', [DosenController::class, 'showAll'])->name('dashboard-doswal');
 
-Route::get('/persetujuanIRS-doswal/{nidn}', [DosenController::class, 'showPersetujuan'])->name('persetujuanIRS-doswal');
+Route::get('/dashboard-doswal', [DosenController::class, 'showAll'])->name('dashboard-doswal');
 
-Route::get('/rekap-doswal/{nidn}', [DosenController::class, 'showRekap'])->name('rekap-doswal');
+Route::get('/persetujuanIRS-doswal', [DosenController::class, 'showPersetujuan'])->name('persetujuanIRS-doswal');
 
-Route::get('/konsultasi-doswal/{nidn}', [DosenController::class, 'showKonsultasi'])->name('konsultasi-doswal');
+Route::get('/rekap-doswal', [DosenController::class, 'showRekap'])->name('rekap-doswal');
+
+Route::get('/rekap-doswal/informasi-irs/{nim}', [DosenController::class, 'showInformasi'])->name('rekap-doswal.informasi-irs');
+
+Route::get('/rekap-doswal/informasi-irs-fromPersetujuan/{nim}', [DosenController::class, 'showInformasiLite'])->name('rekap-doswal.informasi-irs-fromPersetujuan');
+
+Route::post('/irs/setuju/{nim}', [IrsController::class, 'approve'])->name('irs.approve');
+
+Route::post('/irs/izin/{nim}', [IrsController::class, 'izin'])->name('irs.izin');
+
+Route::get('/irs/filter', [IrsController::class, 'filter'])->name('irs.filter');
+
+Route::get('/irs/filter/semester', [IrsController::class, 'filter_semester'])->name('irs.filter.semester');
+
+Route::get('/irs/filter/dashboard', [IrsController::class, 'filter_dashboard'])->name('irs.filter.dashboard');
+
+// Route::get('/dashboard-doswal/{nidn}', [DosenController::class, 'showAll'])->name('dashboard-doswal');
+
+// Route::get('/persetujuanIRS-doswal/{nidn}', [DosenController::class, 'showPersetujuan'])->name('persetujuanIRS-doswal');
+
+// Route::get('/rekap-doswal/{nidn}', [DosenController::class, 'showRekap'])->name('rekap-doswal');
+
+// Route::get('/konsultasi-doswal/{nidn}', [DosenController::class, 'showKonsultasi'])->name('konsultasi-doswal');
+
+// ========================================================================================================================
 
 // Bagian Akademik
 Route::get('/dashboard-ba', function () {
@@ -76,7 +104,6 @@ Route::get('/daftarusulan', function () {
 // })->name('editruang');;
 
 Route::get('/dashboard-ba', [DashboardControllerBA::class, 'index'])->name('dashboard-ba');
-
 Route::get('/editruang', [RuangController::class, 'index'])->name('editruang');
 Route::post('/editruang', [RuangController::class, 'store']);
 Route::put('/editruang/{id}', [RuangController::class, 'update']);
@@ -97,6 +124,7 @@ Route::post('/usulan/{id_tahun}/update-status', [UsulanController::class, 'updat
 // Mengupdate status usulan oleh dekan (disetujui atau ditolak)
 // Route::patch('/usulan-ruang-kuliah/{id}/status', [UsulanController::class, 'updateStatus']);
 
+// ========================================================================================================================
 
 // Dekan
 Route::get('/dashboard-dekan', function () {
@@ -127,7 +155,7 @@ Route::get('/get-usulan/{id_tahun}', [DekanController::class, 'getUsulan'])->nam
 // Endpoint untuk mendapatkan detail usulan
 Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [DekanController::class, 'getUsulanDetail'])->name('usulanruang.getUsulanDetail');
 
-
+// ========================================================================================================================
 
 
 
@@ -159,4 +187,33 @@ Route::get('/monitoring/delete/{id}', [KaprodiController::class, 'deleteMonitori
 // Route konsultasi
 Route::get('/konsultasi-kaprodi', [KaprodiController::class, 'konsultasi'])->name('konsultasi-kaprodi');
 // Role Ganda
+
 Route::get('/switch-role', [RoleController::class, 'switchRole'])->name('switch.role');
+
+Route::get('/switch-role', [RoleController::class, 'switchRole'])->name('switch.role');
+
+// ========================================================================================================================
+
+// //? Testing
+
+// Route::get('/test', function () {
+//     return view('tailwind');
+// });
+
+// Route::get('/test2', function () {
+//     return view('dashboard-gakepake');
+// });
+
+
+
+// use App\Http\Controllers\DashboardController;
+// Route::get('/dashboard-data', [DashboardController::class, 'getDashboardData']);
+
+// Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// routes/web.php
+
+
+//Route::get('/manajemen-jadwal', [JadwalController::class, 'index'])->name('manajemen-jadwal');
+
+

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Tambahkan foreign key constraints jika perlu
-            $table->foreign('id_prodi')->references('id_prodi')->on('programstudi')->onDelete('cascade');
+            $table->foreign('id_prodi')->references('id_prodi')->on('prodi')->onDelete('cascade');
             $table->foreign('id_ruang')->references('id_ruang')->on('ruang')->onDelete('cascade');
             $table->foreign('id_tahun')->references('id_tahun')->on('tahunajaran')->onDelete('cascade');
         });
