@@ -1,100 +1,232 @@
 
+
 {{-- @extends('layouts.app')
 
-@section('title', 'Manajemen Jadwal Kaprodi')
-
 @section('content')
-<div class="p-8">
-    <h1 class="text-3xl font-bold mb-6">Manajemen Jadwal Tahun Ajaran: {{ $tahun }}</h1>
-
-    <div class="grid gap-4">
-        @foreach($jadwals as $jadwal)
-        <div class="flex justify-between items-center bg-gray-100 p-6 rounded-lg shadow-md">
-            <span class="text-xl font-semibold">{{ $jadwal->nama_mk }} - {{ $jadwal->kelas }}</span>
-            <div class="flex space-x-4">
-                <a href="{{ route('jadwal.view', ['id' => $jadwal->id]) }}" class="text-blue-500 hover:underline">Lihat</a>
-                <a href="{{ route('jadwal.edit', ['id' => $jadwal->id]) }}" class="text-yellow-500 hover:underline">Edit</a>
-                <a href="{{ route('jadwal.apply', ['id' => $jadwal->id]) }}" class="text-green-500 hover:underline">Apply</a>
-            </div>
+    <!-- Tampilkan pesan error jika ada -->
+    @if(session('error'))
+        <div class="bg-red-500 text-white p-4 rounded-lg mb-8">
+            {{ session('error') }}
         </div>
-        @endforeach
+    @endif
+
+    <!-- Dropdown Tahun Ajaran -->
+    <div class="mb-8">
+        <label for="tahun_ajaran" class="block text-lg font-semibold">Pilih Tahun Ajaran</label>
+        <select id="tahun_ajaran" name="id_tahun" onchange="window.location.href=this.value"
+                class="px-6 py-3 rounded-lg text-lg font-semibold bg-gray-300 text-gray-800 w-full">
+            <option value="" disabled selected>Pilih Tahun Ajaran</option>
+
+            @foreach($tahunAjarans as $tahun)
+                <option value="{{ route('manajemen-jadwal-kaprodi.index', ['semester' => $semester, 'id_tahun' => $tahun->id_tahun]) }}"
+                    {{ request('id_tahun') == $tahun->id_tahun ? 'selected' : '' }}>
+                    {{ $tahun->tahun_ajaran }}
+                </option>
+            @endforeach
+        </select>
     </div>
-</div>
+
+    <!-- Menampilkan Daftar Semester Berdasarkan Tahun Ajaran -->
+    <div class="grid gap-4">
+        @if($semesterType === 'ganjil')
+            <!-- Semester Ganji -->
+            @foreach([1, 3, 5, 7] as $sem)
+            <div class="flex justify-between items-center bg-gray-100 p-6 rounded-lg shadow-md">
+                <span class="text-xl font-semibold">Semester {{ $sem }}</span>
+                <div class="flex space-x-4">
+                    <!-- Menampilkan Jadwal untuk Semester yang Dipilih -->
+                    @foreach($jadwals as $item)
+                        @if($item->matakuliah->plot_semester == 'ganjil' && in_array($sem, [1, 3, 5, 7]))
+                            <a href="{{ route('jadwal.view', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-blue-500 hover:underline">Lihat</a> |
+
+                            <a href="{{ route('jadwal.edit', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-yellow-500 hover:underline">Edit</a> |
+
+                            <a href="{{ route('jadwal.apply', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-green-500 hover:underline">Apply</a>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+            @endforeach
+        @elseif($semesterType === 'genap')
+            <!-- Semester Genap -->
+            @foreach([2, 4, 6, 8] as $sem)
+            <div class="flex justify-between items-center bg-gray-100 p-6 rounded-lg shadow-md">
+                <span class="text-xl font-semibold">Semester {{ $sem }}</span>
+                <div class="flex space-x-4">
+                    <!-- Menampilkan Jadwal untuk Semester yang Dipilih -->
+                    @foreach($jadwals as $item)
+                        @if($item->matakuliah->plot_semester == 'genap' && in_array($sem, [2, 4, 6, 8]))
+                            <a href="{{ route('jadwal.view', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-blue-500 hover:underline">Lihat</a> |
+
+                            <a href="{{ route('jadwal.edit', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-yellow-500 hover:underline">Edit</a> |
+
+                            <a href="{{ route('jadwal.apply', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-green-500 hover:underline">Apply</a>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+            @endforeach
+        @endif
+    </div>
+
 @endsection --}}
 
 {{-- @extends('layouts.app')
 
-@section('title', 'Manajemen Jadwal Kaprodi')
-
 @section('content')
-<div class="p-8">
-    <h1 class="text-3xl font-bold mb-6">Manajemen Jadwal</h1>
-
-    <!-- Tabs Tahun Ajaran -->
-    <div class="flex space-x-4 mb-8">
-        <a href="{{ route('manajemen-jadwal-kaprodi', ['id_tahun' => '2023G']) }}" 
-           class="px-6 py-3 rounded-lg text-lg font-semibold {{ $selected_tahun == '2023G' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' }}">
-            2023/2024 Ganjil
-        </a>
-        <a href="{{ route('manajemen-jadwal-kaprodi', ['id_tahun' => '2023N']) }}" 
-           class="px-6 py-3 rounded-lg text-lg font-semibold {{ $selected_tahun == '2023N' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' }}">
-            2023/2024 Genap
-        </a>
-    </div>
-
-    <!-- Daftar Semester -->
-    <div class="grid gap-4">
-        @foreach($semesters as $semester)
-        <div class="flex justify-between items-center bg-gray-100 p-6 rounded-lg shadow-md">
-            <span class="text-xl font-semibold">Semester {{ $semester }}</span>
-            <div class="flex space-x-4">
-                <a href="{{ route('jadwal.view', ['id_tahun' => $selected_tahun, 'semester' => $semester]) }}" 
-                   class="text-blue-500 hover:underline">Lihat</a>
-                <a href="{{ route('jadwal.edit', ['id_tahun' => $selected_tahun, 'semester' => $semester]) }}" 
-                   class="text-yellow-500 hover:underline">Edit</a>
-                <a href="{{ route('jadwal.apply', ['id_tahun' => $selected_tahun, 'semester' => $semester]) }}" 
-                   class="text-green-500 hover:underline">Apply</a>
-            </div>
+    <!-- Tampilkan pesan error jika ada -->
+    @if(session('error'))
+        <div class="bg-red-500 text-white p-4 rounded-lg mb-8">
+            {{ session('error') }}
         </div>
-        @endforeach
+    @endif
+
+    <!-- Dropdown Tahun Ajaran -->
+    <div class="mb-8">
+        <label for="tahun_ajaran" class="block text-lg font-semibold">Pilih Tahun Ajaran</label>
+        <select id="tahun_ajaran" name="id_tahun" onchange="window.location.href=this.value"
+                class="px-6 py-3 rounded-lg text-lg font-semibold bg-gray-300 text-gray-800 w-full">
+            <option value="" disabled selected>Pilih Tahun Ajaran</option>
+
+            @foreach($tahunAjarans as $tahun)
+                <option value="{{ route('manajemen-jadwal-kaprodi.index', ['semester' => $semester, 'id_tahun' => $tahun->id_tahun]) }}"
+                    {{ request('id_tahun') == $tahun->id_tahun ? 'selected' : '' }}>
+                    {{ $tahun->tahun_ajaran }}
+                </option>
+            @endforeach
+        </select>
     </div>
-</div>
+
+    <!-- Menampilkan Daftar Semester Berdasarkan Tahun Ajaran -->
+    <div class="grid gap-4">
+        @if($semesterType === 'ganjil')
+            <!-- Semester Ganji -->
+            @foreach([1, 3, 5, 7] as $sem)
+            <div class="flex justify-between items-center bg-gray-100 p-6 rounded-lg shadow-md">
+                <span class="text-xl font-semibold">Semester {{ $sem }}</span>
+                <div class="flex space-x-4">
+                    <!-- Menampilkan Jadwal untuk Semester yang Dipilih -->
+                    @foreach($jadwals as $item)
+                        @if($item->matakuliah->plot_semester == $sem)
+                            <a href="{{ route('jadwal.view', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-blue-500 hover:underline">Lihat</a> |
+
+                            <a href="{{ route('jadwal.edit', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-yellow-500 hover:underline">Edit</a> |
+
+                            <a href="{{ route('jadwal.apply', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-green-500 hover:underline">Apply</a>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+            @endforeach
+        @elseif($semesterType === 'genap')
+            <!-- Semester Genap -->
+            @foreach([2, 4, 6, 8] as $sem)
+            <div class="flex justify-between items-center bg-gray-100 p-6 rounded-lg shadow-md">
+                <span class="text-xl font-semibold">Semester {{ $sem }}</span>
+                <div class="flex space-x-4">
+                    <!-- Menampilkan Jadwal untuk Semester yang Dipilih -->
+                    @foreach($jadwals as $item)
+                        @if($item->matakuliah->plot_semester == $sem)
+                            <a href="{{ route('jadwal.view', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-blue-500 hover:underline">Lihat</a> |
+
+                            <a href="{{ route('jadwal.edit', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-yellow-500 hover:underline">Edit</a> |
+
+                            <a href="{{ route('jadwal.apply', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-green-500 hover:underline">Apply</a>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+            @endforeach
+        @endif
+    </div>
+
 @endsection --}}
 
-{{-- fix --}}
 @extends('layouts.app')
 
-@section('title', 'Manajemen Jadwal Kaprodi')
-
 @section('content')
-<div class="p-8">
-    <h1 class="text-3xl font-bold mb-6">Manajemen Jadwal</h1>
-
-    <div class="flex space-x-4 mb-8">
-        <a href="{{ route('manajemen-jadwal-kaprodi.index', ['semester' => 'ganjil']) }}"
-           class="px-6 py-3 rounded-lg text-lg font-semibold {{ $semester === 'ganjil' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' }}">
-            2023/2024 Ganjil
-        </a>
-        <a href="{{ route('manajemen-jadwal-kaprodi.index', ['semester' => 'genap']) }}"
-           class="px-6 py-3 rounded-lg text-lg font-semibold {{ $semester === 'genap' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' }}">
-            2023/2024 Genap
-        </a>
-    </div>
-
-    <div class="grid gap-4">
-        @foreach($semesters as $sem)
-        <div class="flex justify-between items-center bg-gray-100 p-6 rounded-lg shadow-md">
-            <span class="text-xl font-semibold">Semester {{ $sem }}</span>
-            <div class="flex space-x-4">
-                <a href="{{ route('jadwal.view', ['semester' => $semester, 'section' => 'semester' . $sem]) }}" class="text-blue-500 hover:underline">Lihat</a>
-                <a href="{{ route('jadwal.edit', ['semester' => $semester, 'section' => 'semester' . $sem]) }}" class="text-yellow-500 hover:underline">Edit</a>
-                <a href="{{ route('jadwal.apply', ['semester' => $semester, 'section' => 'semester' . $sem]) }}" class="text-green-500 hover:underline">Apply</a>
-            </div>
+    <!-- Tampilkan pesan error jika ada -->
+    @if(session('error'))
+        <div class="bg-red-500 text-white p-4 rounded-lg mb-8">
+            {{ session('error') }}
         </div>
-        @endforeach
+    @endif
+
+    <!-- Dropdown Tahun Ajaran -->
+    <div class="mb-8">
+        <label for="tahun_ajaran" class="block text-lg font-semibold">Pilih Tahun Ajaran</label>
+        <select id="tahun_ajaran" name="id_tahun" onchange="window.location.href=this.value"
+                class="px-6 py-3 rounded-lg text-lg font-semibold bg-gray-300 text-gray-800 w-full">
+            <option value="" disabled selected>Pilih Tahun Ajaran</option>
+
+            @foreach($tahunAjarans as $tahun)
+                <option value="{{ route('manajemen-jadwal-kaprodi.index', ['semester' => $semester, 'id_tahun' => $tahun->id_tahun]) }}"
+                    {{ request('id_tahun') == $tahun->id_tahun ? 'selected' : '' }}>
+                    {{ $tahun->tahun_ajaran }}
+                </option>
+            @endforeach
+        </select>
     </div>
-</div>
+
+    <!-- Menampilkan Daftar Semester Berdasarkan Tahun Ajaran -->
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        @if($semesterType === 'ganjil')
+            <!-- Semester Ganjil -->
+            @foreach([1, 3, 5, 7] as $sem)
+            <div class="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md">
+                <span class="text-xl font-semibold mb-4">Semester {{ $sem }}</span>
+                <div class="flex flex-col space-y-4">
+                    <!-- Menampilkan Jadwal untuk Semester yang Dipilih -->
+                    @foreach($jadwals as $item)
+                        @if($item->matakuliah->plot_semester == $sem)
+                            <div class="flex justify-between w-full">
+                                <span class="font-semibold">{{ $item->matakuliah->kode_mk }}</span>
+                                <div class="flex space-x-2">
+                                    <a href="{{ route('jadwal.view', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-blue-500 hover:underline">Lihat</a>
+                                    <a href="{{ route('jadwal.edit', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-yellow-500 hover:underline">Edit</a>
+                                    <a href="{{ route('jadwal.apply', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-green-500 hover:underline">Apply</a>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+            @endforeach
+        @elseif($semesterType === 'genap')
+            <!-- Semester Genap -->
+            @foreach([2, 4, 6, 8] as $sem)
+            <div class="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md">
+                <span class="text-xl font-semibold mb-4">Semester {{ $sem }}</span>
+                <div class="flex flex-col space-y-4">
+                    <!-- Menampilkan Jadwal untuk Semester yang Dipilih -->
+                    @foreach($jadwals as $item)
+                        @if($item->matakuliah->plot_semester == $sem)
+                            <div class="flex justify-between w-full">
+                                <span class="font-semibold">{{ $item->matakuliah->kode_mk }}</span>
+                                <div class="flex space-x-2">
+                                    <a href="{{ route('jadwal.view', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-blue-500 hover:underline">Lihat</a>
+                                    <a href="{{ route('jadwal.edit', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-yellow-500 hover:underline">Edit</a>
+                                    <a href="{{ route('jadwal.apply', ['id' => $item->id_jadwal, 'semester' => 'semester' . $sem, 'id_tahun' => request('id_tahun')]) }}" class="text-green-500 hover:underline">Apply</a>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+            @endforeach
+        @endif
+    </div>
+
 @endsection
+
+    
+    
+    
+    
+    
+
+
+
 
 
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,14 +15,9 @@ class tahunajaran extends Model
     public $incrementing = false;
     public $timestamps = false;
 
-    // Kolom yang bisa diisi (fillable)
-    protected $fillable = [
-        'id_tahun',
-        'tahun_ajaran'
-    ];
 
-    // Relasi dengan model Jadwal
-    public function jadwals()
+    // Relasi ke model Jadwal
+    public function jadwal()
     {
         return $this->hasMany(Jadwal::class, 'id_tahun', 'id_tahun');
     }
@@ -31,4 +27,3 @@ class tahunajaran extends Model
         return $this->hasMany(UsulanRuangKuliah::class, 'id_tahun', 'id_tahun');
     }
 }
-
