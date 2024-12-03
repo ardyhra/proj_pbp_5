@@ -12,7 +12,7 @@ use App\Http\Controllers\DosenController;
 use App\Http\Controllers\RuangController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\UsulanController;
-
+use App\Http\Controllers\DashboardControllerBA;
 
 Route::get('/', function () {
     return view('login');
