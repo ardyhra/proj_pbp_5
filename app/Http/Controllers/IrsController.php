@@ -126,4 +126,88 @@ class IrsController extends Controller
         return view('doswal/rekap-doswal', compact('result', 'dosen', 'filter', 'tahun'));
     }
 
+
+    public function filter_semester(Request $request)
+    {
+        // ambil nidn
+        $nidn = session('nidn');
+        
+        // Ambil data dosen
+        $dosen = dosen::all()->where('nidn', $nidn)->first();
+
+        // ambil nim dari request
+        $nim = $request->query('nim');
+
+        // ambil data mahasiswa terpilih
+        $result = DB::table('mahasiswa as m')
+        ->distinct()
+        ->where('nidn','=',$nidn)
+        ->leftJoin('irs as i', 'm.nim', '=', 'i.nim')
+        ->select(
+            'm.nim',
+            'm.nama',
+            'm.semester',
+            DB::raw("CASE
+                WHEN i.nim IS NULL THEN 'Belum IRS'
+                WHEN i.tanggal_disetujui IS NULL THEN 'Belum Disetujui'
+                ELSE 'Sudah disetujui'
+            END AS status")
+        )
+        ->where('m.nim',$nim)
+        ->first();
+        
+        // Query data berdasarkan filter
+        $irs_filter = DB::table('irs as i')
+        ->distinct()
+        ->where('i.nim', '=', $nim)
+        ->join('jadwal as j', 'i.id_jadwal', '=', 'j.id_jadwal')
+        ->join('ruang as r', 'r.id_ruang', '=', 'j.id_ruang')
+        ->join('matakuliah as m', 'j.kode_mk', '=', 'm.kode_mk')
+        ->select(
+            'm.kode_mk',
+            'm.nama',
+            'm.sks',
+            'j.kelas',
+            'r.id_ruang',
+            'i.status',
+            'j.id_tahun',
+            DB::raw("
+                CASE j.hari
+                    WHEN 1 THEN 'Senin'
+                    WHEN 2 THEN 'Selasa'
+                    WHEN 3 THEN 'Rabu'
+                    WHEN 4 THEN 'Kamis'
+                    WHEN 5 THEN 'Jumat'
+                    WHEN 6 THEN 'Sabtu'
+                    WHEN 7 THEN 'Minggu'
+                    ELSE 'Tidak Diketahui'
+                END AS hari
+            "),
+            'j.waktu_mulai',
+            'j.waktu_selesai',
+        );
+           
+        $irs_data = $irs_filter->get();
+        $semester = $result->semester;
+
+        // Ambil filter dari request
+        $filter = intval($request->input('filter_semester'));
+
+
+        $arr_tahun = ['20242', '20241', '20232', '20231', '20222', '20221', '20212', '20211', '20202', '20201'];
+
+        // dd($irs_filter->where('j.id_tahun', '=', '20221')->get());
+        
+        // Terapkan filter
+        $irs = $irs_filter->where('j.id_tahun', '=', $arr_tahun[$semester-$filter])->get();
+
+
+        $sum_sks = $irs->sum('sks');
+        
+      
+        // Kirim data ke view
+        return view('doswal/informasi-irs-doswal', compact('result', 'dosen', 'irs', 'sum_sks'));
+    }
+
+
 }
