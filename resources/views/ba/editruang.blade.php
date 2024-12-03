@@ -191,6 +191,7 @@
                 if (index === null || index < 0 || index >= ruangData.length) {
                     console.error(`Data ruang tidak ditemukan untuk index: ${index}`);
                     alert('Data ruang tidak ditemukan!');
+                    closeModal(); // Close the modal if data not found
                     return;
                 }
 
@@ -205,6 +206,7 @@
                 originalIdRuang = ruang.id_ruang;
             }
         }
+
 
 
 
@@ -273,7 +275,7 @@
                 if (response.ok) {
                     ruangData = await response.json();
                     console.log('Data ruang berhasil diambil:', ruangData); // Log data
-                    renderTable(ruangData); // Render tabel
+                    renderTable(ruangData); // Render table
                 } else {
                     console.error('Gagal mengambil data ruang:', response.statusText);
                 }
@@ -285,12 +287,12 @@
 
 
 
+
         function renderTable(ruangData) {
             const tableBody = document.getElementById('ruangTableBody');
-            tableBody.innerHTML = ''; // Hapus isi tabel sebelumnya
+            tableBody.innerHTML = ''; // Clear the table
 
             ruangData.forEach((ruang, index) => {
-                console.log(`Index: ${index}, Data:`, ruang); // Log setiap indeks dan data
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="px-2 py-2 border-b border-gray-200 text-center">${index + 1}</td>
@@ -306,6 +308,7 @@
                 tableBody.appendChild(row);
             });
         }
+
 
 
         async function deleteRuang(id) {
