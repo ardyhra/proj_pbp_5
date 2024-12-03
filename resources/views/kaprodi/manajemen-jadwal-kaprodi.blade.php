@@ -71,7 +71,7 @@
 
 @endsection --}}
 
-{{-- @extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
     <!-- Tampilkan pesan error jika ada -->
@@ -140,9 +140,9 @@
         @endif
     </div>
 
-@endsection --}}
+@endsection
 
-@extends('layouts.app')
+{{-- @extends('layouts.app')
 
 @section('content')
     <!-- Tampilkan pesan error jika ada -->
@@ -217,7 +217,7 @@
         @endif
     </div>
 
-@endsection
+@endsection --}}
 
     
     

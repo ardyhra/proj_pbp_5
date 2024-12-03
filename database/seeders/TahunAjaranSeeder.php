@@ -20,6 +20,7 @@ class TahunAjaranSeeder extends Seeder
             ['id_tahun' => '20232', 'tahun_ajaran' => 'Semester Genap 2023/2024'],
             ['id_tahun' => '20241', 'tahun_ajaran' => 'Semester Ganjil 2024/2025'],
             ['id_tahun' => '20242', 'tahun_ajaran' => 'Semester Genap 2024/2025'],
+            
         ]);
     }
 }
