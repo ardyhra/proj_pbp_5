@@ -136,7 +136,7 @@
                     <select id="kategori-semester" name="filter_semester"
                             onchange="this.form.submit()"
                             class="border text-sm rounded-lg block w-full p-2.5 bg-slate-600 border-gray-300 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                        @for ($i = 1; $i <= $result->semester; $i++)
+                        @for ($i = $result->semester; $i >= 1 ; $i--)
                             <option value="{{ $i }}" {{ request('filter_semester') == "$i" ? 'selected' : '' }}>
                                 Semester {{ $i }}
                             </option>
