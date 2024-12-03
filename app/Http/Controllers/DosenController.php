@@ -168,7 +168,7 @@ class DosenController extends Controller
             'j.kelas',
             'r.id_ruang',
             'i.status',
-            'ta.tahun_ajaran',
+            'ta.id_tahun',
             DB::raw("
                 CASE j.hari
                     WHEN 1 THEN 'Senin'
@@ -184,6 +184,7 @@ class DosenController extends Controller
             'j.waktu_mulai',
             'j.waktu_selesai',
         )
+        ->where('ta.id_tahun','=', '20241')
         ->get();
 
         $sum_sks = $irs->sum('sks');
@@ -255,7 +256,7 @@ class DosenController extends Controller
             'j.waktu_selesai',
         );
 
-        $irs = $irs_now->where('j.id_tahun', '=', '20242')->get();
+        $irs = $irs_now->where('j.id_tahun', '=', '20241')->get();
 
         $sum_sks = $irs->sum('sks');
     
