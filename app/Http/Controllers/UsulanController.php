@@ -72,15 +72,22 @@ class UsulanController extends Controller
     {
         $data = $request->input('data'); // Data from programStudiRuang
         $id_tahun = $request->input('id_tahun'); // Get the selected academic year
-    
+
         // Validate data
         if (empty($data) || empty($id_tahun)) {
             return response()->json(['message' => 'Data or academic year is missing'], 400);
         }
-    
+
+        // Check if the usulan for the selected tahun ajaran has status 'disetujui'
+        $existingUsulan = UsulanRuangKuliah::where('id_tahun', $id_tahun)->first();
+        if ($existingUsulan && $existingUsulan->status == 'disetujui') {
+            return response()->json(['message' => 'Usulan telah disetujui dan tidak dapat diubah.'], 400);
+        }
+
         // Delete existing usulan for the selected academic year
         UsulanRuangKuliah::where('id_tahun', $id_tahun)->delete();
-    
+
+        // Save new usulan data
         foreach ($data as $id_prodi => $prodiData) {
             $ruangList = $prodiData['ruang'] ?? [];
             foreach ($ruangList as $id_ruang) {
@@ -91,9 +98,10 @@ class UsulanController extends Controller
                 ]);
             }
         }
-    
+
         return response()->json(['message' => 'Usulan berhasil disimpan'], 200);
     }
+
     
 
     public function getProgramStudi(Request $request)
@@ -107,6 +115,47 @@ class UsulanController extends Controller
 
         // Return sebagai JSON
         return response()->json($programStudi);
+    }
+
+    public function getUsulanData($id_tahun)
+    {
+        // Ambil data usulan untuk id_tahun tertentu
+        $usulanList = UsulanRuangKuliah::where('id_tahun', $id_tahun)
+            ->with('programStudi')
+            ->get();
+
+        // Jika tidak ada usulan, kembalikan data kosong dan status 'belum diajukan'
+        if ($usulanList->isEmpty()) {
+            return response()->json([
+                'usulanData' => [],
+                'status' => 'belum diajukan',
+            ]);
+        }
+
+        // Group data berdasarkan id_prodi
+        $usulanData = [];
+        foreach ($usulanList as $usulan) {
+            $id_prodi = $usulan->id_prodi;
+            $id_ruang = $usulan->id_ruang;
+            $status = $usulan->status;
+
+            if (!isset($usulanData[$id_prodi])) {
+                $usulanData[$id_prodi] = [
+                    'nama_prodi' => $usulan->programStudi->nama_prodi,
+                    'ruang' => [],
+                ];
+            }
+
+            $usulanData[$id_prodi]['ruang'][] = $id_ruang;
+        }
+
+        // Ambil status usulan (diasumsikan semua usulan pada tahun ajaran yang sama memiliki status yang sama)
+        $status = $usulanList->first()->status ?? 'belum__diajukan';
+
+        return response()->json([
+            'usulanData' => $usulanData,
+            'status' => $status,
+        ]);
     }
 
     public function getUsulanByTahun($id_tahun)

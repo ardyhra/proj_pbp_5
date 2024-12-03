@@ -113,7 +113,7 @@ Route::get('/daftarusulan', [UsulanController::class, 'index'])->name('daftarusu
 
 Route::get('/get-usulan/{id_tahun}', [UsulanController::class, 'getUsulanByTahun']);
 Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [UsulanController::class, 'getUsulanDetail']);
-
+Route::get('/get-usulan-data/{id_tahun}', [UsulanController::class, 'getUsulanData'])->name('usulan.getUsulanData');
 Route::post('/usulan/{id_tahun}/update-status', [UsulanController::class, 'updateStatusUsulan'])->name('usulan.updateStatus');
 
 // Mengupdate status usulan oleh dekan (disetujui atau ditolak)
@@ -138,16 +138,9 @@ Route::get('/usulanjadwal', function () {
     return view('dekan/usulanjadwal');
 });
 
-// Halaman usulan ruang kuliah untuk Dekan
 Route::get('/usulanruang', [DekanController::class, 'indexDekan'])->name('usulanruang.dekan');
-
-// Mengupdate status usulan oleh Dekan
 Route::post('/usulanruang/{id_tahun}/update-status', [DekanController::class, 'updateStatusUsulanDekan'])->name('usulanruang.updateStatusDekan');
-
-// Endpoint untuk mendapatkan data usulan
 Route::get('/get-usulan/{id_tahun}', [DekanController::class, 'getUsulan'])->name('usulanruang.getUsulan');
-
-// Endpoint untuk mendapatkan detail usulan
 Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [DekanController::class, 'getUsulanDetail'])->name('usulanruang.getUsulanDetail');
 
 // ========================================================================================================================

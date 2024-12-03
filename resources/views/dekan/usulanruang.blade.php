@@ -76,33 +76,36 @@
             <div class="space-y-4">
                 @foreach($tahunAjaranList as $tahunAjaran)
                     @php
-                        $usulanTahun = $usulanStatuses->get($tahunAjaran->id_tahun);
-                        $status = $usulanTahun ? $usulanTahun->first()->status : 'belum_diajukan';
-            
+                        $status = $usulanStatuses[$tahunAjaran->id_tahun] ?? 'belum diajukan';
+
                         $statusText = [
-                            'belum_diajukan' => '⏳ Belum diajukan',
+                            'belum diajukan' => '⏳ Belum diajukan',
                             'diajukan' => '🚀 Diajukan',
                             'disetujui' => '✅ Disetujui',
                             'ditolak' => '❌ Ditolak'
                         ][$status];
-            
+
                         $statusColor = [
-                            'belum_diajukan' => 'text-gray-600',
+                            'belum diajukan' => 'text-gray-600',
                             'diajukan' => 'text-blue-600',
                             'disetujui' => 'text-green-600',
                             'ditolak' => 'text-red-600'
                         ][$status];
                     @endphp
-                    <div onclick="tampilkanRekap('{{ $tahunAjaran->id_tahun }}', '{{ $status }}')" class="bg-white p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h2 class="text-xl font-semibold">{{ $tahunAjaran->tahun_ajaran }}</h2>
-                                <p class="text-gray-600">Status: <span class="{{ $statusColor }}">{{ $statusText }}</span></p>
+
+                    @if($status != 'belum diajukan')
+                        <div onclick="tampilkanRekap('{{ $tahunAjaran->id_tahun }}', '{{ $status }}')" class="bg-white p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h2 class="text-xl font-semibold">{{ $tahunAjaran->tahun_ajaran }}</h2>
+                                    <p class="text-gray-600">Status: <span class="{{ $statusColor }}">{{ $statusText }}</span></p>
+                                </div>
+                                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Lihat</button>
                             </div>
-                            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Lihat</button>
                         </div>
-                    </div>
+                    @endif
                 @endforeach
+
             </div>
 
             <!-- Container for Rekap Ruang Kuliah -->
@@ -222,8 +225,23 @@
                         rekapRuangTabel.appendChild(row);
                     });
 
-                    // Tampilkan tombol aksi jika statusnya 'diajukan'
+                    // Tampilkan tombol aksi berdasarkan status
                     if (status === 'diajukan') {
+                        tombolAksiContainer.innerHTML = `
+                            <button onclick="setujuiUsulan(currentIdTahun)" class="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600">
+                                Setujui Usulan
+                            </button>
+                            <button onclick="tolakUsulan(currentIdTahun)" class="bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600">
+                                Tolak Usulan
+                            </button>
+                        `;
+                        tombolAksiContainer.classList.remove('hidden');
+                    } else if (status === 'disetujui' || status === 'ditolak') {
+                        tombolAksiContainer.innerHTML = `
+                            <button onclick="batalkanUsulan(currentIdTahun)" class="bg-yellow-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">
+                                Batalkan
+                            </button>
+                        `;
                         tombolAksiContainer.classList.remove('hidden');
                     } else {
                         tombolAksiContainer.classList.add('hidden');
@@ -234,6 +252,7 @@
                     alert('Terjadi kesalahan saat mengambil data.');
                 });
         }
+
 
         function lihatDetail(id_prodi, id_tahun) {
             const detailRuangContainer = document.getElementById('detail-ruang-container');
@@ -308,6 +327,10 @@
 
         function setujuiUsulan(idTahun) {
             updateStatusUsulan(idTahun, 'disetujui');
+        }
+
+        function batalkanUsulan(idTahun) {
+            updateStatusUsulan(idTahun, 'batalkan');
         }
 
         function tolakUsulan(idTahun) {

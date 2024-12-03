@@ -14,29 +14,52 @@ class DekanController extends Controller
     {
         $tahunAjaranList = TahunAjaran::all();
 
+        // Mendapatkan status usulan per tahun
         $usulanStatuses = UsulanRuangKuliah::select('id_tahun', 'status')
             ->distinct()
             ->get()
             ->groupBy('id_tahun');
 
-        return view('dekan.usulanruang', compact('tahunAjaranList', 'usulanStatuses'));
+        // Mapping status untuk setiap tahun ajaran
+        $rekapStatuses = $tahunAjaranList->mapWithKeys(function($tahun) use ($usulanStatuses) {
+            $usulanStatus = $usulanStatuses->get($tahun->id_tahun);
+            if ($usulanStatus && $usulanStatus->isNotEmpty()) {
+                $status = $usulanStatus->first()->status;
+            } else {
+                $status = 'belum diajukan';
+            }
+            return [$tahun->id_tahun => $status];
+        });
+
+        return view('dekan.usulanruang', [
+            'tahunAjaranList' => $tahunAjaranList,
+            'usulanStatuses' => $rekapStatuses
+        ]);
     }
+
 
     // Mengupdate status usulan oleh Dekan
     public function updateStatusUsulanDekan(Request $request, $id_tahun)
     {
         $validated = $request->validate([
-            'status' => 'required|in:disetujui,ditolak',
+            'status' => 'required|in:disetujui,ditolak,batalkan',
         ]);
 
-        // Update semua usulan untuk tahun ajaran tertentu
+        if ($validated['status'] === 'batalkan') {
+            // Kembalikan status ke 'diajukan'
+            $newStatus = 'diajukan';
+        } else {
+            $newStatus = $validated['status'];
+        }
+
         UsulanRuangKuliah::where('id_tahun', $id_tahun)
-            ->update(['status' => $validated['status']]);
+            ->update(['status' => $newStatus]);
 
         return response()->json(['message' => 'Status usulan berhasil diperbarui oleh Dekan.']);
     }
 
-    // Endpoint untuk mendapatkan data usulan
+
+    // Mendapatkan data usulan berdasarkan tahun ajaran
     public function getUsulan($id_tahun)
     {
         $data = UsulanRuangKuliah::select('id_prodi', DB::raw('COUNT(id_ruang) as jumlah_ruang'))
@@ -55,20 +78,20 @@ class DekanController extends Controller
         return response()->json($data);
     }
 
-    // Endpoint untuk mendapatkan detail usulan
+    // Mendapatkan detail usulan berdasarkan tahun ajaran dan program studi
     public function getUsulanDetail($id_tahun, $id_prodi)
     {
-        $usulan = UsulanRuangKuliah::where('id_tahun', $id_tahun)
+        $usulanList = UsulanRuangKuliah::where('id_tahun', $id_tahun)
             ->where('id_prodi', $id_prodi)
-            ->with('programStudi:id_prodi,nama_prodi', 'ruang:id_ruang,kapasitas')
+            ->with('ruang', 'programStudi')
             ->get();
 
         $data = [
-            'program_studi' => $usulan->first()->programStudi->nama_prodi ?? '',
-            'ruang' => $usulan->map(function($item) {
+            'program_studi' => $usulanList->first()->programStudi->nama_prodi ?? '',
+            'ruang' => $usulanList->map(function ($usulan) {
                 return [
-                    'id_ruang' => $item->ruang->id_ruang,
-                    'kapasitas' => $item->ruang->kapasitas,
+                    'id_ruang' => $usulan->id_ruang,
+                    'kapasitas' => $usulan->ruang->kapasitas ?? ''
                 ];
             })->toArray(),
         ];
