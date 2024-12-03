@@ -72,87 +72,72 @@
                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
                     <span>KHS</span>
                 </a>
-                <a href="{{ url('/dashboard-mhs') }}"
-                   class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
-                    <span>Transkrip</span>
-                </a>
-                <a href="{{ url('/dashboard-mhs') }}"
-                   class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
-                    <span>Konsultasi</span>
-                </a>
             </nav>
         </aside>
 
         <!-- Main Content -->
-        <main class="w-full lg:w-4/5 lg:ml-auto p-8">
-            <!-- Status Akademik -->
-            <div class="mb-6">
-                <h3 class="text-2xl font-bold mb-2">Status Akademik</h3>
-                <p>Dosen Wali: Adit Saputra, S.Kom, M.Kom (NIP: 122341431414143415)</p>
-                <p>Semester Akademik Sekarang: 2024/2025 Ganjil</p>
-                <p>Semester Studi: 4</p>
-                <p>Status: Aktif</p>
-            </div>
-
-            <!-- Prestasi Akademik -->
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="p-4 bg-gray-300 rounded-lg text-center">
-                    <h3 class="text-lg font-semibold">IPK</h3>
-                    <p class="text-4xl font-bold">3.81</p>
+        <main class="w-full lg:w-8/5 lg:ml-auto p-8">
+            <div class="grid grid-cols-3 gap-4 p-4 bg-white rounded-lg">
+                <!-- Status Akademik -->
+                <div class="col-span-1">
+                    <h3 class="text-2xl font-bold mb-2">Status Akademik</h3>
+                    <p>Dosen Wali: Adit Saputra, S.Kom, M.Kom (NIP: 122341431414143415)</p>
+                    <p>Semester Akademik Sekarang: 2024/2025 Ganjil</p>
+                    <p>Semester Studi: 4</p>
+                    <p>Status: Aktif</p>
                 </div>
-                <div class="p-4 bg-gray-300 rounded-lg text-center">
-                    <h3 class="text-lg font-semibold">SKS</h3>
+
+                <!-- Prestasi Akademik - IPK -->
+                <div class="col-span-1 flex flex-col justify-center items-center p-4 bg-gray-300 rounded-lg text-center h-32">
+                    <h3 class="text-lg font-semibold">IPK</h3>
+                    <p class="text-4xl font-bold">3.76</p>
+                </div>
+
+                <!-- Prestasi Akademik - SKS -->
+                <div class="col-span-1 flex flex-col justify-center items-center p-4 bg-gray-300 rounded-lg text-center h-32">
+                    <h3 class="text-lg font-semibold">SKSk</h3>
                     <p class="text-4xl font-bold">85</p>
                 </div>
-            </div>
+            </div> 
 
             <!-- Informasi Perubahan Jadwal -->
-            <div class="mb-6">
-                <h3 class="text-2xl font-bold mb-2">Informasi Perubahan Jadwal Mata Kuliah</h3>
+            <div class="mt-6 p-4 bg-white rounded-lg shadow-lg">
+                <div>
+                    <h3 class="text-2xl font-bold mb-2">Riwayat Status</h3>
+                </div>
                 <table class="w-full bg-white rounded-lg overflow-hidden shadow-lg">
                     <thead>
                         <tr class="bg-gray-200">
-                            <th class="py-2 px-4 text-left">No</th>
-                            <th class="py-2 px-4 text-left">Mata Kuliah</th>
-                            <th class="py-2 px-4 text-left">Pertemuan</th>
-                            <th class="py-2 px-4 text-left">Jadwal Pengganti</th>
+                            <th class="py-2 px-4 text-center w-8">No</th>
+                            <th class="py-2 px-4 text-center">Tahun Ajaran</th>
+                            <th class="py-2 px-4 text-center">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="border-b">
-                            <td class="py-2 px-4">1</td>
-                            <td class="py-2 px-4">Teori Bahasa dan Otomata</td>
-                            <td class="py-2 px-4">2</td>
-                            <td class="py-2 px-4">Jumat, 30 Agustus 2024, 15:30 - 18:50, A103</td>
+                            <td class="py-2 px-4 text-center w-8">1</td>
+                            <td class="py-2 px-4 text-center">2022/2023 Ganjil</td>
+                            <td class="py-2 px-4 text-center">AKTIF</td>
                         </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Jadwal Kuliah -->
-            <div class="mb-6">
-                <h3 class="text-2xl font-bold mb-2">Jadwal Kuliah - September 2024</h3>
-                <table class="w-full bg-white rounded-lg overflow-hidden shadow-lg">
-                    <thead>
-                        <tr class="bg-gray-200">
-                            <th class="py-2 px-4 text-left">Senin</th>
-                            <th class="py-2 px-4 text-left">Selasa</th>
-                            <th class="py-2 px-4 text-left">Rabu</th>
-                            <th class="py-2 px-4 text-left">Kamis</th>
-                            <th class="py-2 px-4 text-left">Jumat</th>
-                            <th class="py-2 px-4 text-left">Sabtu</th>
-                            <th class="py-2 px-4 text-left">Minggu</th>
-                        </tr>
-                    </thead>
-                    <tbody>
                         <tr class="border-b">
-                            <td class="py-2 px-4">13:00 Teori Bah...</td>
-                            <td class="py-2 px-4">09:40 Pembelaj...</td>
-                            <td class="py-2 px-4">09:40 Pembelaj...</td>
-                            <td class="py-2 px-4">15:40 Komputas...</td>
-                            <td class="py-2 px-4">07:00 Sistem In...</td>
-                            <td class="py-2 px-4"></td>
-                            <td class="py-2 px-4"></td>
+                            <td class="py-2 px-4 text-center w-8">2</td>
+                            <td class="py-2 px-4 text-center">2022/2023 Genap</td>
+                            <td class="py-2 px-4 text-center">AKTIF</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-2 px-4 text-center w-8">3</td>
+                            <td class="py-2 px-4 text-center">2023/2024 Ganjil</td>
+                            <td class="py-2 px-4 text-center">AKTIF</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-2 px-4 text-center w-8">4</td>
+                            <td class="py-2 px-4 text-center">2023/2024 Genap</td>
+                            <td class="py-2 px-4 text-center">CUTI</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-2 px-4 text-center w-8">5</td>
+                            <td class="py-2 px-4 text-center">2024/2025 Ganjil</td>
+                            <td class="py-2 px-4 text-center">AKTIF</td>
                         </tr>
                     </tbody>
                 </table>

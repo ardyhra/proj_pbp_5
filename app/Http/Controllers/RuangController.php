@@ -9,16 +9,17 @@ use Illuminate\Support\Facades\Log;
 class RuangController extends Controller
 {
     public function index(Request $request)
-        {
-            $ruang = Ruang::all();
+    {
+        $ruang = Ruang::all();
 
-            if ($request->ajax()) {
-                Log::info('Data ruang yang dikirim ke frontend:', $ruang->toArray()); // Log untuk debugging
-                return response()->json($ruang);
-            }
-
-            return view('ba.editruang', compact('ruang'));
+        // Check if the request expects JSON (AJAX request)
+        if ($request->expectsJson()) {
+            return response()->json($ruang);
         }
+
+        // For regular requests, return the view
+        return view('ba.editruang', compact('ruang'));
+    }
 
 
     public function store(Request $request)
@@ -39,30 +40,21 @@ class RuangController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    $validated = $request->validate([
-        'id_ruang' => [
-            'required',
-            'max:4',
-            Rule::unique('ruang')->ignore($id, 'id_ruang'),
-        ],
-        'blok_gedung' => 'required|max:1',
-        'lantai' => 'required|integer',
-        'kapasitas' => 'required|integer',
-    ]);
+    {
+        $ruang = Ruang::findOrFail($id);
 
-    $ruang = Ruang::findOrFail($id);
-    $ruang->update($validated);
+        $validatedData = $request->validate([
+            'id_ruang' => 'required|max:10|unique:ruang,id_ruang,' . $ruang->id_ruang . ',id_ruang',
+            'blok_gedung' => 'required|string|max:50',
+            'lantai' => 'required|integer',
+            'kapasitas' => 'required|integer',
+        ]);
 
-    return response()->json([
-        'message' => 'Ruang berhasil diperbarui.'
-    ], 200);
-}
+        $ruang->update($validatedData);
 
+        return response()->json(['message' => 'Ruang berhasil diperbarui']);
+    }
 
-    
-
-    
     
 
 
@@ -71,8 +63,7 @@ class RuangController extends Controller
         $ruang = Ruang::findOrFail($id);
         $ruang->delete();
 
-        return response()->json([
-            'message' => 'Ruang berhasil dihapus.'
-        ], 200);
+        return response()->json(['message' => 'Ruang berhasil dihapus']);
     }
+
 }

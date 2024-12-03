@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,26 +9,30 @@ class Jadwal extends Model
 {
     use HasFactory;
 
-    // Tabel yang digunakan oleh model
     protected $table = 'jadwal';
+    protected $primaryKey = 'id_jadwal';
 
-    // Kolom yang bisa diisi (fillable)
     protected $fillable = [
-        'id_jadwal', 
-        'kelas', 
-        'hari', 
-        'waktu_mulai', 
-        'waktu_selesai', 
-        'nidn', 
-        'kode_mk', 
-        'id_ruang', 
-        'id_tahun'
+        'kode_mk',
+        'kelas',
+        'hari',
+        'waktu_mulai',
+        'waktu_selesai',
+        'kuota',
+        'id_ruang',
+        'id_prodi',
+        'id_tahun',
     ];
 
-    // Relasi dengan model TahunAjaran
+    // Relasi ke model TahunAjaran
     public function tahunAjaran()
     {
-        return $this->belongsTo(tahunajaran::class, 'id_tahun', 'id_tahun');
+        return $this->belongsTo(tahunAjaran::class, 'id_tahun', 'id_tahun');
+    }
+    public function matakuliah()
+    {
+        return $this->belongsTo(matakuliah::class, 'kode_mk', 'kode_mk');
+
     }
 
     public function ruang()
