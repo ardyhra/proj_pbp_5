@@ -10,6 +10,9 @@ use App\Http\Controllers\RuangController;
 use Illuminate\Http\Request;
 
 
+use App\Http\Controllers\DashboardControllerBA;
+use App\Http\Controllers\UsulanController;
+use App\Http\Controllers\DekanController;
 
 
 
@@ -72,10 +75,28 @@ Route::get('/daftarusulan', function () {
 //     return view('ba/editruang');
 // })->name('editruang');;
 
+Route::get('/dashboard-ba', [DashboardControllerBA::class, 'index'])->name('dashboard-ba');
+
 Route::get('/editruang', [RuangController::class, 'index'])->name('editruang');
 Route::post('/editruang', [RuangController::class, 'store']);
 Route::put('/editruang/{id}', [RuangController::class, 'update']);
 Route::delete('/editruang/{id}', [RuangController::class, 'destroy']);
+
+
+
+Route::get('/buatusulan', [UsulanController::class, 'create'])->name('buatusulan');
+Route::post('/buatusulan', [UsulanController::class, 'store']);
+
+Route::get('/daftarusulan', [UsulanController::class, 'index'])->name('daftarusulan');
+
+Route::get('/get-usulan/{id_tahun}', [UsulanController::class, 'getUsulanByTahun']);
+Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [UsulanController::class, 'getUsulanDetail']);
+
+Route::post('/usulan/{id_tahun}/update-status', [UsulanController::class, 'updateStatusUsulan'])->name('usulan.updateStatus');
+
+// Mengupdate status usulan oleh dekan (disetujui atau ditolak)
+// Route::patch('/usulan-ruang-kuliah/{id}/status', [UsulanController::class, 'updateStatus']);
+
 
 // Dekan
 Route::get('/dashboard-dekan', function () {
@@ -93,6 +114,19 @@ Route::get('/usulanruang', function () {
 Route::get('/usulanjadwal', function () {
     return view('dekan/usulanjadwal');
 });
+
+// Halaman usulan ruang kuliah untuk Dekan
+Route::get('/usulanruang', [DekanController::class, 'indexDekan'])->name('usulanruang.dekan');
+
+// Mengupdate status usulan oleh Dekan
+Route::post('/usulanruang/{id_tahun}/update-status', [DekanController::class, 'updateStatusUsulanDekan'])->name('usulanruang.updateStatusDekan');
+
+// Endpoint untuk mendapatkan data usulan
+Route::get('/get-usulan/{id_tahun}', [DekanController::class, 'getUsulan'])->name('usulanruang.getUsulan');
+
+// Endpoint untuk mendapatkan detail usulan
+Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [DekanController::class, 'getUsulanDetail'])->name('usulanruang.getUsulanDetail');
+
 
 
 

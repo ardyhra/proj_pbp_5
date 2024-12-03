@@ -6,6 +6,7 @@
     @vite('resources/css/app.css')
     <title>SISKARA - Edit Ruang Kuliah</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         /* Animasi untuk sidebar */
         .sidebar {
@@ -86,7 +87,8 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="w-full lg:w-4/5 lg:ml-auto p-8">
+        <main id="main-content" class="w-full lg:w-4/5 lg:ml-auto p-8 main-content main-content-expanded">
+
             @if(session('success'))
                 <div class="bg-green-100 text-green-700 p-4 rounded-lg mb-6">
                     {{ session('success') }}
@@ -120,12 +122,8 @@
                             <td class="px-2 py-2 border-b border-gray-200 text-center">{{ $data->lantai }}</td>
                             <td class="px-2 py-2 border-b border-gray-200 text-center">{{ $data->kapasitas }}</td>
                             <td class="px-2 py-2 border-b border-gray-200 text-center">
-                                <button onclick="openModal('edit', '{{ $data->id_ruang }}')" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">Edit</button>
-                                <form action="{{ url('/editruang/' . $data->id_ruang) }}" method="POST" style="display: inline-block;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600">Hapus</button>
-                                </form>
+                                <button onclick="openModal('edit', {{ $index }})" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">Edit</button>
+                                <button onclick="deleteRuang('{{ $data->id_ruang }}')" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600">Hapus</button>
                             </td>
                         </tr>
                     @endforeach
@@ -141,19 +139,19 @@
             <form id="ruangForm">
                 <div class="mb-4">
                     <label for="kode-ruang" class="block text-gray-700 font-semibold mb-2">Kode Ruang</label>
-                    <input type="text" id="kode-ruang" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none">
+                    <input type="text" id="kode-ruang" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none" required>
                 </div>
                 <div class="mb-4">
                     <label for="blok-gedung" class="block text-gray-700 font-semibold mb-2">Blok Gedung</label>
-                    <input type="text" id="blok-gedung" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none">
+                    <input type="text" id="blok-gedung" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none" required>
                 </div>
                 <div class="mb-4">
                     <label for="lantai" class="block text-gray-700 font-semibold mb-2">Lantai</label>
-                    <input type="text" id="lantai" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none">
+                    <input type="number" id="lantai" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none" required>
                 </div>
                 <div class="mb-4">
                     <label for="kapasitas" class="block text-gray-700 font-semibold mb-2">Kapasitas</label>
-                    <input type="number" id="kapasitas" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none">
+                    <input type="number" id="kapasitas" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none" required>
                 </div>
                 <div class="flex justify-end space-x-4">
                     <button type="button" onclick="closeModal()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Batal</button>
@@ -180,6 +178,7 @@
 
         function openModal(mode, index = null) {
             document.getElementById('ruangModal').style.display = 'block';
+
             if (mode === 'add') {
                 document.getElementById('modalTitle').textContent = 'Tambah Ruang Kuliah';
                 document.getElementById('kode-ruang').value = '';
@@ -189,16 +188,28 @@
                 editIndex = null;
                 originalIdRuang = null;
             } else if (mode === 'edit') {
+                if (index === null || index < 0 || index >= ruangData.length) {
+                    console.error(`Data ruang tidak ditemukan untuk index: ${index}`);
+                    alert('Data ruang tidak ditemukan!');
+                    return;
+                }
+
                 document.getElementById('modalTitle').textContent = 'Edit Ruang Kuliah';
                 const ruang = ruangData[index];
+                console.log('Data ruang yang di-edit:', ruang); // Debugging
                 document.getElementById('kode-ruang').value = ruang.id_ruang;
                 document.getElementById('blok-gedung').value = ruang.blok_gedung;
                 document.getElementById('lantai').value = ruang.lantai;
                 document.getElementById('kapasitas').value = ruang.kapasitas;
                 editIndex = index;
-                originalIdRuang = ruang.id_ruang; // Simpan id_ruang asli
+                originalIdRuang = ruang.id_ruang;
             }
         }
+
+
+
+
+
 
         function closeModal() {
             document.getElementById('ruangModal').style.display = 'none';
@@ -214,37 +225,72 @@
             const url = editIndex !== null ? `/editruang/${originalIdRuang}` : '/editruang';
             const method = editIndex !== null ? 'PUT' : 'POST';
 
-            const csrfToken = '{{ csrf_token() }}';
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            const response = await fetch(url, {
-                method,
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({ id_ruang, blok_gedung, lantai, kapasitas })
-            });
+            try {
+                const response = await fetch(url, {
+                    method,
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ id_ruang, blok_gedung, lantai, kapasitas })
+                });
 
-            if (response.ok) {
-                alert('Ruang berhasil disimpan.');
-                fetchData(); // Refresh tabel
-                closeModal(); // Tutup modal
-            } else {
-                const error = await response.json();
-                alert('Gagal menyimpan ruang: ' + error.message);
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message);
+                    fetchData(); // Refresh tabel
+                    closeModal(); // Tutup modal
+                } else if (response.status === 422) {
+                    const errors = await response.json();
+                    let errorMessage = '';
+                    for (const key in errors.errors) {
+                        if (errors.errors.hasOwnProperty(key)) {
+                            errorMessage += errors.errors[key].join('\n') + '\n';
+                        }
+                    }
+                    alert('Terjadi kesalahan:\n' + errorMessage);
+                } else {
+                    const error = await response.json();
+                    alert('Gagal menyimpan ruang: ' + error.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mengirim data.');
             }
         });
 
         async function fetchData() {
-            const response = await fetch('/editruang');
-            const ruangData = await response.json();
-            renderTable(ruangData);
+            try {
+                const response = await fetch('/editruang', {
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    ruangData = await response.json();
+                    console.log('Data ruang berhasil diambil:', ruangData); // Log data
+                    renderTable(ruangData); // Render tabel
+                } else {
+                    console.error('Gagal mengambil data ruang:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error saat fetch data ruang:', error);
+            }
         }
+
+
+
 
         function renderTable(ruangData) {
             const tableBody = document.getElementById('ruangTableBody');
-            tableBody.innerHTML = '';
+            tableBody.innerHTML = ''; // Hapus isi tabel sebelumnya
+
             ruangData.forEach((ruang, index) => {
+                console.log(`Index: ${index}, Data:`, ruang); // Log setiap indeks dan data
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="px-2 py-2 border-b border-gray-200 text-center">${index + 1}</td>
@@ -263,13 +309,30 @@
 
 
         async function deleteRuang(id) {
-            const response = await fetch(`/editruang/${id}`, { method: 'DELETE' });
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const confirmDelete = confirm('Apakah Anda yakin ingin menghapus ruang ini?');
+            if (!confirmDelete) return;
+
+            const response = await fetch(`/editruang/${id}`, { 
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                }
+            });
             if (response.ok) {
+                const data = await response.json();
+                alert(data.message);
                 fetchData();
+            } else {
+                const error = await response.json();
+                alert('Gagal menghapus ruang: ' + error.message);
             }
         }
 
-        fetchData();
+        // Inisialisasi data saat halaman dimuat
+        window.onload = fetchData;
     </script>
+
 </body>
 </html>

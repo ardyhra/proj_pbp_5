@@ -13,7 +13,7 @@ CREATE DATABASE akademik;
 php artisan migrate
 ```
 ```bash
-php artisan db:seed --class=AccountSeeder
+php artisan db:seed --class=DatabaseSeeder
 ```
 Setelah migrate, tabel akan masuk otomatis ke database akademik.
 Setelah seeding, tabel akun akan terisi.  

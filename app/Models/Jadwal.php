@@ -26,11 +26,11 @@ class Jadwal extends Model
     // Relasi ke model TahunAjaran
     public function tahunAjaran()
     {
-        return $this->belongsTo(TahunAjaran::class, 'id_tahun', 'id_tahun');
+        return $this->belongsTo(tahunAjaran::class, 'id_tahun', 'id_tahun');
     }
     public function matakuliah()
     {
-        return $this->belongsTo(Matakuliah::class, 'kode_mk', 'kode_mk');
+        return $this->belongsTo(matakuliah::class, 'kode_mk', 'kode_mk');
     }
 }
 

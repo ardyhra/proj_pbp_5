@@ -3,20 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite('resources/css/app.css')
     <title>SISKARA - Dashboard Bagian Akademik</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Animasi untuk sidebar */
         .sidebar {
             transition: transform 0.3s ease;
         }
-
         .sidebar-closed {
             transform: translateX(-100%);
         }
-
-        /* Memastikan sidebar dan konten utama memenuhi tinggi layar */
         .flex-container {
             min-height: 100vh;
         }
@@ -27,14 +24,12 @@
     <!-- Header -->
     <header class="bg-gradient-to-r from-sky-500 to-blue-600 text-white p-4 flex justify-between items-center">
         <div class="flex items-center space-x-3">
-            <!-- Tombol menu untuk membuka sidebar -->
             <button onclick="toggleSidebar()" class="focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
-            <!-- Logo dan judul aplikasi -->
             <h1 class="text-xl font-bold">SISKARA</h1>
         </div>
         <nav class="space-x-4">
@@ -45,8 +40,7 @@
 
     <div class="flex flex-container">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 p-4 text-white flex-none sidebar fixed lg:static">
-            <!-- profil -->
+        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 p-4 text-white sidebar fixed lg:static">
             <div class="p-3 pb-1 bg-gray-300 rounded-3xl text-center mb-6">
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
                      style="background-image: url(img/fsm.jpg)">
@@ -66,53 +60,79 @@
 
         <!-- Main Content -->
         <main class="w-full lg:w-4/5 lg:ml-auto p-8">
-            <!-- Header Halaman -->
+            <!-- Judul Halaman -->
             <h1 class="text-3xl font-bold mb-6">Dashboard Bagian Akademik</h1>
 
-            <!-- Academic Year Section -->
-            <section class="bg-gray-200 p-6 rounded-lg mb-6">
-                <h2 class="text-xl font-semibold mb-2">Tahun Ajaran</h2>
-                <p class="text-2xl font-bold">2024/2025 Ganjil</p>
-            </section>
+            <!-- Statistik -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-blue-500 text-white p-4 rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold">Total Usulan</h2>
+                    <p class="text-3xl font-semibold">{{ $totalUsulan }}</p>
+                </div>
+                <div class="bg-green-500 text-white p-4 rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold">Total Program Studi</h2>
+                    <p class="text-3xl font-semibold">{{ $totalProgramStudi }}</p>
+                </div>
+                <div class="bg-yellow-500 text-white p-4 rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold">Total Ruang</h2>
+                    <p class="text-3xl font-semibold">{{ $totalRuang }}</p>
+                </div>
+            </div>
 
-            <!-- Stats Section -->
-            <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="p-6 bg-gray-300 rounded-lg text-center">
-                    <h3 class="text-lg font-semibold">Jumlah Ruang Kuliah Terpakai</h3>
-                    <p class="text-4xl font-bold">15</p>
-                </div>
-                <div class="p-6 bg-gray-300 rounded-lg text-center">
-                    <h3 class="text-lg font-semibold">Jumlah Ruang Kuliah Tidak Terpakai</h3>
-                    <p class="text-4xl font-bold">3</p>
-                </div>
-                <div class="p-6 bg-gray-300 rounded-lg text-center">
-                    <h3 class="text-lg font-semibold">Persentase Ruang Kuliah Terpakai</h3>
-                    <p class="text-4xl font-bold">83%</p>
-                </div>
-                <div class="p-6 bg-gray-300 rounded-lg text-center">
-                    <h3 class="text-lg font-semibold">Total Kapasitas Ruang</h3>
-                    <p class="text-4xl font-bold">675</p>
-                </div>
-                <div class="p-6 bg-gray-300 rounded-lg text-center">
-                    <h3 class="text-lg font-semibold">Rerata Kapasitas Tiap Ruang</h3>
-                    <p class="text-4xl font-bold">45</p>
-                </div>
-            </section>
+            <!-- Rekap Status -->
+            <div class="mt-8">
+                <h2 class="text-2xl font-bold mb-4">Rekap Status Usulan per Tahun Ajaran</h2>
+                <table class="table-auto min-w-full bg-white border border-gray-200 text-sm">
+                    <thead class="bg-gray-300">
+                        <tr>
+                            <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold">Status</th>
+                            <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold">Jumlah</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="px-2 py-2 border-b border-gray-200 text-center">Belum Diajukan</td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-center">{{ $rekapStatus['belum_diajukan'] }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-2 py-2 border-b border-gray-200 text-center">Diajukan</td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-center">{{ $rekapStatus['diajukan'] }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-2 py-2 border-b border-gray-200 text-center">Disetujui</td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-center">{{ $rekapStatus['disetujui'] }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-2 py-2 border-b border-gray-200 text-center">Ditolak</td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-center">{{ $rekapStatus['ditolak'] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Usulan Terbaru -->
+            <div class="mt-8">
+                <h2 class="text-2xl font-bold mb-4">Usulan Terbaru</h2>
+                <table class="table-auto min-w-full bg-white border border-gray-200 text-sm">
+                    <thead class="bg-gray-300">
+                        <tr>
+                            <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold">Program Studi</th>
+                            <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold">Tahun Ajaran</th>
+                            <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($usulanTerbaru as $usulan)
+                        <tr>
+                            <td class="px-2 py-2 border-b border-gray-200 text-center">{{ $usulan->programStudi->nama_prodi }}</td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-center">{{ $usulan->tahunAjaran->tahun_ajaran }}</td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-center">{{ ucfirst($usulan->status) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </main>
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-gradient-to-r from-sky-500 to-blue-600 text-white text-center p-4 absolute w-full">
-        <hr>
-        <p class="text-sm text-center">&copy; Siskara Inc. All rights reserved.</p>
-    </footer>
-    
-    <!-- Script -->
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('sidebar-closed');
-        }
-    </script>
-
 </body>
 </html>
