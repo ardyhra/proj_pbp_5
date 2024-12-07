@@ -80,7 +80,7 @@
             </div>
             <div class="flex flex-col justify-center">
                 <button type="submit"
-                        class="mb-5 w-full rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Submit</button>
+                        class="mb-5 w-full rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Login</button>
                 <a href="#" class="forgot-password block text-sm text-right font-medium text-blue-700">Forgot password?</a>
             </div>
         </form>

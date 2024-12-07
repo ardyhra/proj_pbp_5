@@ -15,4 +15,8 @@ class ruang extends Model
     public $timestamps = false; // Nonaktifkan timestamps
 
     protected $fillable = ['id_ruang', 'blok_gedung', 'lantai', 'kapasitas'];
+    public function jadwal()
+    {
+        return $this->hasMany(Jadwal::class, 'id_ruang', 'id_ruang');
+    }
 }
