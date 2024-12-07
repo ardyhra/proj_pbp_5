@@ -2,7 +2,6 @@
 
 @section('content')
 <div class="container mx-auto mt-10">
-    {{-- <h1 class="text-3xl font-semibold mb-4 text-center"> --}}
         @if($prodi)
         <h1 class="text-3xl font-semibold mb-4 text-center">
             Jadwal Kuliah {{ $prodi->nama_prodi }} {{ $tahun_ajaran->tahun_ajaran }}
@@ -56,8 +55,6 @@
                             <a href="{{ route('jadwal.edit', $jadwal->id_jadwal) }}" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">Edit</a>
                             <!-- Tombol Delete -->
                             <button class="bg-red-500  text-white px-4 py-2 rounded-md hover:bg-red-600" onclick="deleteJadwal({{ $jadwal->id_jadwal }})">Delete</button>
-                            {{-- <button class="bg-red-500  text-white px-4 py-2 rounded-md hover:bg-red-600" onclick="deleteJadwal({{ $jadwal->id_jadwal }})">Delete</button> --}}
-
                         </td>
                     </tr>
                 @empty
@@ -69,7 +66,7 @@
             </tbody>
         </table>
     </div>
-</div>
+</div> 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
     function deleteJadwal(id) {
@@ -133,7 +130,6 @@
         });
     }
 </script>
-
-
-
 @endsection
+
+

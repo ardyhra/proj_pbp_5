@@ -158,6 +158,7 @@ Route::get('/jadwal/view', [JadwalController::class, 'index'])->name('jadwal.vie
 
 // Route untuk menampilkan form create jadwal
 Route::get('/jadwal/create', [JadwalController::class, 'create'])->name('jadwal.create');
+Route::post('jadwal/store', [JadwalController::class, 'store'])->name('jadwal.store');
 
 // Route untuk menyimpan data jadwal
 Route::post('/jadwal', [JadwalController::class, 'store'])->name('jadwal.store');
@@ -170,6 +171,7 @@ Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboard'])->name(
 
 // Route untuk Manajemen Jadwal Kaprodi
 Route::get('/manajemen-jadwal-kaprodi', [KaprodiController::class, 'manajemenJadwal'])->name('manajemen-jadwal-kaprodi.index');
+Route::post('jadwal/ajukan', [JadwalController::class, 'ajukan'])->name('jadwal.ajukan');
 
 // Route untuk tampilkan form edit
 Route::get('/jadwal/edit/{id}', [JadwalController::class, 'edit'])->name('jadwal.edit');

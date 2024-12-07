@@ -65,9 +65,9 @@
             
             <!-- Tombol Cancel -->
             <!-- Tombol Cancel -->
-<a href="#" id="cancelButton" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 ml-2">
-    Cancel
-</a>
+            <a href="#" id="cancelButton" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 ml-2">
+                Cancel
+            </a>
 
         </div>
         

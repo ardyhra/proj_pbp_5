@@ -179,52 +179,109 @@ public function index(Request $request)
     // Kirim data ke view
     return view('jadwal.create', compact('matakuliah', 'ruang','idTahun', 'idProdi'));
 }
+// public function store(Request $request)
+// {
+//     // Validasi input dari form
+//     $validated = $request->validate([
+//         'kode_mk' => 'required|exists:matakuliah,kode_mk',
+//         'kelas' => 'required|string|max:255',
+//         'id_ruang' => 'required|exists:ruang,id_ruang',
+//         'hari' => 'required|integer',
+//         'waktu_mulai' => 'required|date_format:H:i',
+//         'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai',
+//         'kuota' => 'required|integer|min:1',
+//     ]);
+
+//     // Membuat ID Jadwal berdasarkan ID Tahun, ID Prodi, dan nomor urut
+//     // Misalnya, ID Jadwal = ID_TAHUN + ID_PRODI + Nomor Urut (misalnya 101, 102, dst)
+//     $id_jadwal = $this->generateIdJadwal($request->input('kode_mk'));
+
+//     // Simpan data ke dalam tabel jadwal
+//     Jadwal::create([
+//         'id_jadwal' => $id_jadwal,
+//         'kode_mk' => $request->input('kode_mk'),
+//         'kelas' => $request->input('kelas'),
+//         'id_ruang' => $request->input('id_ruang'),
+//         'hari' => $request->input('hari'),
+//         'waktu_mulai' => $request->input('waktu_mulai'),
+//         'waktu_selesai' => $request->input('waktu_selesai'),
+//         'kuota' => $request->input('kuota'),
+//     ]);
+
+//     return redirect()->route('jadwal.index')->with('success', 'Jadwal kuliah berhasil dibuat!');
+// }
+// public function store(Request $request)
+// {
+//     // Validasi input
+//     $request->validate([
+//         'kode_mk' => 'required|exists:matakuliah,kode_mk',
+//         'kelas' => 'required|string|max:10',
+//         'hari' => 'required|integer',
+//         'waktu_mulai' => 'required|date_format:H:i',
+//         'waktu_selesai' => 'required|date_format:H:i',
+//         'id_ruang' => 'required|exists:ruang,id_ruang',
+//         'kuota' => 'required|integer|min:1',
+//         'id_tahun' => 'required|integer',
+//         'id_prodi' => 'required|integer',
+//     ]);
+
+//     $idTahun = $request->id_tahun;
+//     $idProdi = $request->id_prodi;
+
+//     // Generate ID Jadwal
+//     $lastJadwal = Jadwal::where('id_tahun', $idTahun)
+//                         ->where('id_prodi', $idProdi)
+//                         ->orderBy('id_jadwal', 'desc')
+//                         ->first();
+
+//     $lastIdJadwal = $lastJadwal ? (int)substr($lastJadwal->id_jadwal, -3) : 100;
+//     $newIdJadwal = $idTahun . $idProdi . str_pad($lastIdJadwal + 1, 3, '0', STR_PAD_LEFT);
+
+//     // Simpan jadwal baru ke database
+//     Jadwal::create([
+//         'id_jadwal' => $newIdJadwal,
+//         'kode_mk' => $request->kode_mk,
+//         'kelas' => $request->kelas,
+//         'hari' => $request->hari,
+//         'waktu_mulai' => $request->waktu_mulai,
+//         'waktu_selesai' => $request->waktu_selesai,
+//         'id_ruang' => $request->id_ruang,
+//         'kuota' => $request->kuota,
+//         'id_tahun' => $idTahun,
+//         'id_prodi' => $idProdi,
+//     ]);
+
+//     // Redirect ke halaman index setelah berhasil
+//     return redirect()->route('jadwal.view')->with('success', 'Jadwal kuliah berhasil ditambahkan!');
+// }
+
 public function store(Request $request)
 {
-    // Validasi input
+    // Validasi input dari form
     $request->validate([
-        'kode_mk' => 'required|exists:matakuliah,kode_mk',
-        'kelas' => 'required|string|max:10',
+        'kode_mk' => 'required|string|max:10',
+        'kelas' => 'required|string|max:1',
+        'id_ruang' => 'required|string|max:10',
         'hari' => 'required|integer',
         'waktu_mulai' => 'required|date_format:H:i',
         'waktu_selesai' => 'required|date_format:H:i',
-        'id_ruang' => 'required|exists:ruang,id_ruang',
         'kuota' => 'required|integer|min:1',
-        'id_tahun' => 'required|integer',
-        'id_prodi' => 'required|integer',
     ]);
 
-    $idTahun = $request->id_tahun;
-    $idProdi = $request->id_prodi;
-
-    // Generate ID Jadwal
-    $lastJadwal = Jadwal::where('id_tahun', $idTahun)
-                        ->where('id_prodi', $idProdi)
-                        ->orderBy('id_jadwal', 'desc')
-                        ->first();
-
-    $lastIdJadwal = $lastJadwal ? (int)substr($lastJadwal->id_jadwal, -3) : 100;
-    $newIdJadwal = $idTahun . $idProdi . str_pad($lastIdJadwal + 1, 3, '0', STR_PAD_LEFT);
-
-    // Simpan jadwal baru ke database
+    // Simpan data jadwal ke database
     Jadwal::create([
-        'id_jadwal' => $newIdJadwal,
         'kode_mk' => $request->kode_mk,
         'kelas' => $request->kelas,
+        'id_ruang' => $request->id_ruang,
         'hari' => $request->hari,
         'waktu_mulai' => $request->waktu_mulai,
         'waktu_selesai' => $request->waktu_selesai,
-        'id_ruang' => $request->id_ruang,
         'kuota' => $request->kuota,
-        'id_tahun' => $idTahun,
-        'id_prodi' => $idProdi,
     ]);
 
-    // Redirect ke halaman index setelah berhasil
-    return redirect()->route('jadwal.index')->with('success', 'Jadwal kuliah berhasil ditambahkan!');
+    // Redirect dengan pesan sukses
+    return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil dibuat.');
 }
-
-
     // Menyimpan data jadwal ke dalam database
     // public function store(Request $request)
     // {
@@ -411,5 +468,19 @@ public function edit($id)
         ]; 
         return view('kaprodi.dashboard', compact('jumlahRuang', 'jumlahDosen', 'jumlahMahasiswa', 'jumlahMataKuliah', 'statusPenyusunan', 'currentYear'));
     }
+    public function ajukan(Request $request)
+    {
+        // Cari semua jadwal yang belum diajukan
+        $jadwals = Jadwal::where('status_pengajuan', 'pending')->get();
+
+        // Update status pengajuan menjadi 'pending'
+        foreach ($jadwals as $jadwal) {
+            $jadwal->status_pengajuan = 'pending';
+            $jadwal->save();
+        }
+
+        return redirect()->route('jadwal.index')->with('success', 'Jadwal telah diajukan ke Dekan untuk disetujui.');
+    }
+
 }
 
