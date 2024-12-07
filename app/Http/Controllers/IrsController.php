@@ -191,10 +191,10 @@ class IrsController extends Controller
         $semester = $result->semester;
 
         // Ambil filter dari request
-        $filter = intval($request->input('filter_semester'));
+        $filter = intval($request->input('filter_semester', 1));
 
 
-        $arr_tahun = ['20242', '20241', '20232', '20231', '20222', '20221', '20212', '20211', '20202', '20201'];
+        $arr_tahun = ['20241', '20232', '20231', '20222', '20221', '20212', '20211', '20202', '20201'];
 
         // dd($irs_filter->where('j.id_tahun', '=', '20221')->get());
         
