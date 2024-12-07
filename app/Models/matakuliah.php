@@ -13,10 +13,8 @@ class matakuliah extends Model
 
     protected $primaryKey = 'kode_mk';  // Assuming 'kode_mk' is the primary key
 
-    public function jadwals()
-    {
-        return $this->hasMany(Jadwal::class, 'kode_mk', 'kode_mk');
-    }
+    
+    protected $fillable = ['kode_mk', 'nama', 'sks', 'plot_semester','jenis'];
 
     public function jadwal()
     {

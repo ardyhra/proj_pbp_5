@@ -13,6 +13,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Bisa menambahkan lebih banyak CSS atau JavaScript jika diperlukan -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="min-h-screen flex flex-col">
@@ -30,7 +32,7 @@
 
         <div class="flex flex-1">
             <!-- Sidebar -->
-            <aside id="sidebar" class="sidebar w-64 bg-blue-600 text-white p-6 transition-transform transform lg:static fixed">
+            <aside id="sidebar" class="sidebar w-64 bg-blue-600 text-white p-6 transition-transform transform lg:relative fixed">
                 <div class="p-3 bg-gray-300 rounded-3xl text-center mb-6">
                     <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3"></div>
                     <h2 class="text-lg text-black font-bold">Adit Saputra, S.Kom</h2>
@@ -49,9 +51,9 @@
                     <a href="{{ url('/monitoring-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
                         <span>Monitoring</span>
                     </a>
-                    <a href="{{ url('/konsultasi-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
+                    {{-- <a href="{{ url('/konsultasi-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
                         <span>Konsultasi</span>
-                    </a>
+                    </a> --}}
                 </nav>
             </aside>
 
@@ -76,5 +78,6 @@
             document.getElementById('sidebar').classList.toggle('sidebar-closed');
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

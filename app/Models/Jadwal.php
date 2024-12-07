@@ -13,7 +13,9 @@ class Jadwal extends Model
     protected $primaryKey = 'id_jadwal';
 
     protected $fillable = [
+        'id_jadwal',
         'kode_mk',
+        'nama_mk',
         'kelas',
         'hari',
         'waktu_mulai',
@@ -31,18 +33,13 @@ class Jadwal extends Model
     }
     public function matakuliah()
     {
-        return $this->belongsTo(matakuliah::class, 'kode_mk', 'kode_mk');
+        return $this->belongsTo(Matakuliah::class, 'kode_mk', 'kode_mk');
 
     }
 
     public function ruang()
     {
         return $this->belongsTo(ruang::class, 'id_ruang', 'id_ruang');
-    }
-    
-    public function matkul()
-    {
-        return $this->belongsTo(matakuliah::class, 'kode_mk', 'kode_mk');
     }
     
     public function prodi()

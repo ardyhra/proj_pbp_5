@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('usulan_ruang_kuliah', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_prodi');
+            $table->unsignedBigInteger('id_prodi');
             $table->string('id_ruang', 4);
             $table->char('id_tahun', 5);
             $table->enum('status', ['belum diajukan', 'diajukan', 'disetujui', 'ditolak'])->default('belum diajukan');
@@ -22,7 +22,7 @@ return new class extends Migration
             // Tambahkan foreign key constraints jika perlu
             $table->foreign('id_prodi')->references('id_prodi')->on('prodi')->onDelete('cascade');
             $table->foreign('id_ruang')->references('id_ruang')->on('ruang')->onDelete('cascade');
-            $table->foreign('id_tahun')->references('id_tahun')->on('tahunajaran')->onDelete('cascade');
+            $table->foreign('id_tahun')->references('id_tahun')->on('tahun_ajaran')->onDelete('cascade');
         });
     }
 
