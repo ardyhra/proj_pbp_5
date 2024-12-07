@@ -24,6 +24,27 @@
 </head>
 <body class="bg-gray-100 font-sans">
 
+    @php
+        $menus = [
+            (object) [
+                "title" => "Dasboard",
+                "path" => "dashboard-mhs",
+            ],
+            (object) [
+                "title" => "Persetujuan IRS",
+                "path" => "pengisianirs-mhs",
+            ],
+            (object) [
+                "title" => "Rekap Mahasiswa",
+                "path" => "irs-mhs",
+            ],
+            (object) [
+                "title" => "KHS",
+                "path" => "dashboard-mhs",
+            ]
+
+        ];
+    @endphp
     <!-- Header -->
     <header class="bg-gradient-to-r from-sky-500 to-blue-600 text-white p-4 flex justify-between items-center">
         <div class="flex items-center space-x-3">
@@ -56,7 +77,15 @@
                 <a href="{{ route('login') }}" class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
             </div>
             <nav class="space-y-4">
-                <a href="{{ url('/dashboard-mhs') }}"
+                {{-- active : bg-sky-800 rounded-xl text-white hover:bg-opacity-70 --}}
+                {{-- passive : bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white --}}
+                @foreach ($menus as $menu)
+                <a href="{{ url($menu->path) }}"
+                   class="flex items-center space-x-2 p-2 {{ Str::startsWith(request()->path(), $menu->path) ? 'bg-sky-800 rounded-xl text-white hover:bg-opacity-70' : 'bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white' }}">
+                    <span>{{$menu->title}}</span>
+                </a>
+                @endforeach
+                <!-- <a href="{{ url('/dashboard-mhs') }}"
                    class="flex items-center space-x-2 p-2 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">
                     <span>Dashboard</span>
                 </a>
@@ -71,7 +100,7 @@
                 <a href="{{ url('/dashboard-mhs') }}"
                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
                     <span>KHS</span>
-                </a>
+                </a> -->
             </nav>
         </aside>
 

@@ -5,7 +5,7 @@ use App\Models\Mahasiswa;
 use App\Models\Jadwal; 
 use Illuminate\Http\Request;
 
-class DashboardController extends Controller
+class MahasiswaController extends Controller
 {
     public function index()
     {
