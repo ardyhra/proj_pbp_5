@@ -61,6 +61,22 @@
 </head>
 <body class="bg-gray-100 font-sans">
 
+    @php
+        $menus = [
+            (object) [
+                "title" => "Dasboard",
+                "path" => "dashboard-mhs",
+            ],
+            (object) [
+                "title" => "Pengisian IRS",
+                "path" => "pengisianirs-mhs",
+            ],
+            (object) [
+                "title" => "IRS",
+                "path" => "irs-mhs",
+            ]
+        ];
+    @endphp
     <!-- Header -->
     <header class="bg-gradient-to-r from-sky-500 to-blue-600 text-white p-4 flex justify-between items-center">
         <div class="flex items-center space-x-3">
@@ -87,28 +103,20 @@
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
                     style="background-image: url(img/fsm.jpg)">
                 </div>
-                <h2 class="text-lg text-black font-bold">Budi</h2>
-                <p class="text-xs text-gray-800">NIM 24060122120033</p>
+                <h2 class="text-lg text-black font-bold">{{ $mhs->nama }}</h2>
+                <p class="text-xs text-gray-800">NIM {{ $mhs->nim }}</p>
                 <p class="text-sm bg-sky-700 rounded-full px-3 py-1 mt-2 font-semibold">Mahasiswa</p>
                 <a href="{{ route('login') }}" class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
             </div>
             <nav class="space-y-4">
-                <a href="{{ url('/dashboard-mhs') }}"
-                  class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
-                    <span>Dashboard</span>
+                {{-- active : bg-sky-800 rounded-xl text-white hover:bg-opacity-70 --}}
+                {{-- passive : bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white --}}
+                @foreach ($menus as $menu)
+                <a href="{{ url($menu->path) }}"
+                   class="flex items-center space-x-2 p-2 {{ Str::startsWith(request()->path(), $menu->path) ? 'bg-sky-800 rounded-xl text-white hover:bg-opacity-70' : 'bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white' }}">
+                    <span>{{$menu->title}}</span>
                 </a>
-                <a href="{{ url('/pengisianirs-mhs') }}"
-                  class="flex items-center space-x-2 p-2 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">
-                    <span>Pengisian IRS</span>
-                </a>
-                <a href="{{ url('/irs-mhs') }}"
-                  class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
-                    <span>IRS</span>
-                </a>
-                <a href="{{ url('/dashboard-mhs') }}"
-                    class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
-                    <span>KHS</span>
-                </a>
+                @endforeach
             </nav>
         </aside>
 

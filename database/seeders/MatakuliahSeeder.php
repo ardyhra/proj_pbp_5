@@ -10,6 +10,7 @@ class MatakuliahSeeder extends Seeder
     public function run()
     {
         DB::table('matakuliah')->insert([
+
             ['kode_mk' => 'PAIK6101', 'nama_mk' => 'Matematika I', 'plot_semester' => 1, 'sks' => 2, 'jenis' => 'W'],
             ['kode_mk' => 'PAIK6102', 'nama_mk' => 'Dasar Pemrograman', 'plot_semester' => 1, 'sks' => 3, 'jenis' => 'W'],
             ['kode_mk' => 'PAIK6103', 'nama_mk' => 'Dasar Sistem', 'plot_semester' => 1, 'sks' => 3, 'jenis' => 'W'],
@@ -94,6 +95,7 @@ class MatakuliahSeeder extends Seeder
             ['kode_mk' => 'PAST6501', 'nama_mk' => 'Proses Stokhastik', 'plot_semester' => 5, 'sks' => 3, 'jenis' => 'W'],
             ['kode_mk' => 'PAST6502', 'nama_mk' => 'Aljabar Linear Elementer', 'plot_semester' => 5, 'sks' => 3, 'jenis' => 'W'],
             ['kode_mk' => 'PAST6503', 'nama_mk' => 'Statistika Multivariat', 'plot_semester' => 5, 'sks' => 3, 'jenis' => 'W'],
+
 
         ]);
     }

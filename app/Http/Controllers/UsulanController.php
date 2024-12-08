@@ -7,31 +7,33 @@ use App\Models\Ruang;
 use App\Models\tahunajaran;
 use App\Models\UsulanRuangKuliah;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 class UsulanController extends Controller
 {
 
     public function index()
     {
         $tahunAjaranList = TahunAjaran::all();
-
-        // Get list of academic years that have usulan
+    
+        // Dapatkan tahun ajaran yang punya usulan
         $usulanPerTahun = UsulanRuangKuliah::select('id_tahun')
             ->distinct()
-            ->with('tahunAjaran')
             ->get();
-
+    
+        // Filter tahun ajaran agar hanya memuat tahun yang ada usulannya
+        $tahunAjaranList = $tahunAjaranList->whereIn('id_tahun', $usulanPerTahun->pluck('id_tahun'));
+    
         // Ambil semua data usulan dengan relasi
         $usulanList = UsulanRuangKuliah::with('programStudi', 'tahunAjaran')->get();
-
-        $usulanStatuses = UsulanRuangKuliah::select('id_tahun', 'status')
-        ->distinct()
-        ->get()
-        ->groupBy('id_tahun');
-
-        // Kirim semua data ke view
-        return view('ba.daftarusulan', compact('tahunAjaranList', 'usulanPerTahun', 'usulanList', 'usulanStatuses'));
+    
+        // Ambil status usulan per tahun ajaran (jika masih diperlukan)
+        // Namun sekarang status di level tahun ajaran tidak lagi ditampilkan, 
+        // jadi kita bisa abaikan atau hapus pemakaian $usulanStatuses
+        // $usulanStatuses = ... // bisa dihapus jika tidak dipakai
+    
+        return view('ba.daftarusulan', compact('tahunAjaranList', 'usulanList'));
     }
+    
 
 
     public function create()
@@ -75,13 +77,26 @@ class UsulanController extends Controller
 
         // Validate data
         if (empty($data) || empty($id_tahun)) {
-            return response()->json(['message' => 'Data or academic year is missing'], 400);
+            return response()->json(['message' => 'Data atau tahun ajaran tidak boleh kosong.'], 400);
         }
 
         // Check if the usulan for the selected tahun ajaran has status 'disetujui'
         $existingUsulan = UsulanRuangKuliah::where('id_tahun', $id_tahun)->first();
         if ($existingUsulan && $existingUsulan->status == 'disetujui') {
             return response()->json(['message' => 'Usulan telah disetujui dan tidak dapat diubah.'], 400);
+        }
+
+        // Validasi ruang overlap
+        foreach ($data as $id_prodi => $prodiData) {
+            $ruangList = $prodiData['ruang'] ?? [];
+            $overlap = UsulanRuangKuliah::where('id_tahun', $id_tahun)
+                ->whereIn('id_ruang', $ruangList)
+                ->where('id_prodi', '!=', $id_prodi)
+                ->exists();
+
+            if ($overlap) {
+                return response()->json(['message' => 'Beberapa ruang sudah digunakan oleh program studi lain.'], 400);
+            }
         }
 
         // Delete existing usulan for the selected academic year
@@ -102,6 +117,8 @@ class UsulanController extends Controller
         return response()->json(['message' => 'Usulan berhasil disimpan'], 200);
     }
 
+
+
     
 
     public function getProgramStudi(Request $request)
@@ -119,44 +136,76 @@ class UsulanController extends Controller
 
     public function getUsulanData($id_tahun)
     {
-        // Ambil data usulan untuk id_tahun tertentu
         $usulanList = UsulanRuangKuliah::where('id_tahun', $id_tahun)
             ->with('programStudi')
             ->get();
 
-        // Jika tidak ada usulan, kembalikan data kosong dan status 'belum diajukan'
         if ($usulanList->isEmpty()) {
             return response()->json([
                 'usulanData' => [],
-                'status' => 'belum diajukan',
             ]);
         }
 
-        // Group data berdasarkan id_prodi
         $usulanData = [];
-        foreach ($usulanList as $usulan) {
-            $id_prodi = $usulan->id_prodi;
-            $id_ruang = $usulan->id_ruang;
-            $status = $usulan->status;
+        // Kelompokkan per prodi
+        $grouped = $usulanList->groupBy('id_prodi');
+        foreach ($grouped as $id_prodi => $items) {
+            $nama_prodi = $items->first()->programStudi->nama_prodi;
+            $ruang = $items->pluck('id_ruang')->toArray();
+            $status = $items->first()->status ?? 'belum diajukan';
 
-            if (!isset($usulanData[$id_prodi])) {
-                $usulanData[$id_prodi] = [
-                    'nama_prodi' => $usulan->programStudi->nama_prodi,
-                    'ruang' => [],
-                ];
-            }
-
-            $usulanData[$id_prodi]['ruang'][] = $id_ruang;
+            $usulanData[$id_prodi] = [
+                'nama_prodi' => $nama_prodi,
+                'ruang' => $ruang,
+                'status' => $status,
+            ];
         }
-
-        // Ambil status usulan (diasumsikan semua usulan pada tahun ajaran yang sama memiliki status yang sama)
-        $status = $usulanList->first()->status ?? 'belum__diajukan';
 
         return response()->json([
             'usulanData' => $usulanData,
-            'status' => $status,
         ]);
     }
+
+    public function storeProdi(Request $request)
+    {
+        $validated = $request->validate([
+            'id_tahun' => 'required',
+            'id_prodi' => 'required',
+            'ruang' => 'array'
+        ]);
+
+        $id_tahun = $validated['id_tahun'];
+        $id_prodi = $validated['id_prodi'];
+        $ruangList = $validated['ruang'] ?? [];
+
+        // Cek status prodi, jika disetujui, tolak perubahan
+        $existingUsulan = UsulanRuangKuliah::where('id_tahun', $id_tahun)
+            ->where('id_prodi', $id_prodi)
+            ->first();
+
+        if ($existingUsulan && $existingUsulan->status == 'disetujui') {
+            return response()->json(['message' => 'Usulan prodi ini telah disetujui dan tidak dapat diubah.'], 400);
+        }
+
+        // Hapus usulan sebelumnya untuk prodi ini
+        UsulanRuangKuliah::where('id_tahun', $id_tahun)
+            ->where('id_prodi', $id_prodi)
+            ->delete();
+
+        // Simpan data baru
+        foreach ($ruangList as $id_ruang) {
+            UsulanRuangKuliah::create([
+                'id_prodi' => $id_prodi,
+                'id_ruang' => $id_ruang,
+                'id_tahun' => $id_tahun,
+            ]);
+        }
+
+        return response()->json(['message' => 'Usulan prodi berhasil disimpan.']);
+    }
+
+
+
 
     public function getUsulanByTahun($id_tahun)
     {
@@ -165,10 +214,14 @@ class UsulanController extends Controller
             ->get()
             ->groupBy('id_prodi')
             ->map(function ($items, $id_prodi) {
+                $jumlah_ruang = $items->count();
+                $program_studi = $items->first()->programStudi->nama_prodi;
+                $status = $items->first()->status ?? 'belum diajukan'; // Pastikan ambil status disini
                 return [
                     'id_prodi' => $id_prodi,
-                    'program_studi' => $items->first()->programStudi->nama_prodi,
-                    'jumlah_ruang' => $items->count()
+                    'program_studi' => $program_studi,
+                    'jumlah_ruang' => $jumlah_ruang,
+                    'status' => $status // Tambahkan status disini
                 ];
             })
             ->values();
@@ -190,11 +243,14 @@ class UsulanController extends Controller
                     'id_ruang' => $usulan->id_ruang,
                     'kapasitas' => $usulan->ruang->kapasitas ?? ''
                 ];
-            })
+            }),
+            'status' => $usulanList->first()->status ?? 'belum diajukan', // Tambahkan ini
         ];
+            
 
         return response()->json($data);
     }
+
 
     public function updateStatusUsulan(Request $request, $id_tahun)
     {
@@ -207,6 +263,21 @@ class UsulanController extends Controller
 
         return response()->json(['message' => 'Status usulan berhasil diperbarui.']);
     }
+
+    public function updateStatusUsulanProdi(Request $request, $id_tahun, $id_prodi)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:belum diajukan,diajukan,disetujui,ditolak',
+        ]);
+
+        UsulanRuangKuliah::where('id_tahun', $id_tahun)
+            ->where('id_prodi', $id_prodi)
+            ->update(['status' => $validated['status']]);
+
+        return response()->json(['message' => 'Status usulan prodi berhasil diperbarui.']);
+    }
+
+
 
 
 }

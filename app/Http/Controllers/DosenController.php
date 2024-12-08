@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\irs;
 use App\Models\dosen;
 use App\Models\jadwal;
-use App\Models\mahasiswa;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use PhpParser\Node\Expr\Clone_;
 use Illuminate\Support\Facades\DB;

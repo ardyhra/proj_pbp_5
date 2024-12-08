@@ -54,8 +54,8 @@
                 <a href="/dashboard-dekan" class="block py-2 px-3 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">Dashboard</a>
                 <a href="/usulanruang" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Usulan Ruang Kuliah</a>
                 <a href="/usulanjadwal" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Usulan Jadwal Kuliah</a>
-                <a href="/aturgelombang" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Atur Gelombang IRS</a>
-                <!-- Tombol Switch Role -->
+                {{-- <a href="/aturgelombang" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Atur Gelombang IRS</a>
+                <!-- Tombol Switch Role --> --}}
                 @if(Auth::user()->pembimbing_akademik)
                 <div class="mt-6">
                     <a href="{{ route('switch.role') }}" class="flex items-center justify-center space-x-2 p-2 bg-green-500 rounded-xl text-white hover:bg-green-600">

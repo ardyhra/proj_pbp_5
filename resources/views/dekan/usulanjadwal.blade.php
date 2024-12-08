@@ -55,7 +55,7 @@
                 <a href="/dashboard-dekan" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Dashboard</a>
                 <a href="/usulanruang" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Usulan Ruang Kuliah</a>
                 <a href="/usulanjadwal" class="block py-2 px-3 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">Usulan Jadwal Kuliah</a>
-                <a href="/aturgelombang" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Atur Gelombang IRS</a>
+                {{-- <a href="/aturgelombang" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Atur Gelombang IRS</a> --}}
             </nav>
         </aside>
 
