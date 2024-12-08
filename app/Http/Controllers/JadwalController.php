@@ -38,16 +38,26 @@ class JadwalController extends Controller
     // Menampilkan form untuk menambah jadwal
     public function create(Request $request)
     {
-        // Cek jika id_tahun dan id_prodi ada di query string
-        $id_tahun = $request->query('id_tahun'); // Pastikan menggunakan query() untuk menangkap parameter dari URL
+        $id_tahun = $request->query('id_tahun');
         $id_prodi = $request->query('id_prodi');
-        $matakuliah = Matakuliah::all();  // Ambil data matakuliah
-        $ruang = Ruang::all();
+
         if (!$id_tahun || !$id_prodi) {
             return redirect()->route('jadwal.index')->withErrors('id_tahun atau id_prodi tidak ditemukan');
         }
-        // Kirim data ke view
-        return view('jadwal.create', compact('matakuliah', 'ruang','id_tahun', 'id_prodi'));
+
+        // Ambil matakuliah - Asumsi matakuliah semua bisa dipilih atau Anda bisa filter sesuai prodi
+        $matakuliah = Matakuliah::all();
+
+        // Ambil ruang yang disetujui dari usulan_ruang_kuliah
+        $ruang = DB::table('usulan_ruang_kuliah')
+            ->join('ruang', 'usulan_ruang_kuliah.id_ruang', '=', 'ruang.id_ruang')
+            ->where('usulan_ruang_kuliah.id_prodi', $id_prodi)
+            ->where('usulan_ruang_kuliah.id_tahun', $id_tahun)
+            ->where('usulan_ruang_kuliah.status', 'disetujui')
+            ->select('ruang.id_ruang')
+            ->get();
+
+        return view('jadwal.create', compact('matakuliah', 'ruang', 'id_tahun', 'id_prodi'));
     }
     
     function generateIdJadwal($id_tahun, $id_prodi)
@@ -71,7 +81,6 @@ class JadwalController extends Controller
     //COBA STORE
     public function store(Request $request)
     {
-        // Validasi input
         $request->validate([
             'kode_mk' => 'required',
             'kelas' => 'required',
@@ -82,23 +91,43 @@ class JadwalController extends Controller
             'kuota' => 'required',
         ]);
 
-        // Ambil id_tahun dan id_prodi
         $id_tahun = $request->id_tahun;
         $id_prodi = $request->id_prodi;
 
-        // Ambil ID terakhir yang ada di database berdasarkan id_tahun dan id_prodi
+        // Cek bentrok jadwal
+        $hari = $request->hari;
+        $id_ruang = $request->id_ruang;
+        $waktu_mulai = $request->waktu_mulai;
+        $waktu_selesai = $request->waktu_selesai;
+
+        $conflict = Jadwal::where('id_tahun', $id_tahun)
+            ->where('id_prodi', $id_prodi)
+            ->where('hari', $hari)
+            ->where('id_ruang', $id_ruang)
+            ->where(function($query) use ($waktu_mulai, $waktu_selesai) {
+                $query->where(function($q) use ($waktu_mulai, $waktu_selesai) {
+                    // Jadwal lama dimulai sebelum jadwal baru selesai
+                    // dan jadwal lama selesai setelah jadwal baru mulai
+                    $q->where('waktu_mulai', '<', $waktu_selesai)
+                    ->where('waktu_selesai', '>', $waktu_mulai);
+                });
+            })
+            ->exists();
+
+        if ($conflict) {
+            return redirect()->back()->withErrors('Terjadi bentrok jadwal. Silakan pilih waktu atau ruang lain.');
+        }
+
+        // Generate ID Jadwal baru
         $lastJadwal = Jadwal::where('id_tahun', $id_tahun)
                             ->where('id_prodi', $id_prodi)
                             ->orderBy('id_jadwal', 'desc')
                             ->first();
-
-        // Generate ID Jadwal baru
-        $lastId = $lastJadwal ? (int) substr($lastJadwal->id_jadwal, -3) : 100;  // ambil 3 digit terakhir
+        $lastId = $lastJadwal ? (int) substr($lastJadwal->id_jadwal, -3) : 100;
         $newId = $id_tahun . $id_prodi . str_pad($lastId + 1, 3, '0', STR_PAD_LEFT);
 
-        // Simpan jadwal ke database
         Jadwal::create([
-            'id_jadwal' => $newId,  // Gunakan ID baru yang sudah dihitung
+            'id_jadwal' => $newId,
             'id_tahun' => $id_tahun,
             'id_prodi' => $id_prodi,
             'kode_mk' => $request->kode_mk,
@@ -110,12 +139,9 @@ class JadwalController extends Controller
             'kuota' => $request->kuota,
         ]);
 
-        // Redirect ke halaman jadwal
-        return redirect()->route('jadwal.view', [
-            'id_tahun' => $id_tahun,
-            'id_prodi' => $id_prodi
-        ])->with('success', 'Jadwal berhasil dibuat!');
+        return redirect()->route('jadwal.view', ['id_tahun' => $id_tahun, 'id_prodi' => $id_prodi])->with('success', 'Jadwal berhasil dibuat!');
     }
+
 
     public function checkKodeMk(Request $request)
     {
@@ -156,22 +182,31 @@ class JadwalController extends Controller
 
     public function edit($id)
     {
-        // Ambil data jadwal berdasarkan ID
         $jadwal = Jadwal::find($id);
-        
-        // Ambil data terkait untuk select options (misal mata kuliah, ruang, dll)
-        $matakuliah = Matakuliah::all(); // Atau sesuaikan dengan data yang dibutuhkan
-        $ruang = Ruang::all();
-        $prodi = Programstudi::all(); // Sesuaikan dengan program studi yang ada
-        $tahun_ajaran = TahunAjaran::all();
-        
-        return view('jadwal.edit', compact('jadwal', 'matakuliah', 'ruang', 'prodi', 'tahun_ajaran'));
+        if (!$jadwal) {
+            return redirect()->back()->withErrors('Jadwal tidak ditemukan.');
+        }
+
+        $id_tahun = $jadwal->id_tahun;
+        $id_prodi = $jadwal->id_prodi;
+
+        $matakuliah = Matakuliah::all();
+
+        // Ambil ruang yang disetujui
+        $ruang = DB::table('usulan_ruang_kuliah')
+            ->join('ruang', 'usulan_ruang_kuliah.id_ruang', '=', 'ruang.id_ruang')
+            ->where('usulan_ruang_kuliah.id_prodi', $id_prodi)
+            ->where('usulan_ruang_kuliah.id_tahun', $id_tahun)
+            ->where('usulan_ruang_kuliah.status', 'disetujui')
+            ->select('ruang.id_ruang')
+            ->get();
+
+        return view('jadwal.edit', compact('jadwal', 'matakuliah', 'ruang'));
     }
 
     // Mengupdate jadwal yang sudah ada
     public function update(Request $request, $id)
     {
-        // Validasi input
         $request->validate([
             'kode_mk' => 'required',
             'kelas' => 'required',
@@ -182,10 +217,33 @@ class JadwalController extends Controller
             'kuota' => 'required|integer',
         ]);
 
-        // Cari jadwal yang ingin diedit
         $jadwal = Jadwal::findOrFail($id);
+        $id_tahun = $jadwal->id_tahun;
+        $id_prodi = $jadwal->id_prodi;
 
-        // Update data jadwal
+        $hari = $request->hari;
+        $id_ruang = $request->id_ruang;
+        $waktu_mulai = $request->waktu_mulai;
+        $waktu_selesai = $request->waktu_selesai;
+
+        // Cek bentrok jadwal (kecuali jadwal yang sedang di-update)
+        $conflict = Jadwal::where('id_tahun', $id_tahun)
+            ->where('id_prodi', $id_prodi)
+            ->where('hari', $hari)
+            ->where('id_ruang', $id_ruang)
+            ->where('id_jadwal', '!=', $jadwal->id_jadwal)
+            ->where(function($query) use ($waktu_mulai, $waktu_selesai) {
+                $query->where(function($q) use ($waktu_mulai, $waktu_selesai) {
+                    $q->where('waktu_mulai', '<', $waktu_selesai)
+                    ->where('waktu_selesai', '>', $waktu_mulai);
+                });
+            })
+            ->exists();
+
+        if ($conflict) {
+            return redirect()->back()->withErrors('Terjadi bentrok jadwal. Silakan pilih waktu atau ruang lain.');
+        }
+
         $jadwal->update([
             'kode_mk' => $request->kode_mk,
             'kelas' => $request->kelas,
@@ -196,9 +254,9 @@ class JadwalController extends Controller
             'kuota' => $request->kuota,
         ]);
 
-        return redirect()->route('jadwal.view', ['id_tahun' => $jadwal->id_tahun, 'id_prodi' => $jadwal->id_prodi])
-                        ->with('success', 'Jadwal berhasil diperbarui!');
+        return redirect()->route('jadwal.view', ['id_tahun' => $id_tahun, 'id_prodi' => $id_prodi])->with('success', 'Jadwal berhasil diperbarui!');
     }
+
 
  
 
@@ -222,6 +280,61 @@ class JadwalController extends Controller
         ])->with('success', 'Jadwal berhasil dihapus!');
     }
     
+    public function checkConflict(Request $request) {
+        $id_tahun = $request->input('id_tahun');
+        $id_prodi = $request->input('id_prodi');
+        $id_ruang = $request->input('id_ruang');
+        $hari = $request->input('hari');
+        $waktu_mulai = $request->input('waktu_mulai');
+        $waktu_selesai = $request->input('waktu_selesai');
+        $id_jadwal = $request->input('id_jadwal'); // optional jika untuk edit
+    
+        // Query untuk mengecek bentrok:
+        // Misal logika bentrok: jadwal lain di ruang sama, hari sama, dan jam overlap
+        $query = DB::table('jadwal')
+            ->where('id_tahun', $id_tahun)
+            ->where('id_prodi', $id_prodi)
+            ->where('id_ruang', $id_ruang)
+            ->where('hari', $hari);
+    
+        // Jika sedang edit, exclude jadwal sekarang
+        if ($id_jadwal) {
+            $query->where('id_jadwal', '!=', $id_jadwal);
+        }
+    
+        // Cek overlap waktu: (waktu_mulai < jadwal_lain.waktu_selesai) AND (waktu_selesai > jadwal_lain.waktu_mulai)
+        $bentrok = $query->where(function($q) use ($waktu_mulai, $waktu_selesai) {
+            $q->where('waktu_mulai', '<', $waktu_selesai)
+              ->where('waktu_selesai', '>', $waktu_mulai);
+        })->exists();
+    
+        return response()->json(['conflict' => $bentrok]);
+    }
+    
+    public function checkDuplicate(Request $request)
+    {
+        $id_tahun = $request->input('id_tahun');
+        $id_prodi = $request->input('id_prodi');
+        $kode_mk = $request->input('kode_mk');
+        $kelas = $request->input('kelas');
+        $id_jadwal = $request->input('id_jadwal'); // optional jika untuk edit
+
+        $query = DB::table('jadwal')
+            ->where('id_tahun', $id_tahun)
+            ->where('id_prodi', $id_prodi)
+            ->where('kode_mk', $kode_mk)
+            ->where('kelas', $kelas);
+
+        // Jika edit, exclude jadwal saat ini
+        if ($id_jadwal) {
+            $query->where('id_jadwal', '!=', $id_jadwal);
+        }
+
+        $exists = $query->exists();
+
+        return response()->json(['duplicate' => $exists]);
+    }
+
 
 
     // public function manajemenJadwal(Request $request)

@@ -196,7 +196,8 @@ Route::put('/jadwal/update/{id}', [JadwalController::class, 'update'])->name('ja
 // Route untuk menghapus jadwal
 Route::delete('/jadwal/{id}', [JadwalController::class, 'destroy'])->name('jadwal.destroy');
 
-
+Route::post('/jadwal/check-conflict', [JadwalController::class, 'checkConflict'])->name('jadwal.check-conflict');
+Route::post('/jadwal/check-duplicate', [JadwalController::class, 'checkDuplicate'])->name('jadwal.check-duplicate');
 
 // ========================================================================================================================
 
