@@ -14,6 +14,8 @@
     
     <!-- Bisa menambahkan lebih banyak CSS atau JavaScript jika diperlukan -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 </head>
 <body class="bg-gray-100 font-sans">
@@ -48,12 +50,6 @@
                     <a href="{{ url('/manajemen-jadwal-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
                         <span>Manajemen Jadwal</span>
                     </a>
-                    <a href="{{ url('/monitoring-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
-                        <span>Monitoring</span>
-                    </a>
-                    {{-- <a href="{{ url('/konsultasi-kaprodi') }}" class="flex items-center space-x-2 p-2 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">
-                        <span>Konsultasi</span>
-                    </a> --}}
                 </nav>
             </aside>
 

@@ -15,7 +15,7 @@ class tahunajaran extends Model
     public $incrementing = false;
     public $timestamps = false;
 
-
+    protected $fillable = ['id_tahun','tahun_ajaran'];
     // Relasi ke model Jadwal
     public function jadwal()
     {

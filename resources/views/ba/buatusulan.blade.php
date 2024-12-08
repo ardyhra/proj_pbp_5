@@ -54,8 +54,8 @@
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
                      style="background-image: url(img/fsm.jpg)">
                 </div>
-                <h2 class="text-lg text-black font-bold">Ucok, S.Kom</h2>
-                <p class="text-xs text-gray-800">NIP 002</p>
+                <h2 class="text-lg text-black font-bold">Budi, S.Kom</h2>
+                <p class="text-xs text-gray-800">NIP 198611152023101001</p>
                 <p class="text-sm bg-sky-700 rounded-full px-3 py-1 mt-2 font-semibold">Bagian Akademik</p>
                 <a href="{{ route('login') }}" class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
             </div>
@@ -174,9 +174,9 @@
             </div>
 
             <!-- Tombol Simpan di Paling Bawah -->
-            <div class="flex justify-end mt-6">
+            {{-- <div class="flex justify-end mt-6">
                 <button onclick="simpanUsulan()" class="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">Simpan Usulan</button>
-            </div>
+            </div> --}}
         </main>
     </div>
 
@@ -191,50 +191,84 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
+        let currentProdiId = null;
+
         const programStudiRuang = {};
         let currentStatus = 'belum diajukan';
     
         function tambahRuang() {
-            if (currentStatus === 'disetujui') {
-                alert('Usulan telah disetujui dan tidak dapat diubah.');
-                return;
-            }
-    
             const programStudiId = $('#program-studi').val();
-            const programStudiText = $('#program-studi option:selected').text();
-    
-            const ruangKuliahCheckboxes = document.querySelectorAll('input[name="ruang-kuliah"]:checked');
-            const selectedRuang = Array.from(ruangKuliahCheckboxes).map(checkbox => checkbox.value);
-    
             if (!programStudiId) {
                 alert('Silakan pilih program studi.');
                 return;
             }
-    
+
+            // Cek status prodi
+            const prodiStatus = programStudiRuang[programStudiId]?.status || 'belum diajukan';
+            if (prodiStatus === 'disetujui') {
+                alert('Usulan prodi ini telah disetujui dan tidak dapat diubah.');
+                return;
+            }
+
+            // Lanjutkan logika menambah ruang seperti biasa
+            const programStudiText = $('#program-studi option:selected').text();
+            const ruangKuliahCheckboxes = document.querySelectorAll('input[name="ruang-kuliah"]:checked');
+            const selectedRuang = Array.from(ruangKuliahCheckboxes).map(checkbox => checkbox.value);
+
             if (selectedRuang.length === 0) {
                 alert('Silakan pilih minimal satu ruang kuliah.');
                 return;
             }
-    
+
+            // Validasi overlap
+            const ruangOverlap = [];
+            selectedRuang.forEach(ruang => {
+                for (const prodiId in programStudiRuang) {
+                    if (prodiId !== programStudiId && programStudiRuang[prodiId].ruang.includes(ruang)) {
+                        ruangOverlap.push({
+                            ruang: ruang,
+                            prodi: programStudiRuang[prodiId].nama_prodi
+                        });
+                    }
+                }
+            });
+
+            if (ruangOverlap.length > 0) {
+                const overlapMessage = ruangOverlap
+                    .map(item => `Ruang ${item.ruang} sudah ditambahkan ke ${item.prodi}`)
+                    .join('\n');
+                alert(`Ruang berikut tidak dapat ditambahkan:\n${overlapMessage}`);
+                return;
+            }
+
             if (!programStudiRuang[programStudiId]) {
                 programStudiRuang[programStudiId] = {
                     nama_prodi: programStudiText,
-                    ruang: []
+                    ruang: [],
+                    status: 'belum diajukan'
                 };
             }
-    
+
             selectedRuang.forEach(ruangKuliah => {
                 if (!programStudiRuang[programStudiId].ruang.includes(ruangKuliah)) {
                     programStudiRuang[programStudiId].ruang.push(ruangKuliah);
                 }
             });
-    
+
             updateJumlahRuang(programStudiId);
             updateDetailTabel(programStudiId);
-    
+
+            // Nonaktifkan checkbox untuk ruang yang sudah ditambahkan
+            selectedRuang.forEach(ruang => {
+                document.querySelector(`input[name="ruang-kuliah"][value="${ruang}"]`).disabled = true;
+            });
+
             // Reset checkbox setelah menambahkan
             document.querySelectorAll('input[name="ruang-kuliah"]').forEach(checkbox => checkbox.checked = false);
         }
+
+
+
     
         function updateJumlahRuang(programStudiId) {
             const jumlah = programStudiRuang[programStudiId]?.ruang.length || 0;
@@ -250,13 +284,43 @@
                 alert('Tidak ada usulan ruang kuliah untuk program studi ini.');
                 return;
             }
-    
+
+            currentProdiId = programStudiId; // Simpan prodi yang sedang ditampilkan
+
             document.getElementById('detail-ruang-container').style.display = 'block';
             const namaProdi = programStudiRuang[programStudiId].nama_prodi;
             document.getElementById('program-studi-judul').textContent = `Detail Ruang Kuliah untuk Program Studi ${namaProdi}`;
             updateDetailTabel(programStudiId);
+
+            // Tampilkan aksi setelah detail muncul (termasuk tombol simpan)
+            showProdiActions(programStudiId);
         }
-    
+
+        function showProdiActions(programStudiId) {
+            let actionContainer = document.getElementById('detail-prodi-action-container');
+            if (!actionContainer) {
+                actionContainer = document.createElement('div');
+                actionContainer.id = 'detail-prodi-action-container';
+                actionContainer.className = 'mt-4 flex space-x-4 justify-end';
+                document.getElementById('detail-ruang-container').appendChild(actionContainer);
+            }
+            actionContainer.innerHTML = '';
+
+            const prodiStatus = programStudiRuang[programStudiId]?.status || 'belum diajukan';
+
+            // Jika belum disetujui, maka tampilkan tombol simpan usulan
+            if (prodiStatus !== 'disetujui') {
+                actionContainer.innerHTML += `
+                    <button onclick="simpanUsulan()" class="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">Simpan Usulan</button>
+                `;
+            }
+
+            // Jika status disetujui, bisa beri keterangan
+            if (prodiStatus === 'disetujui') {
+                actionContainer.innerHTML = `<span class="text-gray-700 font-semibold">Usulan prodi ini telah disetujui.</span>`;
+            }
+        }
+
         function updateDetailTabel(programStudiId) {
             const detailRuangContainer = document.getElementById('detail-ruang');
             detailRuangContainer.innerHTML = '';
@@ -279,103 +343,125 @@
                 alert('Usulan telah disetujui dan tidak dapat diubah.');
                 return;
             }
-    
+
             const index = programStudiRuang[programStudiId].ruang.indexOf(ruang);
             if (index !== -1) {
                 programStudiRuang[programStudiId].ruang.splice(index, 1);
+
+                // Aktifkan kembali checkbox untuk ruang yang dihapus
+                document.querySelector(`input[name="ruang-kuliah"][value="${ruang}"]`).disabled = false;
+
                 updateJumlahRuang(programStudiId);
                 updateDetailTabel(programStudiId);
             }
         }
+
     
         function simpanUsulan() {
-            if (currentStatus === 'disetujui') {
-                alert('Usulan telah disetujui dan tidak dapat diubah.');
+            if (!currentProdiId) {
+                alert('Tidak ada prodi yang dipilih.');
                 return;
             }
-    
+
+            const prodiStatus = programStudiRuang[currentProdiId]?.status || 'belum diajukan';
+            if (prodiStatus === 'disetujui') {
+                alert('Usulan prodi ini telah disetujui dan tidak dapat diubah.');
+                return;
+            }
+
             const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
             if (!csrfTokenMeta) {
                 alert('CSRF token tidak ditemukan.');
                 return;
             }
-    
+
             const csrfToken = csrfTokenMeta.getAttribute('content');
             const id_tahun = document.getElementById('tahun-ajaran').value;
-    
+
             if (!id_tahun) {
                 alert('Silakan pilih tahun ajaran.');
                 return;
             }
-    
-            fetch('/buatusulan', {
+
+            const prodiData = programStudiRuang[currentProdiId] || { ruang: [] };
+            const dataToSave = {
+                id_tahun: id_tahun,
+                id_prodi: currentProdiId,
+                ruang: prodiData.ruang
+            };
+
+            fetch('/buatusulan-prodi', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken,
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({
-                    data: programStudiRuang,
-                    id_tahun: id_tahun
-                })
+                body: JSON.stringify(dataToSave)
             })
             .then(response => {
                 if (response.ok) {
-                    alert('Usulan ruang kuliah berhasil disimpan.');
-                    // Reset data if needed
+                    alert('Usulan prodi berhasil disimpan.');
                 } else {
                     return response.json().then(data => {
-                        alert('Gagal menyimpan usulan: ' + (data.message || ''));
+                        alert('Gagal menyimpan usulan prodi: ' + (data.message || ''));
                     });
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat menyimpan usulan.');
+                alert('Terjadi kesalahan saat menyimpan usulan prodi.');
             });
         }
+
+
     
         function loadUsulanData(id_tahun) {
             fetch(`/get-usulan-data/${id_tahun}`)
                 .then(response => response.json())
                 .then(data => {
-                    currentStatus = data.status;
                     const usulanData = data.usulanData;
-    
+
                     // Reset programStudiRuang
                     for (const prodiId in programStudiRuang) {
                         delete programStudiRuang[prodiId];
                         updateJumlahRuang(prodiId);
                     }
-    
-                    // Load data usulan
+
+                    const ruangTerpakai = new Map();
+
+                    // Load data usulan per prodi
                     for (const prodiId in usulanData) {
                         const prodiData = usulanData[prodiId];
                         programStudiRuang[prodiId] = {
                             nama_prodi: prodiData.nama_prodi,
                             ruang: prodiData.ruang,
+                            status: prodiData.status // Simpan status per prodi
                         };
+
+                        prodiData.ruang.forEach(ruang => {
+                            ruangTerpakai.set(ruang, prodiData.nama_prodi);
+                        });
                         updateJumlahRuang(prodiId);
                     }
-    
-                    // Update UI berdasarkan status
-                    if (currentStatus === 'disetujui') {
-                        document.getElementById('program-studi').disabled = true;
-                        document.querySelectorAll('input[name="ruang-kuliah"]').forEach(checkbox => checkbox.disabled = true);
-                        document.querySelector('button[onclick="tambahRuang()"]').disabled = true;
-                        document.querySelector('button[onclick="simpanUsulan()"]').disabled = true;
-                    } else {
-                        document.getElementById('program-studi').disabled = false;
-                        document.querySelectorAll('input[name="ruang-kuliah"]').forEach(checkbox => checkbox.disabled = false);
-                        document.querySelector('button[onclick="tambahRuang()"]').disabled = false;
-                        document.querySelector('button[onclick="simpanUsulan()"]').disabled = false;
-                    }
+
+                    // Nonaktifkan checkbox untuk ruang yang sudah digunakan prodi lain
+                    document.querySelectorAll('input[name="ruang-kuliah"]').forEach(checkbox => {
+                        if (ruangTerpakai.has(checkbox.value)) {
+                            checkbox.disabled = true;
+                            checkbox.title = `Ruang sudah ditambahkan ke ${ruangTerpakai.get(checkbox.value)}`;
+                        } else {
+                            checkbox.disabled = false;
+                            checkbox.title = '';
+                        }
+                    });
                 })
                 .catch(error => {
                     console.error('Error fetching usulan data:', error);
                 });
         }
+
+
     
         // Event listener untuk perubahan tahun ajaran
         document.getElementById('tahun-ajaran').addEventListener('change', function() {
