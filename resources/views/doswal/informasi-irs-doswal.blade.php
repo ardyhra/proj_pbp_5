@@ -175,7 +175,7 @@
                         <tr>
                             <td class="p-4">{{$loop->iteration}}</td>
                             <td>{{$row->kode_mk}}</td>
-                            <td>{{$row->nama}}</td>
+                            <td>{{$row->nama_mk}}</td>
                             <td>{{$row->sks}}</td>
                             <td>{{$row->kelas}}</td>
                             <td>{{$row->id_ruang}}</td>
