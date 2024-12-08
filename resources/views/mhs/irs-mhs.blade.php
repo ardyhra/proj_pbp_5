@@ -79,7 +79,7 @@
       </aside>
 
     <!-- Main Content -->
-    <main class="w-full lg:w-4/5 lg:ml-auto p-8">
+    <main class="w-full lg:w-8/5 lg:ml-auto p-8">
       <!-- <span class="toggle-btn text-2xl cursor-pointer mb-4 lg:hidden" onclick="toggleSidebar()">&#9776;</span> -->
       
       <h1 class="text-4xl font-bold mb-6">Isian Rencana Semester (IRS)</h1>
@@ -175,7 +175,7 @@
                 <tr>
                   <td class="p-1 border text-center">${index + 1}</td>
                   <td class="p-1 border text-left">${irs.kode_mk}</td>
-                  <td class="p-1 border text-left">${irs.nama}</td>
+                  <td class="p-1 border text-left">${irs.nama_mk}</td>
                   <td class="p-1 border text-left">${irs.hari}, <br> ${waktuMulai}-${waktuSelesai}</td>
                   <td class="p-1 border text-center">${irs.kelas}</td>
                   <td class="p-1 border text-center">${irs.sks}</td>
