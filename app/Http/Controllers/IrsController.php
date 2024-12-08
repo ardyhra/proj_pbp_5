@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\dosen;
+use App\Models\irs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -210,4 +211,72 @@ class IrsController extends Controller
     }
 
 
+    public function getIrsDetail(Request $request)
+    {
+        $nim = session('nim');
+        $id_tahun = $request->id_tahun;
+
+        // Ambil data IRS berdasarkan nim dan tahun ajaran yang dipilih
+        $irs = irs::where('nim', $nim)
+            ->join('jadwal', 'irs.id_jadwal', '=', 'jadwal.id_jadwal')
+            ->join('matakuliah', 'jadwal.kode_mk', '=', 'matakuliah.kode_mk')
+            ->join('pengampu', 'matakuliah.kode_mk', '=', 'pengampu.kode_mk')
+            ->join('dosen', 'pengampu.nidn', '=', 'dosen.nidn')
+            ->where('jadwal.id_tahun', $id_tahun)
+            ->orderBy('jadwal.id_jadwal', 'asc')
+            ->select(
+                'irs.status',
+                DB::raw("
+                    CASE jadwal.hari
+                        WHEN 1 THEN 'Senin'
+                        WHEN 2 THEN 'Selasa'
+                        WHEN 3 THEN 'Rabu'
+                        WHEN 4 THEN 'Kamis'
+                        WHEN 5 THEN 'Jumat'
+                        WHEN 6 THEN 'Sabtu'
+                        WHEN 7 THEN 'Minggu'
+                        ELSE 'Tidak Diketahui'
+                    END AS hari
+                "),
+                'jadwal.waktu_mulai',
+                'jadwal.waktu_selesai',
+                'jadwal.kelas',
+                DB::raw("
+                    CASE jadwal.id_ruang
+                        WHEN '0000' THEN 'Lapangan Stadion UNDIP'
+                        ELSE jadwal.id_ruang
+                    END AS id_ruang
+                "),
+                'matakuliah.kode_mk',
+                'matakuliah.nama as nama_mk',
+                'matakuliah.sks',
+                'dosen.nama')
+            ->get();
+            
+        // Mengubah data $irs menjadi array dengan format yang diinginkan
+        $array_irs = [];
+        foreach ($irs as $ir) {
+            // Periksa apakah mata kuliah sudah ada dalam array
+            if (!isset($array_irs[$ir->kode_mk])) {
+                // Jika mata kuliah belum ada dalam array, buat entri baru
+                $array_irs[$ir->kode_mk] = [
+                    'status' => $ir->status,
+                    'hari' => $ir->hari,
+                    'waktu_mulai' => $ir->waktu_mulai,
+                    'waktu_selesai' => $ir->waktu_selesai,
+                    'kelas' => $ir->kelas,
+                    'id_ruang' => $ir->id_ruang,
+                    'kode_mk' => $ir->kode_mk,
+                    'nama' => $ir->nama_mk,
+                    'sks' => $ir->sks,
+                    'dosen' => [] // Menyimpan dosen sebagai array
+                ];
+            }
+            // Tambahkan dosen ke dalam array dosen
+            $array_irs[$ir->kode_mk]['dosen'][] = $ir->nama;
+        }
+
+        // Mengembalikan data dalam format JSON
+        return response()->json(['irs' => array_values($array_irs)]);
+    }
 }

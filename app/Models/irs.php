@@ -18,7 +18,7 @@ class irs extends Model
     // Relasi ke Mahasiswa
     public function mahasiswa()
     {
-        return $this->belongsTo(mahasiswa::class,'nim', 'nim');
+        return $this->belongsTo(Mahasiswa::class,'nim', 'nim');
     }
     
     public function jadwal()
