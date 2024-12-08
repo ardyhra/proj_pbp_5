@@ -84,7 +84,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="w-full lg:w-8/5 lg:ml-auto p-8">
+        <main id="sidebar" class="w-full lg:w-8/5 lg:ml-auto p-8">
             <h1 class="text-4xl font-bold mb-2">Dashboard</h1>
             <div class="grid grid-cols-4 gap-4 p-4 bg-white rounded-lg">
                 <div class="col-span-4">
@@ -117,7 +117,7 @@
                 </div>
             </div> 
 
-            <!-- Informasi Perubahan Jadwal -->
+            <!-- Informasi Riwayat Status -->
             <div class="mt-6 p-4 bg-white rounded-lg shadow-lg">
                 <div>
                     <h2 class="text-2xl font-bold mb-2">Riwayat Status</h2>
