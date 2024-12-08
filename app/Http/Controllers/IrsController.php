@@ -166,7 +166,7 @@ class IrsController extends Controller
         ->join('matakuliah as m', 'j.kode_mk', '=', 'm.kode_mk')
         ->select(
             'm.kode_mk',
-            'm.nama',
+            'm.nama_mk',
             'm.sks',
             'j.kelas',
             'r.id_ruang',
