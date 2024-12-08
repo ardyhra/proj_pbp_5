@@ -13,7 +13,11 @@ class irs extends Model
     protected $table = 'irs';
     public $incrementing = false;
     protected $keyType = 'string';
-
+    protected $fillable = [
+        'nim',
+        'id_jadwal',
+        'status',
+    ];
 
     // Relasi ke Mahasiswa
     public function mahasiswa()

@@ -279,4 +279,35 @@ class IrsController extends Controller
         // Mengembalikan data dalam format JSON
         return response()->json(['irs' => array_values($array_irs)]);
     }
+
+    public function tambahIRS(Request $request)
+    {
+        // Validasi data yang diterima (optional)
+        $request->validate([
+            'matakuliah_terdaftar' => 'required|array',
+            'matakuliah_terdaftar.*.nim' => 'required|string',
+            'matakuliah_terdaftar.*.id_jadwal' => 'required|string',
+            'matakuliah_terdaftar.*.status' => 'required|string',
+        ]);
+
+        // Menyimpan data IRS yang diterima
+        $data = $request->input('matakuliah_terdaftar'); // Ambil array matakuliah_terdaftar
+
+        // Insert data ke dalam tabel IRS
+        try {
+            foreach ($data as $item) {
+                IRS::create([
+                    'nim' => $item['nim'],
+                    'id_jadwal' => $item['id_jadwal'],
+                    'status' => $item['status'],
+                ]);
+            }
+            return response()->json(['success' => true, 'message' => 'IRS berhasil disimpan!']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
+
+        // Kembalikan respon sukses
+        return response()->json(['success' => true, 'message' => 'IRS berhasil disimpan!']);
+    }
 }
