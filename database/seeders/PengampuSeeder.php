@@ -45,8 +45,10 @@ class PengampuSeeder extends Seeder
             ['nidn' => '0024057906', 'kode_mk' => 'PAIK6203'],
             ['nidn' => '0020048104', 'kode_mk' => 'PAIK6204'],
             ['nidn' => '0005077005', 'kode_mk' => 'PAIK6204'],
+            ['nidn' => '0012027907', 'kode_mk' => 'UUW00004'],
             ['nidn' => '0012027907', 'kode_mk' => 'UUW00006'],
             ['nidn' => '0005077005', 'kode_mk' => 'UUW00006'],
+            ['nidn' => '0005077005', 'kode_mk' => 'UUW00011'],
 
             // Plot Semester 3
             ['nidn' => '0014098003', 'kode_mk' => 'PAIK6301'],
