@@ -20,4 +20,9 @@ class matakuliah extends Model
     {
         return $this->hasMany(jadwal::class, 'kode_mk', 'kode_mk');
     }
+
+    public function prodi()
+    {
+        return $this->belongsTo(ProgramStudi::class, 'id_prodi', 'id_prodi');
+    }
 }

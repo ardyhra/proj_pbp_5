@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('matakuliah', function (Blueprint $table) {
             $table->string('kode_mk',10)->primary();
-            $table->string('nama', 50);
+            $table->string('nama_mk', 50);
             $table->integer('sks');
             $table->integer('plot_semester');
             $table->string('jenis', 1);

@@ -44,4 +44,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Misalkan user memiliki relasi dengan Prodi
+    public function prodi() {
+        return $this->belongsTo(Programstudi::class, 'idprodi');
+    }
 }
