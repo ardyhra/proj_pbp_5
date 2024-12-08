@@ -6,6 +6,8 @@ use App\Http\Controllers\IrsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 
+use App\Http\Controllers\MahasiswaController;
+
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KaprodiController;
@@ -42,15 +44,25 @@ Route::get('/about', function () {
 // ========================================================================================================================
 
 // Mahasiswa
-Route::get('/dashboard-mhs', function () {
-    return view('mhs/dashboard-mhs');
-})->name('dashboard-mhs');
-Route::get('/pengisianirs-mhs', function () {
-    return view('mhs/pengisianirs-mhs');
-});
-Route::get('/irs-mhs', function () {
-    return view('mhs/irs-mhs');
-});
+// Route::get('/dashboard-mhs', function () {
+//     return view('mhs/dashboard-mhs');
+// })->name('dashboard-mhs');
+// Route::get('/pengisianirs-mhs', function () {
+//     return view('mhs/pengisianirs-mhs');
+// });
+// Route::get('/irs-mhs', function () {
+//     return view('mhs/irs-mhs');
+// });
+
+Route::get('/dashboard-mhs', [MahasiswaController::class, 'dashboard'])->name('dashboard-mhs');
+
+Route::get('/pengisianirs-mhs', [MahasiswaController::class, 'pengisianIrs'])->name('pengisianirs-mhs');
+
+Route::get('/irs-mhs', [MahasiswaController::class, 'irs'])->name('irs-mhs');
+
+Route::get('/irs-mhs/get-irs-detail', [IrsController::class, 'getIrsDetail'])->name('getIrsDetail');
+
+
 
 // ========================================================================================================================
 

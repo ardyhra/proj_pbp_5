@@ -12,7 +12,7 @@ class AccountSeeder extends Seeder
     {
         DB::table('accounts')->insert([
             [
-                // akun CICI AMALIA
+                // akun FITRI ANGGRAINI
                 'email' => 'mahasiswa@example.com',
                 'password' => Hash::make('password123'),
                 'mahasiswa' => true,
@@ -20,7 +20,7 @@ class AccountSeeder extends Seeder
                 'ketua_program_studi' => false,
                 'dekan' => false,
                 'bagian_akademik' => false,
-                'related_id' => '24060121120002',
+                'related_id' => '24060122130051',
             ],
             [
                 // akun pak Guruh
