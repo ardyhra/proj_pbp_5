@@ -134,57 +134,92 @@
                 return;
             }
 
-            // Check if 'kode_mk' exists in the database via AJAX
+            // Setelah cek kode_mk valid
             $.ajax({
-                url: "{{ route('jadwal.check-kode-mk') }}",
+                url: "{{ route('jadwal.check-duplicate') }}",
                 method: "POST",
                 data: {
-                    "_token": "{{ csrf_token() }}",  // Pastikan token CSRF disertakan
-                    "kode_mk": kodeMk
+                    "_token": "{{ csrf_token() }}",
+                    "id_tahun": "{{ $jadwal->id_tahun }}",
+                    "id_prodi": "{{ $jadwal->id_prodi }}",
+                    "kode_mk": kodeMk,
+                    "kelas": kelas,
+                    "id_jadwal": "{{ $jadwal->id_jadwal }}" // untuk edit
                 },
                 success: function(response) {
-                    if (!response.exists) {
+                    if (response.duplicate) {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Kode MK Tidak Valid',
-                            text: 'Kode MK yang Anda masukkan tidak terdaftar.',
+                            title: 'Jadwal Duplikat',
+                            text: 'Kode MK dan Kelas tersebut sudah ada. Silakan pilih kelas lain atau matakuliah lain.',
                         });
                     } else {
-                        // Form is valid, proceed with confirmation and submission
-                        Swal.fire({
-                            title: "Apakah Anda Yakin?",
-                            icon: 'warning',
-                            showDenyButton: true,
-                            showCancelButton: true,
-                            confirmButtonText: "Save",
-                            denyButtonText: "Don't save"
-                        }).then((result) => {
-                                    /* Read more about isConfirmed, isDenied below */
-                            if (result.isConfirmed) {
-                                // Menampilkan SweetAlert sukses setelah data disubmit
+                        // Cek bentrok
+                        $.ajax({
+                            url: "{{ route('jadwal.check-conflict') }}",
+                            method: "POST",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                "id_tahun": "{{ $jadwal->id_tahun }}",
+                                "id_prodi": "{{ $jadwal->id_prodi }}",
+                                "hari": hari,
+                                "id_ruang": ruang,
+                                "waktu_mulai": waktuMulai,
+                                "waktu_selesai": waktuSelesai,
+                                "id_jadwal": "{{ $jadwal->id_jadwal }}" // Untuk mengecualikan jadwal ini sendiri saat edit
+                            },
+                            success: function(conflictResponse) {
+                                if (conflictResponse.conflict) {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Jadwal Bentrok',
+                                        text: 'Jadwal yang Anda pilih bentrok dengan jadwal lain. Silakan pilih waktu atau ruang lain.',
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: "Apakah Anda Yakin?",
+                                        icon: 'warning',
+                                        showDenyButton: true,
+                                        showCancelButton: true,
+                                        confirmButtonText: "Save",
+                                        denyButtonText: "Don't save"
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            Swal.fire({
+                                                title: 'Saved!',
+                                                text: 'Jadwal telah berhasil diperbarui.',
+                                                icon: 'success',
+                                                confirmButtonText: 'OK'
+                                            }).then(() => {
+                                                document.getElementById('updateForm').submit();
+                                            });
+                                        } else if (result.isDenied) {
+                                            Swal.fire("Changes are not saved", "", "info");
+                                        }
+                                    });
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error("Error AJAX check-conflict: ", status, error);
                                 Swal.fire({
-                                    title: 'Saved!',
-                                    text: 'Jadwal telah berhasil diperbarui.',
-                                    icon: 'success',
-                                    confirmButtonText: 'OK'
-                                }).then(() => {
-                                    document.getElementById('updateForm').submit(); // Submit form setelah konfirmasi
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Terjadi kesalahan saat memeriksa jadwal bentrok. Coba lagi.',
                                 });
-                            } else if (result.isDenied) {
-                                Swal.fire("Changes are not saved", "", "info");
                             }
                         });
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error("Error AJAX: ", status, error);  // Log error if AJAX fails
+                    console.error("Error AJAX check-duplicate: ", status, error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
-                        text: 'Terjadi kesalahan saat memeriksa Kode MK. Coba lagi.',
+                        text: 'Terjadi kesalahan saat memeriksa duplikasi jadwal. Coba lagi.',
                     });
                 }
             });
+
 
         });
         
