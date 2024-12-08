@@ -30,15 +30,13 @@
     <!-- Header -->
     <header class="bg-gradient-to-r from-sky-500 to-blue-600 text-white p-4 flex justify-between items-center">
         <div class="flex items-center space-x-3">
-            <!-- Tombol menu untuk membuka sidebar -->
             <button onclick="toggleSidebar()" class="focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" 
+                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 6h16M4 12h16M4 18h16"></path>
+                          d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
-            <!-- Logo dan judul aplikasi -->
             <h1 class="text-xl font-bold">SISKARA</h1>
         </div>
         <nav class="space-x-4">
@@ -50,7 +48,6 @@
     <div class="flex flex-container">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 p-4 text-white sidebar fixed lg:static">
-            <!-- profil -->
             <div class="p-3 pb-1 bg-gray-300 rounded-3xl text-center mb-6">
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
                      style="background-image: url(img/fsm.jpg)">
@@ -58,55 +55,35 @@
                 <h2 class="text-lg text-black font-bold">Budi, S.Kom</h2>
                 <p class="text-xs text-gray-800">NIP 123431431431415</p>
                 <p class="text-sm bg-sky-700 rounded-full px-3 py-1 mt-2 font-semibold">Dekan</p>
-                <a href="{{ route('login') }}" class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
+                <a href="{{ route('login') }}" 
+                   class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
             </div>
             <nav class="space-y-4">
                 <a href="/dashboard-dekan" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Dashboard</a>
                 <a href="/usulanruang" class="block py-2 px-3 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">Usulan Ruang Kuliah</a>
                 <a href="/usulanjadwal" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Usulan Jadwal Kuliah</a>
-                <a href="/aturgelombang" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Atur Gelombang IRS</a>
+                {{-- <a href="/aturgelombang" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Atur Gelombang IRS</a> --}}
             </nav>
         </aside>
 
         <!-- Main Content -->
         <main class="w-full lg:w-4/5 lg:ml-auto p-8">
-            <!-- Judul Halaman -->
             <h1 class="text-3xl font-bold mb-6">Usulan Ruang Kuliah</h1>
 
             <div class="space-y-4">
                 @foreach($tahunAjaranList as $tahunAjaran)
-                    @php
-                        $status = $usulanStatuses[$tahunAjaran->id_tahun] ?? 'belum diajukan';
-
-                        $statusText = [
-                            'belum diajukan' => '⏳ Belum diajukan',
-                            'diajukan' => '🚀 Diajukan',
-                            'disetujui' => '✅ Disetujui',
-                            'ditolak' => '❌ Ditolak'
-                        ][$status];
-
-                        $statusColor = [
-                            'belum diajukan' => 'text-gray-600',
-                            'diajukan' => 'text-blue-600',
-                            'disetujui' => 'text-green-600',
-                            'ditolak' => 'text-red-600'
-                        ][$status];
-                    @endphp
-
-                    @if($status != 'belum diajukan')
-                        <div onclick="tampilkanRekap('{{ $tahunAjaran->id_tahun }}', '{{ $status }}')" class="bg-white p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h2 class="text-xl font-semibold">{{ $tahunAjaran->tahun_ajaran }}</h2>
-                                    <p class="text-gray-600">Status: <span class="{{ $statusColor }}">{{ $statusText }}</span></p>
-                                </div>
-                                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Lihat</button>
+                    <div onclick="tampilkanRekap('{{ $tahunAjaran->id_tahun }}')" 
+                         class="bg-white p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h2 class="text-xl font-semibold">{{ $tahunAjaran->tahun_ajaran }}</h2>
                             </div>
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Lihat</button>
                         </div>
-                    @endif
+                    </div>
                 @endforeach
-
             </div>
+            
 
             <!-- Container for Rekap Ruang Kuliah -->
             <div id="rekap-ruang-container" class="hidden mt-6">
@@ -117,23 +94,15 @@
                             <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">No</th>
                             <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Program Studi</th>
                             <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Jumlah Ruang</th>
+                            <!-- Tambahkan kolom Status -->
+                            <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Status</th>
                             <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="rekap-ruang">
-                        <!-- Daftar rekap ruang kuliah akan dimuat di sini -->
+                        <!-- Data rekap prodi akan dimuat di sini -->
                     </tbody>
                 </table>
-
-                <!-- Tombol Aksi -->
-                <div id="tombol-aksi-container" class="mt-6 flex space-x-4 justify-end hidden">
-                    <button onclick="setujuiUsulan(currentIdTahun)" class="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600">
-                        Setujui Usulan
-                    </button>
-                    <button onclick="tolakUsulan(currentIdTahun)" class="bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600">
-                        Tolak Usulan
-                    </button>
-                </div>
             </div>
 
             <!-- Tabel Detail Ruang Kuliah -->
@@ -149,12 +118,11 @@
                             </tr>
                         </thead>
                         <tbody id="detail-ruang">
-                            <!-- Daftar ruang kuliah akan dimuat di sini -->
+                            <!-- Data detail ruang per prodi akan dimuat disini -->
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </main>
     </div>
 
@@ -165,7 +133,7 @@
     </footer>
 
     <script>
-        let currentIdTahun = null; // Variabel global untuk menyimpan id_tahun yang dipilih
+        let currentIdTahun = null;
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('sidebar-closed');
@@ -176,41 +144,54 @@
                 console.error('Format id_tahun tidak valid:', id_tahun);
                 return 'Tahun Ajaran Tidak Diketahui';
             }
-
             const semester = id_tahun.endsWith('1') ? 'Gasal' : 'Genap';
             const tahunMulai = `20${id_tahun.slice(0, 2)}`;
             const tahunAkhir = parseInt(tahunMulai) + 1;
             return `${semester} ${tahunMulai}/${tahunAkhir}`;
         }
 
-        function tampilkanRekap(id_tahun, status) {
-            currentIdTahun = id_tahun; // Simpan id_tahun yang dipilih
+        // Fungsi untuk ikon status (opsional)
+        function getStatusIcon(status) {
+            const icons = {
+                'belum diajukan': '⏳',
+                'diajukan': '🚀',
+                'disetujui': '✅',
+                'ditolak': '❌'
+            };
+            return icons[status] || '';
+        }
+
+        function capitalizeStatus(status) {
+            if (status === 'belum diajukan') return 'Belum diajukan';
+            return status.charAt(0).toUpperCase() + status.slice(1);
+        }
+
+        function getStatusColorClass(status) {
+            const colors = {
+                'belum diajukan': 'text-gray-600',
+                'diajukan': 'text-blue-600',
+                'disetujui': 'text-green-600',
+                'ditolak': 'text-red-600'
+            };
+            return colors[status] || 'text-gray-800';
+        }
+
+        function tampilkanRekap(id_tahun) {
+            currentIdTahun = id_tahun;
 
             const rekapRuangContainer = document.getElementById('rekap-ruang-container');
-            const tombolAksiContainer = document.getElementById('tombol-aksi-container');
             const judulRekap = document.getElementById('judul-rekap');
-
-            if (!rekapRuangContainer || !tombolAksiContainer || !judulRekap) {
-                console.error('Elemen tidak ditemukan. Pastikan elemen dengan ID yang sesuai ada di HTML.');
-                return;
-            }
 
             rekapRuangContainer.classList.remove('hidden');
             document.getElementById('detail-ruang-container').classList.add('hidden');
 
-            // Update judul rekap
             judulRekap.innerText = `Rekap Ruang Kuliah - ${formatTahunAjaran(id_tahun)}`;
 
-            // Fetch data dari server
             fetch(`/get-usulan/${id_tahun}`)
                 .then(response => response.json())
                 .then(data => {
                     const rekapRuangTabel = document.getElementById('rekap-ruang');
-                    if (!rekapRuangTabel) {
-                        console.error('Elemen rekap-ruang tidak ditemukan.');
-                        return;
-                    }
-                    rekapRuangTabel.innerHTML = ''; // Clear the table
+                    rekapRuangTabel.innerHTML = '';
 
                     data.forEach((item, index) => {
                         const row = document.createElement('tr');
@@ -218,34 +199,14 @@
                             <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${index + 1}</td>
                             <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.program_studi}</td>
                             <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.jumlah_ruang}</td>
+                            <!-- Tampilkan status prodi -->
+                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center ${getStatusColorClass(item.status)}">${getStatusIcon(item.status)} ${capitalizeStatus(item.status)}</td>
                             <td class="px-2 py-1 border-b border-gray-200 text-center">
                                 <button onclick="lihatDetail('${item.id_prodi}', '${id_tahun}')" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">Detail</button>
                             </td>
                         `;
                         rekapRuangTabel.appendChild(row);
                     });
-
-                    // Tampilkan tombol aksi berdasarkan status
-                    if (status === 'diajukan') {
-                        tombolAksiContainer.innerHTML = `
-                            <button onclick="setujuiUsulan(currentIdTahun)" class="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600">
-                                Setujui Usulan
-                            </button>
-                            <button onclick="tolakUsulan(currentIdTahun)" class="bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600">
-                                Tolak Usulan
-                            </button>
-                        `;
-                        tombolAksiContainer.classList.remove('hidden');
-                    } else if (status === 'disetujui' || status === 'ditolak') {
-                        tombolAksiContainer.innerHTML = `
-                            <button onclick="batalkanUsulan(currentIdTahun)" class="bg-yellow-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">
-                                Batalkan
-                            </button>
-                        `;
-                        tombolAksiContainer.classList.remove('hidden');
-                    } else {
-                        tombolAksiContainer.classList.add('hidden');
-                    }
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
@@ -253,26 +214,19 @@
                 });
         }
 
-
         function lihatDetail(id_prodi, id_tahun) {
             const detailRuangContainer = document.getElementById('detail-ruang-container');
             const judulDetailRuang = document.getElementById('judul-detail-ruang');
             const detailRuangTabel = document.getElementById('detail-ruang');
 
-            if (!detailRuangContainer || !judulDetailRuang || !detailRuangTabel) {
-                console.error('Elemen detail ruang tidak ditemukan.');
-                return;
-            }
-
             detailRuangContainer.classList.remove('hidden');
 
-            // Fetch data dari server
             fetch(`/get-usulan-detail/${id_tahun}/${id_prodi}`)
                 .then(response => response.json())
                 .then(data => {
                     judulDetailRuang.innerText = `Daftar Ruang Kuliah - ${data.program_studi}`;
 
-                    detailRuangTabel.innerHTML = ''; // Clear the table
+                    detailRuangTabel.innerHTML = '';
                     data.ruang.forEach((item, index) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -282,6 +236,8 @@
                         `;
                         detailRuangTabel.appendChild(row);
                     });
+
+                    showProdiActionsDekan(id_tahun, id_prodi, data.status);
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
@@ -289,16 +245,40 @@
                 });
         }
 
-        function updateStatusUsulan(idTahun, status) {
+        function showProdiActionsDekan(id_tahun, id_prodi, status) {
+            let actionContainer = document.getElementById('detail-prodi-action-container');
+            if (!actionContainer) {
+                actionContainer = document.createElement('div');
+                actionContainer.id = 'detail-prodi-action-container';
+                actionContainer.className = 'mt-4 flex space-x-4 justify-end';
+                document.getElementById('detail-ruang-container').appendChild(actionContainer);
+            }
+            actionContainer.innerHTML = '';
+
+            if (status === 'diajukan') {
+                actionContainer.innerHTML = `
+                    <button onclick="updateStatusUsulanProdiDekan('${id_tahun}', '${id_prodi}', 'disetujui')" class="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600">Setujui</button>
+                    <button onclick="updateStatusUsulanProdiDekan('${id_tahun}', '${id_prodi}', 'ditolak')" class="bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600">Tolak</button>
+                `;
+            } else if (status === 'disetujui' || status === 'ditolak') {
+                actionContainer.innerHTML = `
+                    <button onclick="updateStatusUsulanProdiDekan('${id_tahun}', '${id_prodi}', 'batalkan')" class="bg-yellow-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">Batalkan</button>
+                `;
+            } else {
+                actionContainer.innerHTML = `<span class="text-gray-700 font-semibold">Usulan belum diajukan.</span>`;
+            }
+        }
+
+        function updateStatusUsulanProdiDekan(id_tahun, id_prodi, status) {
             const csrfMeta = document.querySelector('meta[name="csrf-token"]');
             if (!csrfMeta) {
-                console.error('Token CSRF tidak ditemukan. Pastikan elemen <meta name="csrf-token"> ada di HTML.');
+                console.error('Token CSRF tidak ditemukan.');
                 return;
             }
-            
+
             const csrfToken = csrfMeta.getAttribute('content');
 
-            fetch(`/usulanruang/${idTahun}/update-status`, {
+            fetch(`/usulanruang/${id_tahun}/${id_prodi}/update-status`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -307,35 +287,19 @@
                 body: JSON.stringify({ status })
             })
             .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    return response.json().then(errorData => {
-                        throw new Error(errorData.message || 'Gagal memperbarui status usulan');
-                    });
-                }
+                if (!response.ok) throw new Error('Gagal memperbarui status usulan prodi');
+                return response.json();
             })
             .then(data => {
                 alert(data.message);
-                location.reload(); // Refresh halaman untuk memperbarui status
+                location.reload();
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat memperbarui status usulan.');
+                alert('Terjadi kesalahan saat memperbarui status usulan prodi');
             });
         }
 
-        function setujuiUsulan(idTahun) {
-            updateStatusUsulan(idTahun, 'disetujui');
-        }
-
-        function batalkanUsulan(idTahun) {
-            updateStatusUsulan(idTahun, 'batalkan');
-        }
-
-        function tolakUsulan(idTahun) {
-            updateStatusUsulan(idTahun, 'ditolak');
-        }
     </script>
 
 </body>

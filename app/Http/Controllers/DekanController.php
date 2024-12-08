@@ -12,7 +12,9 @@ class DekanController extends Controller
     // Metode untuk Dekan
     public function indexDekan()
     {
-        $tahunAjaranList = TahunAjaran::all();
+         // Ambil semua tahun ajaran dengan usulan yang statusnya "diajukan"
+        $tahunAjaranList = TahunAjaran::whereHas('usulanRuangKuliah', function ($query) {
+        })->get();
 
         // Mendapatkan status usulan per tahun
         $usulanStatuses = UsulanRuangKuliah::select('id_tahun', 'status')
@@ -58,25 +60,46 @@ class DekanController extends Controller
         return response()->json(['message' => 'Status usulan berhasil diperbarui oleh Dekan.']);
     }
 
+    public function updateStatusUsulanProdiDekan(Request $request, $id_tahun, $id_prodi)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:belum diajukan,diajukan,disetujui,ditolak,batalkan',
+        ]);
+
+        $newStatus = $validated['status'];
+        if ($newStatus === 'batalkan') {
+            $newStatus = 'diajukan';
+        }
+
+        UsulanRuangKuliah::where('id_tahun', $id_tahun)
+            ->where('id_prodi', $id_prodi)
+            ->update(['status' => $newStatus]);
+
+        return response()->json(['message' => 'Status usulan prodi berhasil diperbarui oleh Dekan.']);
+    }
+
+
 
     // Mendapatkan data usulan berdasarkan tahun ajaran
     public function getUsulan($id_tahun)
     {
-        $data = UsulanRuangKuliah::select('id_prodi', DB::raw('COUNT(id_ruang) as jumlah_ruang'))
-            ->where('id_tahun', $id_tahun)
-            ->groupBy('id_prodi')
+        $data = UsulanRuangKuliah::where('id_tahun', $id_tahun)
             ->with('programStudi:id_prodi,nama_prodi')
             ->get()
-            ->map(function($item) {
+            ->groupBy('id_prodi')
+            ->map(function($items, $id_prodi) {
                 return [
-                    'id_prodi' => $item->id_prodi,
-                    'program_studi' => $item->programStudi->nama_prodi,
-                    'jumlah_ruang' => $item->jumlah_ruang,
+                    'id_prodi' => $id_prodi,
+                    'program_studi' => $items->first()->programStudi->nama_prodi,
+                    'jumlah_ruang' => $items->count(),
+                    'status' => $items->first()->status ?? 'belum diajukan'
                 ];
-            });
+            })
+            ->values();
 
         return response()->json($data);
     }
+
 
     // Mendapatkan detail usulan berdasarkan tahun ajaran dan program studi
     public function getUsulanDetail($id_tahun, $id_prodi)
@@ -94,8 +117,10 @@ class DekanController extends Controller
                     'kapasitas' => $usulan->ruang->kapasitas ?? ''
                 ];
             })->toArray(),
+            'status' => $usulanList->first()->status ?? 'belum diajukan',
         ];
 
         return response()->json($data);
     }
+
 }

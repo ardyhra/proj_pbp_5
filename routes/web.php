@@ -115,11 +115,13 @@ Route::get('/buatusulan', [UsulanController::class, 'create'])->name('buatusulan
 Route::post('/buatusulan', [UsulanController::class, 'store']);
 
 Route::get('/daftarusulan', [UsulanController::class, 'index'])->name('daftarusulan');
+Route::post('/buatusulan-prodi', [UsulanController::class, 'storeProdi']);
 
-Route::get('/get-usulan/{id_tahun}', [UsulanController::class, 'getUsulanByTahun']);
+Route::get('/get-usulan-by-tahun/{id_tahun}', [UsulanController::class, 'getUsulanByTahun']);
 Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [UsulanController::class, 'getUsulanDetail']);
 Route::get('/get-usulan-data/{id_tahun}', [UsulanController::class, 'getUsulanData'])->name('usulan.getUsulanData');
 Route::post('/usulan/{id_tahun}/update-status', [UsulanController::class, 'updateStatusUsulan'])->name('usulan.updateStatus');
+Route::post('/usulan/{id_tahun}/{id_prodi}/update-status', [UsulanController::class, 'updateStatusUsulanProdi']);
 
 // Mengupdate status usulan oleh dekan (disetujui atau ditolak)
 // Route::patch('/usulan-ruang-kuliah/{id}/status', [UsulanController::class, 'updateStatus']);
@@ -147,6 +149,7 @@ Route::get('/usulanruang', [DekanController::class, 'indexDekan'])->name('usulan
 Route::post('/usulanruang/{id_tahun}/update-status', [DekanController::class, 'updateStatusUsulanDekan'])->name('usulanruang.updateStatusDekan');
 Route::get('/get-usulan/{id_tahun}', [DekanController::class, 'getUsulan'])->name('usulanruang.getUsulan');
 Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [DekanController::class, 'getUsulanDetail'])->name('usulanruang.getUsulanDetail');
+Route::post('/usulanruang/{id_tahun}/{id_prodi}/update-status', [DekanController::class, 'updateStatusUsulanProdiDekan'])->name('usulanruang.updateStatusProdiDekan');
 
 // ========================================================================================================================
 // Route untuk filter jadwal

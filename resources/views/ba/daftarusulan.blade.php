@@ -77,34 +77,21 @@
             <div class="space-y-4">
                 @foreach($tahunAjaranList as $tahunAjaran)
                     @php
-                        $usulanTahun = $usulanStatuses->get($tahunAjaran->id_tahun);
-                        $status = $usulanTahun ? $usulanTahun->first()->status : 'belum diajukan';
-            
-                        $statusText = [
-                            'belum diajukan' => '⏳ Belum diajukan',
-                            'diajukan' => '🚀 Diajukan',
-                            'disetujui' => '✅ Disetujui',
-                            'ditolak' => '❌ Ditolak'
-                        ][$status];
-            
-                        $statusColor = [
-                            'belum diajukan' => 'text-gray-600',
-                            'diajukan' => 'text-blue-600',
-                            'disetujui' => 'text-green-600',
-                            'ditolak' => 'text-red-600'
-                        ][$status];
+                        // $status dan $statusText sebelumnya dihitung di sini
                     @endphp
                     <div onclick="tampilkanRekap('{{ $tahunAjaran->id_tahun }}')" class="bg-white p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100">
                         <div class="flex justify-between items-center">
                             <div>
                                 <h2 class="text-xl font-semibold">{{ $tahunAjaran->tahun_ajaran }}</h2>
-                                <p class="text-gray-600">Status: <span class="{{ $statusColor }}">{{ $statusText }}</span></p>
+                                <!-- Status di level tahun ajaran dihapus -->
                             </div>
                             <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Lihat</button>
                         </div>
                     </div>
                 @endforeach
+            
             </div>
+            
             
 
 
@@ -117,9 +104,11 @@
                             <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">No</th>
                             <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Program Studi</th>
                             <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Jumlah Ruang</th>
+                            <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Status</th>
                             <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Aksi</th>
                         </tr>
                     </thead>
+                    
                     <tbody id="rekap-ruang">
                         <!-- Daftar rekap ruang kuliah akan dimuat di sini -->
                     </tbody>
@@ -184,49 +173,46 @@
         }
 
         function tampilkanRekap(id_tahun) {
-            currentIdTahun = id_tahun; // Simpan id_tahun yang dipilih
+            currentIdTahun = id_tahun;
 
             const rekapRuangContainer = document.getElementById('rekap-ruang-container');
             const tombolAksiContainer = document.getElementById('tombol-aksi-container');
             const judulRekap = document.getElementById('judul-rekap');
 
-            if (!rekapRuangContainer || !tombolAksiContainer || !judulRekap) {
-                console.error('Elemen tidak ditemukan. Pastikan elemen dengan ID yang sesuai ada di HTML.');
-                return;
-            }
-
             rekapRuangContainer.classList.remove('hidden');
             document.getElementById('detail-ruang-container').classList.add('hidden');
 
-            // Update judul rekap
             judulRekap.innerText = `Rekap Ruang Kuliah - ${formatTahunAjaran(id_tahun)}`;
 
-            // Fetch data dari server
-            fetch(`/get-usulan/${id_tahun}`)
-                .then(response => response.json())
-                .then(data => {
-                    const rekapRuangTabel = document.getElementById('rekap-ruang');
-                    if (!rekapRuangTabel) {
-                        console.error('Elemen rekap-ruang tidak ditemukan.');
-                        return;
+            fetch(`/get-usulan-by-tahun/${id_tahun}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
                     }
-                    rekapRuangTabel.innerHTML = ''; // Clear the table
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data); // Pastikan ini, bukan hanya data.ruang
+                    const rekapRuangTabel = document.getElementById('rekap-ruang');
+                    rekapRuangTabel.innerHTML = '';
 
                     data.forEach((item, index) => {
+                        // item harus punya {id_prodi, program_studi, jumlah_ruang, status}
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${index + 1}</td>
                             <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.program_studi}</td>
                             <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.jumlah_ruang}</td>
+                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center ${getStatusColorClass(item.status)}">${getStatusIcon(item.status)} ${capitalizeStatus(item.status)}</td>
                             <td class="px-2 py-1 border-b border-gray-200 text-center">
-                                <button onclick="lihatDetail('${item.id_prodi}', '${id_tahun}')" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">Detail</button>
+                                <button onclick="lihatDetail('${item.id_prodi}', '${id_tahun}', '${item.status}')" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">Detail</button>
                             </td>
                         `;
                         rekapRuangTabel.appendChild(row);
                     });
 
-                    // Tampilkan tombol aksi
-                    tombolAksiContainer.classList.remove('hidden');
+                    // Di level tahun ajaran tidak ada ajukan/batalkan, maka kita sembunyikan tombol aksi di sini
+                    tombolAksiContainer.classList.add('hidden');
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
@@ -234,25 +220,48 @@
                 });
         }
 
-        function lihatDetail(id_prodi, id_tahun) {
+        function getStatusIcon(status) {
+            const icons = {
+                'belum diajukan': '⏳',
+                'diajukan': '🚀',
+                'disetujui': '✅',
+                'ditolak': '❌'
+            };
+            return icons[status] || '';
+        }
+
+        function capitalizeStatus(status) {
+            // ubah jadi "Belum diajukan", "Diajukan", dsb.
+            if (status === 'belum diajukan') return 'Belum diajukan';
+            return status.charAt(0).toUpperCase() + status.slice(1);
+        }
+
+        function getStatusColorClass(status) {
+            const colors = {
+                'belum diajukan': 'text-gray-600',
+                'diajukan': 'text-blue-600',
+                'disetujui': 'text-green-600',
+                'ditolak': 'text-red-600'
+            };
+            return colors[status] || 'text-gray-800';
+        }
+
+
+
+
+        function lihatDetail(id_prodi, id_tahun, status) {
             const detailRuangContainer = document.getElementById('detail-ruang-container');
             const judulDetailRuang = document.getElementById('judul-detail-ruang');
             const detailRuangTabel = document.getElementById('detail-ruang');
 
-            if (!detailRuangContainer || !judulDetailRuang || !detailRuangTabel) {
-                console.error('Elemen detail ruang tidak ditemukan.');
-                return;
-            }
-
             detailRuangContainer.classList.remove('hidden');
 
-            // Fetch data dari server
             fetch(`/get-usulan-detail/${id_tahun}/${id_prodi}`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data); // Pastikan data.status muncul
                     judulDetailRuang.innerText = `Daftar Ruang Kuliah - ${data.program_studi}`;
-
-                    detailRuangTabel.innerHTML = ''; // Clear the table
+                    detailRuangTabel.innerHTML = '';
                     data.ruang.forEach((item, index) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -262,12 +271,90 @@
                         `;
                         detailRuangTabel.appendChild(row);
                     });
+
+                    // Tampilkan tombol Ajukan/Batalkan di level prodi
+                    showProdiActions(id_tahun, id_prodi, data.status);
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
                     alert('Terjadi kesalahan saat mengambil data.');
                 });
         }
+
+        function showProdiActions(id_tahun, id_prodi, status) {
+            let actionContainer = document.getElementById('detail-prodi-action-container');
+            if (!actionContainer) {
+                actionContainer = document.createElement('div');
+                actionContainer.id = 'detail-prodi-action-container';
+                actionContainer.className = 'mt-4 flex space-x-4 justify-end';
+                document.getElementById('detail-ruang-container').appendChild(actionContainer);
+            }
+            actionContainer.innerHTML = '';
+
+            if (status === 'belum diajukan' || status === 'ditolak') {
+                actionContainer.innerHTML = `
+                    <button onclick="ajukanUsulanProdi('${id_tahun}', '${id_prodi}')" class="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600">
+                        Ajukan Usulan
+                    </button>
+                `;
+            } else if (status === 'diajukan') {
+                actionContainer.innerHTML = `
+                    <button onclick="batalkanUsulanProdi('${id_tahun}', '${id_prodi}')" class="bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600">
+                        Batalkan Usulan
+                    </button>
+                `;
+            } else if (status === 'disetujui') {
+                actionContainer.innerHTML = `
+                    <span class="text-gray-700 font-semibold">Usulan telah disetujui.</span>
+                `;
+            }
+        }
+
+
+
+        function ajukanUsulanProdi(id_tahun, id_prodi) {
+            updateStatusUsulanProdi(id_tahun, id_prodi, 'diajukan');
+        }
+
+        function batalkanUsulanProdi(id_tahun, id_prodi) {
+            updateStatusUsulanProdi(id_tahun, id_prodi, 'belum diajukan');
+        }
+
+        function updateStatusUsulanProdi(id_tahun, id_prodi, status) {
+            const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfMeta) {
+                console.error('Token CSRF tidak ditemukan.');
+                return;
+            }
+
+            const csrfToken = csrfMeta.getAttribute('content');
+
+            fetch(`/usulan/${id_tahun}/${id_prodi}/update-status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ status })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Gagal memperbarui status usulan prodi');
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat memperbarui status usulan prodi');
+            });
+        }
+
+
+
+        
+
 
         function ubahStatus(id, status) {
             const csrfMeta = document.querySelector('meta[name="csrf-token"]');
@@ -300,47 +387,47 @@
             });
         }
 
-        function ajukanUsulan(idTahun) {
-            updateStatusUsulan(idTahun, 'diajukan');
-        }
+        // function ajukanUsulan(idTahun) {
+        //     updateStatusUsulan(idTahun, 'diajukan');
+        // }
 
-        function batalkanUsulan(idTahun) {
-            updateStatusUsulan(idTahun, 'belum diajukan');
-        }
+        // function batalkanUsulan(idTahun) {
+        //     updateStatusUsulan(idTahun, 'belum diajukan');
+        // }
 
-        function updateStatusUsulan(idTahun, status) {
-            const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-            if (!csrfMeta) {
-                console.error('Token CSRF tidak ditemukan. Pastikan elemen <meta name="csrf-token"> ada di HTML.');
-                return;
-            }
+        // function updateStatusUsulan(idTahun, status) {
+        //     const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        //     if (!csrfMeta) {
+        //         console.error('Token CSRF tidak ditemukan. Pastikan elemen <meta name="csrf-token"> ada di HTML.');
+        //         return;
+        //     }
             
-            const csrfToken = csrfMeta.getAttribute('content');
+        //     const csrfToken = csrfMeta.getAttribute('content');
 
-            fetch(`/usulan/${idTahun}/update-status`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({ status })
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Gagal memperbarui status usulan');
-                }
-            })
-            .then(data => {
-                alert(data.message);
-                location.reload(); // Refresh halaman untuk memperbarui status
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat memperbarui status usulan');
-            });
-        }
+        //     fetch(`/usulan/${idTahun}/update-status`, {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'X-CSRF-TOKEN': csrfToken
+        //         },
+        //         body: JSON.stringify({ status })
+        //     })
+        //     .then(response => {
+        //         if (response.ok) {
+        //             return response.json();
+        //         } else {
+        //             throw new Error('Gagal memperbarui status usulan');
+        //         }
+        //     })
+        //     .then(data => {
+        //         alert(data.message);
+        //         location.reload(); // Refresh halaman untuk memperbarui status
+        //     })
+        //     .catch(error => {
+        //         console.error('Error:', error);
+        //         alert('Terjadi kesalahan saat memperbarui status usulan');
+        //     });
+        // }
     </script>
 </body>
 </html>
