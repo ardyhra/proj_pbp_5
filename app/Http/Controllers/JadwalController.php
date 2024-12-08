@@ -121,108 +121,108 @@ class JadwalController extends Controller
         return view('kaprodi.manajemen-jadwal-kaprodi', compact('tahunAjarans', 'prodis', 'jadwals', 'id_tahun', 'id_prodi'));
     }
     public function kaprodi(Request $request)
-{
-    // Ambil data Tahun Ajaran dan Program Studi untuk dropdown
-    $tahunajarans = TahunAjaran::all();
-    $prodis = ProgramStudi::all();
+    {
+        // Ambil data Tahun Ajaran dan Program Studi untuk dropdown
+        $tahunajarans = TahunAjaran::all();
+        $prodis = ProgramStudi::all();
 
-    // Ambil jadwal berdasarkan filter id_tahun dan id_prodi
-    $jadwals = Jadwal::with(['prodi', 'tahunAjaran', 'matakuliah', 'ruang'])
-                     ->where('id_tahun', $request->input('id_tahun'))
-                     ->where('id_prodi', $request->input('id_prodi'))
-                     ->get();
+        // Ambil jadwal berdasarkan filter id_tahun dan id_prodi
+        $jadwals = Jadwal::with(['prodi', 'tahunAjaran', 'matakuliah', 'ruang'])
+                        ->where('id_tahun', $request->input('id_tahun'))
+                        ->where('id_prodi', $request->input('id_prodi'))
+                        ->get();
 
-    // Return view dengan data jadwal dan pilihan tahun ajaran dan prodi
-    return view('manajemen-jadwal-kaprodi', compact('jadwals', 'tahun_ajaran', 'prodi'));
-}   
-public function index(Request $request)
-{
-    $id_tahun = $request->query('id_tahun');
-    $id_prodi = $request->query('id_prodi');
-    
-    // Ambil data program studi berdasarkan id_prodi
-    $prodi = Programstudi::find($id_prodi); // Prodi adalah model yang sesuai dengan tabel prodi di database
-    $tahun_ajaran = tahunajaran::find($id_tahun);
-    
-    // Query untuk mengambil jadwal dengan join ke tabel matakuliah dan ruang
-    $jadwals = DB::table('jadwal')
-                ->join('matakuliah', 'jadwal.kode_mk', '=', 'matakuliah.kode_mk') // Join dengan tabel matakuliah berdasarkan kode_mk
-                ->join('ruang', 'jadwal.id_ruang', '=', 'ruang.id_ruang') // Join dengan tabel ruang berdasarkan id_ruang
-                ->where('jadwal.id_tahun', $id_tahun)
-                ->where('jadwal.id_prodi', $id_prodi)
-                ->select('jadwal.*', 'matakuliah.nama_mk', 'ruang.id_ruang') // Pilih kolom yang ingin ditampilkan
-                ->get();
-    // Pastikan data jadwals sudah benar
-    //dd($jadwals); // Untuk melihat data jadwal yang diambil
+        // Return view dengan data jadwal dan pilihan tahun ajaran dan prodi
+        return view('manajemen-jadwal-kaprodi', compact('jadwals', 'tahun_ajaran', 'prodi'));
+    }   
+    public function index(Request $request)
+    {
+        $id_tahun = $request->query('id_tahun');
+        $id_prodi = $request->query('id_prodi');
+        
+        // Ambil data program studi berdasarkan id_prodi
+        $prodi = Programstudi::find($id_prodi); // Prodi adalah model yang sesuai dengan tabel prodi di database
+        $tahun_ajaran = tahunajaran::find($id_tahun);
+        
+        // Query untuk mengambil jadwal dengan join ke tabel matakuliah dan ruang
+        $jadwals = DB::table('jadwal')
+                    ->join('matakuliah', 'jadwal.kode_mk', '=', 'matakuliah.kode_mk') // Join dengan tabel matakuliah berdasarkan kode_mk
+                    ->join('ruang', 'jadwal.id_ruang', '=', 'ruang.id_ruang') // Join dengan tabel ruang berdasarkan id_ruang
+                    ->where('jadwal.id_tahun', $id_tahun)
+                    ->where('jadwal.id_prodi', $id_prodi)
+                    ->select('jadwal.*', 'matakuliah.nama_mk', 'ruang.id_ruang') // Pilih kolom yang ingin ditampilkan
+                    ->get();
+        // Pastikan data jadwals sudah benar
+        //dd($jadwals); // Untuk melihat data jadwal yang diambil
 
-    return view('jadwal.view', compact('jadwals',  'prodi', 'tahun_ajaran'));
-}
-    // Form untuk menambah jadwal
-    // public function create()
-    // {
-    //     // Ambil data tahun, prodi, dan mata kuliah untuk dropdown
-    //     $tahun_ajaran = TahunAjaran::all();
-    //     $prodi = ProgramStudi::all();
-    //     $matakuliah = Matakuliah::all();
-    //     $ruang = Ruang::all();
+        return view('jadwal.view', compact('jadwals',  'prodi', 'tahun_ajaran'));
+    }
+        // Form untuk menambah jadwal
+        // public function create()
+        // {
+        //     // Ambil data tahun, prodi, dan mata kuliah untuk dropdown
+        //     $tahun_ajaran = TahunAjaran::all();
+        //     $prodi = ProgramStudi::all();
+        //     $matakuliah = Matakuliah::all();
+        //     $ruang = Ruang::all();
 
-    //     return view('jadwal.create', compact('tahun_ajaran', 'prodi', 'matakuliah', 'ruang'));
-    // }
-    // Menampilkan form untuk menambah jadwal
-    public function create(Request $request)
-{
-    $idTahun = $request->query('id_tahun');  // Ambil nilai id_tahun dari URL
-    $idProdi = $request->query('id_prodi');  // Ambil nilai id_prodi dari URL
+        //     return view('jadwal.create', compact('tahun_ajaran', 'prodi', 'matakuliah', 'ruang'));
+        // }
+        // Menampilkan form untuk menambah jadwal
+        public function create(Request $request)
+    {
+        $idTahun = $request->query('id_tahun');  // Ambil nilai id_tahun dari URL
+        $idProdi = $request->query('id_prodi');  // Ambil nilai id_prodi dari URL
 
-    $matakuliah = Matakuliah::all();  // Ambil data matakuliah
-    $ruang = Ruang::all();
-    // Kirim data ke view
-    return view('jadwal.create', compact('matakuliah', 'ruang','idTahun', 'idProdi'));
-}
-public function store(Request $request)
-{
-    // Validasi input
-    $request->validate([
-        'kode_mk' => 'required|exists:matakuliah,kode_mk',
-        'kelas' => 'required|string|max:10',
-        'hari' => 'required|integer',
-        'waktu_mulai' => 'required|date_format:H:i',
-        'waktu_selesai' => 'required|date_format:H:i',
-        'id_ruang' => 'required|exists:ruang,id_ruang',
-        'kuota' => 'required|integer|min:1',
-        'id_tahun' => 'required|integer',
-        'id_prodi' => 'required|integer',
-    ]);
+        $matakuliah = Matakuliah::all();  // Ambil data matakuliah
+        $ruang = Ruang::all();
+        // Kirim data ke view
+        return view('jadwal.create', compact('matakuliah', 'ruang','idTahun', 'idProdi'));
+    }
+    public function store(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'kode_mk' => 'required|exists:matakuliah,kode_mk',
+            'kelas' => 'required|string|max:10',
+            'hari' => 'required|integer',
+            'waktu_mulai' => 'required|date_format:H:i',
+            'waktu_selesai' => 'required|date_format:H:i',
+            'id_ruang' => 'required|exists:ruang,id_ruang',
+            'kuota' => 'required|integer|min:1',
+            'id_tahun' => 'required|integer',
+            'id_prodi' => 'required|integer',
+        ]);
 
-    $idTahun = $request->id_tahun;
-    $idProdi = $request->id_prodi;
+        $idTahun = $request->id_tahun;
+        $idProdi = $request->id_prodi;
 
-    // Generate ID Jadwal
-    $lastJadwal = Jadwal::where('id_tahun', $idTahun)
-                        ->where('id_prodi', $idProdi)
-                        ->orderBy('id_jadwal', 'desc')
-                        ->first();
+        // Generate ID Jadwal
+        $lastJadwal = Jadwal::where('id_tahun', $idTahun)
+                            ->where('id_prodi', $idProdi)
+                            ->orderBy('id_jadwal', 'desc')
+                            ->first();
 
-    $lastIdJadwal = $lastJadwal ? (int)substr($lastJadwal->id_jadwal, -3) : 100;
-    $newIdJadwal = $idTahun . $idProdi . str_pad($lastIdJadwal + 1, 3, '0', STR_PAD_LEFT);
+        $lastIdJadwal = $lastJadwal ? (int)substr($lastJadwal->id_jadwal, -3) : 100;
+        $newIdJadwal = $idTahun . $idProdi . str_pad($lastIdJadwal + 1, 3, '0', STR_PAD_LEFT);
 
-    // Simpan jadwal baru ke database
-    Jadwal::create([
-        'id_jadwal' => $newIdJadwal,
-        'kode_mk' => $request->kode_mk,
-        'kelas' => $request->kelas,
-        'hari' => $request->hari,
-        'waktu_mulai' => $request->waktu_mulai,
-        'waktu_selesai' => $request->waktu_selesai,
-        'id_ruang' => $request->id_ruang,
-        'kuota' => $request->kuota,
-        'id_tahun' => $idTahun,
-        'id_prodi' => $idProdi,
-    ]);
+        // Simpan jadwal baru ke database
+        Jadwal::create([
+            'id_jadwal' => $newIdJadwal,
+            'kode_mk' => $request->kode_mk,
+            'kelas' => $request->kelas,
+            'hari' => $request->hari,
+            'waktu_mulai' => $request->waktu_mulai,
+            'waktu_selesai' => $request->waktu_selesai,
+            'id_ruang' => $request->id_ruang,
+            'kuota' => $request->kuota,
+            'id_tahun' => $idTahun,
+            'id_prodi' => $idProdi,
+        ]);
 
-    // Redirect ke halaman index setelah berhasil
-    return redirect()->route('jadwal.index')->with('success', 'Jadwal kuliah berhasil ditambahkan!');
-}
+        // Redirect ke halaman index setelah berhasil
+        return redirect()->route('jadwal.index')->with('success', 'Jadwal kuliah berhasil ditambahkan!');
+    }
 
 
     // Menyimpan data jadwal ke dalam database
@@ -312,63 +312,63 @@ public function store(Request $request)
 //     }
 
     public function show(Request $request)
-{
-    $tahunAjaran = $request->input('id_tahun');
-    $prodi = $request->input('id_prodi');
+    {
+        $tahunAjaran = $request->input('id_tahun');
+        $prodi = $request->input('id_prodi');
 
-    $jadwals = Jadwal::where('id_tahun', $tahunAjaran)
-                    ->where('id_prodi', $prodi)
-                    ->get();
+        $jadwals = Jadwal::where('id_tahun', $tahunAjaran)
+                        ->where('id_prodi', $prodi)
+                        ->get();
 
-    return view('jadwal.view', compact('jadwals'));
-}
+        return view('jadwal.view', compact('jadwals'));
+    }
 
 
-public function edit($id)
-{
-    // Ambil data jadwal berdasarkan ID
-    $jadwal = Jadwal::find($id);
-    
-    // Ambil data terkait untuk select options (misal mata kuliah, ruang, dll)
-    $matakuliah = Matakuliah::all(); // Atau sesuaikan dengan data yang dibutuhkan
-    $ruang = Ruang::all();
-    $prodi = Programstudi::all(); // Sesuaikan dengan program studi yang ada
-    $tahun_ajaran = TahunAjaran::all();
-    
-    return view('jadwal.edit', compact('jadwal', 'matakuliah', 'ruang', 'prodi', 'tahun_ajaran'));
-}
+    public function edit($id)
+    {
+        // Ambil data jadwal berdasarkan ID
+        $jadwal = Jadwal::find($id);
+        
+        // Ambil data terkait untuk select options (misal mata kuliah, ruang, dll)
+        $matakuliah = Matakuliah::all(); // Atau sesuaikan dengan data yang dibutuhkan
+        $ruang = Ruang::all();
+        $prodi = Programstudi::all(); // Sesuaikan dengan program studi yang ada
+        $tahun_ajaran = TahunAjaran::all();
+        
+        return view('jadwal.edit', compact('jadwal', 'matakuliah', 'ruang', 'prodi', 'tahun_ajaran'));
+    }
 
-     // Mengupdate jadwal yang sudah ada
-     public function update(Request $request, $id)
-{
-    // Validasi input
-    $request->validate([
-        'kode_mk' => 'required',
-        'kelas' => 'required',
-        'hari' => 'required',
-        'waktu_mulai' => 'required',
-        'waktu_selesai' => 'required',
-        'id_ruang' => 'required',
-        'kuota' => 'required|integer',
-    ]);
+        // Mengupdate jadwal yang sudah ada
+    public function update(Request $request, $id)
+    {
+        // Validasi input
+        $request->validate([
+            'kode_mk' => 'required',
+            'kelas' => 'required',
+            'hari' => 'required',
+            'waktu_mulai' => 'required',
+            'waktu_selesai' => 'required',
+            'id_ruang' => 'required',
+            'kuota' => 'required|integer',
+        ]);
 
-    // Cari jadwal yang ingin diedit
-    $jadwal = Jadwal::findOrFail($id);
+        // Cari jadwal yang ingin diedit
+        $jadwal = Jadwal::findOrFail($id);
 
-    // Update data jadwal
-    $jadwal->update([
-        'kode_mk' => $request->kode_mk,
-        'kelas' => $request->kelas,
-        'hari' => $request->hari,
-        'waktu_mulai' => $request->waktu_mulai,
-        'waktu_selesai' => $request->waktu_selesai,
-        'id_ruang' => $request->id_ruang,
-        'kuota' => $request->kuota,
-    ]);
+        // Update data jadwal
+        $jadwal->update([
+            'kode_mk' => $request->kode_mk,
+            'kelas' => $request->kelas,
+            'hari' => $request->hari,
+            'waktu_mulai' => $request->waktu_mulai,
+            'waktu_selesai' => $request->waktu_selesai,
+            'id_ruang' => $request->id_ruang,
+            'kuota' => $request->kuota,
+        ]);
 
-    return redirect()->route('jadwal.view', ['id_tahun' => $jadwal->id_tahun, 'id_prodi' => $jadwal->id_prodi])
-                     ->with('success', 'Jadwal berhasil diperbarui!');
-}
+        return redirect()->route('jadwal.view', ['id_tahun' => $jadwal->id_tahun, 'id_prodi' => $jadwal->id_prodi])
+                        ->with('success', 'Jadwal berhasil diperbarui!');
+    }
 
  
 

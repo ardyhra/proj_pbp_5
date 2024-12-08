@@ -248,7 +248,7 @@ class IrsController extends Controller
                     END AS id_ruang
                 "),
                 'matakuliah.kode_mk',
-                'matakuliah.nama as nama_mk',
+                'matakuliah.nama_mk',
                 'matakuliah.sks',
                 'dosen.nama')
             ->get();
@@ -267,7 +267,7 @@ class IrsController extends Controller
                     'kelas' => $ir->kelas,
                     'id_ruang' => $ir->id_ruang,
                     'kode_mk' => $ir->kode_mk,
-                    'nama' => $ir->nama_mk,
+                    'nama_mk' => $ir->nama_mk,
                     'sks' => $ir->sks,
                     'dosen' => [] // Menyimpan dosen sebagai array
                 ];
