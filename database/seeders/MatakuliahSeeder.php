@@ -89,6 +89,12 @@ class MatakuliahSeeder extends Seeder
             ['kode_mk' => 'UUW00051', 'nama_mk' => 'Pendidikan Agama Buddha', 'plot_semester' => 2, 'sks' => 2, 'jenis' => 'W'],
             ['kode_mk' => 'UUW00061', 'nama_mk' => 'Pendidikan Agama Kong Hu Chu', 'plot_semester' => 2, 'sks' => 2, 'jenis' => 'W'],
             ['kode_mk' => 'UUW00071', 'nama_mk' => 'Aliran Kepercayaan terhadap Tuhan Yang Maha Esa', 'plot_semester' => 2, 'sks' => 2, 'jenis' => 'W'],
+
+            //statisika
+            ['kode_mk' => 'PAST6501', 'nama_mk' => 'Proses Stokhastik', 'plot_semester' => 5, 'sks' => 3, 'jenis' => 'W'],
+            ['kode_mk' => 'PAST6502', 'nama_mk' => 'Aljabar Linear Elementer', 'plot_semester' => 5, 'sks' => 3, 'jenis' => 'W'],
+            ['kode_mk' => 'PAST6503', 'nama_mk' => 'Statistika Multivariat', 'plot_semester' => 5, 'sks' => 3, 'jenis' => 'W'],
+
         ]);
     }
 }

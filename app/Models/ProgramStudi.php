@@ -26,5 +26,10 @@ class ProgramStudi extends Model
     {
         return $this->hasMany(jadwal::class, 'id_prodi', 'id_prodi');
     }
+    // user dan prodi
+    public function users() {
+        return $this->hasMany(User::class);
+    }
+
 
 }

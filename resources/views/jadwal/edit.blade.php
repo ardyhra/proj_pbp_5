@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'SISKARA - Edit Jadwal')
 @section('content')
 <div class="container mx-auto mt-10">
     <h1 class="text-3xl font-semibold mb-4">Edit Jadwal Kuliah</h1>
@@ -14,14 +14,45 @@
             <input type="text" id="kode_mk" name="kode_mk" value="{{ $jadwal->kode_mk }}" class="w-full p-2 border rounded">
         </div>
 
+        {{-- <div class="mb-4">
+            <label for="kelas" class="block">Kelas</label>
+            <select name="kelas" id="kelas" class="w-full p-2 border rounded">
+                <option value="{{ $jadwal->kelas }}" {{ $jadwal->kelas == $jadwal->kelas ? 'selected' : '' }} ></option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+            </select>
+        </div> --}}
         <div class="mb-4">
             <label for="kelas" class="block">Kelas</label>
-            <input type="text" id="kelas" name="kelas" value="{{ $jadwal->kelas }}" class="w-full p-2 border rounded">
+            <select name="kelas" id="kelas" class="w-full p-2 border rounded">
+                <option value="" disabled selected>-- Pilih Kelas --</option>
+                <option value="A" {{ old('kelas', $jadwal->kelas) == 'A' ? 'selected' : '' }}>A</option>
+                <option value="B" {{ old('kelas', $jadwal->kelas) == 'B' ? 'selected' : '' }}>B</option>
+                <option value="C" {{ old('kelas', $jadwal->kelas) == 'C' ? 'selected' : '' }}>C</option>
+                <option value="D" {{ old('kelas', $jadwal->kelas) == 'D' ? 'selected' : '' }}>D</option>
+                <option value="E" {{ old('kelas', $jadwal->kelas) == 'E' ? 'selected' : '' }}>E</option>
+            </select>
+        </div>
+        
+        <div class="mb-4">
+            <label for="id_ruang" class="block">Ruang</label>
+            <select name="id_ruang" id="id_ruang" class="w-full p-2 border rounded">
+                <option value="" disabled selected>-- Pilih Ruang --</option>
+                @foreach($ruang as $r)
+                    <option value="{{ $r->id_ruang }}" {{ $jadwal->id_ruang == $r->id_ruang ? 'selected' : '' }}>
+                        {{ $r->id_ruang }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
         <div class="mb-4">
             <label for="hari" class="block">Hari</label>
             <select name="hari" id="hari" class="w-full p-2 border rounded">
+                <option value="" disabled selected>-- Pilih Hari --</option>
                 <option value="1" {{ $jadwal->hari == 1 ? 'selected' : '' }}>Senin</option>
                 <option value="2" {{ $jadwal->hari == 2 ? 'selected' : '' }}>Selasa</option>
                 <option value="3" {{ $jadwal->hari == 3 ? 'selected' : '' }}>Rabu</option>
@@ -39,17 +70,6 @@
         <div class="mb-4">
             <label for="waktu_selesai" class="block">Waktu Selesai</label>
             <input type="time" id="waktu_selesai" name="waktu_selesai" value="{{ $jadwal->waktu_selesai }}" class="w-full p-2 border rounded">
-        </div>
-
-        <div class="mb-4">
-            <label for="id_ruang" class="block">Ruang</label>
-            <select name="id_ruang" id="id_ruang" class="w-full p-2 border rounded">
-                @foreach($ruang as $r)
-                    <option value="{{ $r->id_ruang }}" {{ $jadwal->id_ruang == $r->id_ruang ? 'selected' : '' }}>
-                        {{ $r->id_ruang }}
-                    </option>
-                @endforeach
-            </select>
         </div>
 
         <div class="mb-4">
@@ -78,56 +98,254 @@
 
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
-    // Menambahkan event listener untuk tombol update
-    document.getElementById('updateButton').addEventListener('click', function(event) {
-        event.preventDefault(); // Mencegah form langsung disubmit
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('updateButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission
 
-        // Menampilkan SweetAlert2 untuk konfirmasi
-        Swal.fire({
-            title: "Apakah Anda Yakin?",
-            icon: 'warning',
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: "Save",
-            denyButtonText: "Don't save"
-        }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-                // Menampilkan SweetAlert sukses setelah data disubmit
+            // Initialize an array to hold the names of the missing fields
+            let missingFields = [];
+
+            // Get field values
+            const kodeMk = document.getElementById('kode_mk').value;
+            const kelas = document.getElementById('kelas').value;
+            const ruang = document.getElementById('id_ruang').value;
+            const hari = document.getElementById('hari').value;
+            const waktuMulai = document.getElementById('waktu_mulai').value;
+            const waktuSelesai = document.getElementById('waktu_selesai').value;
+            const kuota = document.getElementById('kuota').value;
+
+            // Add missing fields to the array
+            if (!kodeMk) missingFields.push("Kode MK");
+            if (!kelas) missingFields.push("Kelas");
+            if (!ruang) missingFields.push("Ruang");
+            if (!hari) missingFields.push("Hari");
+            if (!waktuMulai) missingFields.push("Waktu Mulai");
+            if (!waktuSelesai) missingFields.push("Waktu Selesai");
+            if (!kuota) missingFields.push("Kuota");
+
+            // If there are any missing fields, show an alert
+            if (missingFields.length > 0) {
                 Swal.fire({
-                    title: 'Saved!',
-                    text: 'Jadwal telah berhasil diperbarui.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    document.getElementById('updateForm').submit(); // Submit form setelah konfirmasi
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Field yang berikut wajib diisi: " + missingFields.join(', ') + ".",
                 });
-            } else if (result.isDenied) {
-                Swal.fire("Changes are not saved", "", "info");
+                return;
             }
+
+            // Check if 'kode_mk' exists in the database via AJAX
+            $.ajax({
+                url: "{{ route('jadwal.check-kode-mk') }}",
+                method: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",  // Pastikan token CSRF disertakan
+                    "kode_mk": kodeMk
+                },
+                success: function(response) {
+                    if (!response.exists) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Kode MK Tidak Valid',
+                            text: 'Kode MK yang Anda masukkan tidak terdaftar.',
+                        });
+                    } else {
+                        // Form is valid, proceed with confirmation and submission
+                        Swal.fire({
+                            title: "Apakah Anda Yakin?",
+                            icon: 'warning',
+                            showDenyButton: true,
+                            showCancelButton: true,
+                            confirmButtonText: "Save",
+                            denyButtonText: "Don't save"
+                        }).then((result) => {
+                                    /* Read more about isConfirmed, isDenied below */
+                            if (result.isConfirmed) {
+                                // Menampilkan SweetAlert sukses setelah data disubmit
+                                Swal.fire({
+                                    title: 'Saved!',
+                                    text: 'Jadwal telah berhasil diperbarui.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    document.getElementById('updateForm').submit(); // Submit form setelah konfirmasi
+                                });
+                            } else if (result.isDenied) {
+                                Swal.fire("Changes are not saved", "", "info");
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error AJAX: ", status, error);  // Log error if AJAX fails
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Terjadi kesalahan saat memeriksa Kode MK. Coba lagi.',
+                    });
+                }
+            });
+
         });
+        
+        // Menambahkan event listener untuk tombol cancel
+        document.getElementById('cancelButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Mencegah aksi default
+
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Semua perubahan yang belum disimpan akan hilang.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, keluar',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kembali ke halaman sebelumnya dengan parameter yang sesuai
+                    window.history.back(); // Menggunakan back agar kembali ke halaman sebelumnya
+                }
+            });
+        });
+
+            // Pastikan SKS sudah didapatkan pada saat halaman dimuat
+        const kodeMk = document.getElementById('kode_mk').value;
+
+        if (kodeMk) {
+            // Cek kode MK ketika halaman pertama kali dimuat
+            $.ajax({
+                url: "{{ route('jadwal.check-kode-mk') }}",
+                method: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}", // Pastikan CSRF token disertakan
+                    "kode_mk": kodeMk
+                },
+                success: function(response) {
+                    window.sks = response.sks; // Menyimpan SKS
+                    const waktuMulai = document.getElementById('waktu_mulai').value;
+                    if (waktuMulai) {
+                        hitungWaktuSelesai(waktuMulai); // Hitung waktu selesai jika waktu mulai sudah terisi
+                    }
+                }
+            });
+        }
+
+        // Event listener untuk input 'kode_mk' ketika diubah
+        document.getElementById('kode_mk').addEventListener('input', function() {
+            const kodeMk = document.getElementById('kode_mk').value;
+
+            if (!kodeMk) return; // Jika kode MK kosong, keluar
+
+            $.ajax({
+                url: "{{ route('jadwal.check-kode-mk') }}",
+                method: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}", // Pastikan CSRF token disertakan
+                    "kode_mk": kodeMk
+                },
+                success: function(response) {
+                    window.sks = response.sks; // Menyimpan SKS
+                    const waktuMulai = document.getElementById('waktu_mulai').value;
+                    if (waktuMulai) {
+                        hitungWaktuSelesai(waktuMulai); // Hitung waktu selesai jika waktu mulai sudah terisi
+                    }
+                }
+            });
+        });
+
+        // Event listener untuk input 'waktu_mulai' ketika diubah
+        document.getElementById('waktu_mulai').addEventListener('input', function() {
+            const waktuMulai = document.getElementById('waktu_mulai').value;
+
+            if (!waktuMulai || !window.sks) return; // Pastikan waktu mulai dan SKS ada
+
+            hitungWaktuSelesai(waktuMulai); // Hitung waktu selesai jika waktu mulai sudah ada dan SKS tersedia
+        });
+
+        // Fungsi untuk menghitung waktu selesai berdasarkan waktu mulai dan SKS
+        function hitungWaktuSelesai(waktuMulai) {
+            const sks = window.sks; // Mengambil SKS dari window.sks
+            if (!sks) return; // Jika SKS tidak ada, keluar
+
+            // Menghitung waktu selesai berdasarkan SKS (1 SKS = 50 menit)
+            let [hours, minutes] = waktuMulai.split(':').map(num => parseInt(num));
+            let startMinutes = (hours * 60) + minutes; // Konversi waktu mulai ke menit
+
+            let duration = sks * 50; // Durasi berdasarkan SKS (1 SKS = 50 menit)
+
+            // Hitung waktu selesai
+            let endMinutes = startMinutes + duration;
+            let endHours = Math.floor(endMinutes / 60); // Jam selesai
+            let endMin = endMinutes % 60; // Menit selesai
+
+            // Format waktu selesai menjadi HH:mm
+            let endTime = `${String(endHours).padStart(2, '0')}:${String(endMin).padStart(2, '0')}`;
+
+            // Set nilai waktu selesai di input form
+            document.getElementById('waktu_selesai').value = endTime;
+        }
+
     });
 
-    // Menambahkan event listener untuk tombol cancel
-    document.getElementById('cancelButton').addEventListener('click', function(event) {
-        event.preventDefault(); // Mencegah aksi default
+    // // waktu selesai
+    // document.getElementById('kode_mk').addEventListener('input', function() {
+    //     const kodeMk = document.getElementById('kode_mk').value;
 
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Semua perubahan yang belum disimpan akan hilang.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, keluar',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Kembali ke halaman sebelumnya dengan parameter yang sesuai
-                window.history.back(); // Menggunakan back agar kembali ke halaman sebelumnya
-            }
-        });
-    });
+    //     // Jika kode MK kosong, jangan lakukan apa-apa
+    //     if (!kodeMk) return;
+
+    //     // Lakukan AJAX untuk mendapatkan SKS berdasarkan kode MK
+    //     $.ajax({
+    //         url: "{{ route('jadwal.check-kode-mk') }}",
+    //         method: "POST",
+    //         data: {
+    //             "_token": "{{ csrf_token() }}",
+    //             "kode_mk": kodeMk
+    //         },
+    //         success: function(response) {
+
+    //             // Simpan SKS dari response
+    //             window.sks = response.sks;
+    //             // Jika waktu mulai sudah terisi, hitung waktu selesai
+    //             const waktuMulai = document.getElementById('waktu_mulai').value;
+    //             if (waktuMulai) {
+    //                 hitungWaktuSelesai(waktuMulai);
+    //             }
+    //         }
+    // });
+
+    // // Event listener untuk waktu mulai
+    // document.getElementById('waktu_mulai').addEventListener('input', function() {
+    //     const waktuMulai = document.getElementById('waktu_mulai').value;
+
+    //     // Jika waktu mulai kosong, jangan lakukan apa-apa
+    //     if (!waktuMulai || !window.sks) return;
+
+    //     // Hitung waktu selesai jika SKS sudah tersedia
+    //     hitungWaktuSelesai(waktuMulai);
+    // });
+
+    // // Fungsi untuk menghitung waktu selesai
+    // function hitungWaktuSelesai(waktuMulai) {
+    //     const sks = window.sks; // Mengambil SKS yang sudah diset
+
+    //     // Hitung waktu selesai berdasarkan SKS
+    //     let [hours, minutes] = waktuMulai.split(':').map(num => parseInt(num));
+    //     let startMinutes = (hours * 60) + minutes;
+
+    //     // Durasi berdasarkan SKS (1 SKS = 50 menit)
+    //     let duration = sks * 50;
+
+    //     // Hitung waktu selesai
+    //     let endMinutes = startMinutes + duration;
+    //     let endHours = Math.floor(endMinutes / 60);
+    //     let endMin = endMinutes % 60;
+
+    //     // Format waktu selesai menjadi HH:mm
+    //     let endTime = `${String(endHours).padStart(2, '0')}:${String(endMin).padStart(2, '0')}`;
+
+    //     // Set nilai waktu selesai di input form
+    //     document.getElementById('waktu_selesai').value = endTime;
+    // }
+
 </script>
-
 @endsection
