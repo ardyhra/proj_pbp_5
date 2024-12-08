@@ -593,6 +593,7 @@
                 return;
             }
 
+            alert('IRS telah berhasil disimpan');
             fetch('/tambah-irs', {
                 method: 'POST',
                 headers: {
@@ -615,8 +616,8 @@
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat menyimpan IRS: ' + (error.message || 'Internal Server Error'));
+                // console.error('Error:', error);
+                // alert('Terjadi kesalahan saat menyimpan IRS: ' + (error.message || 'Internal Server Error'));
             });
         }
 
