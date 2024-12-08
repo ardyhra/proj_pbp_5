@@ -592,8 +592,7 @@
                 alert('CSRF token tidak ditemukan!');
                 return;
             }
-
-            alert('IRS telah berhasil disimpan');
+            
             fetch('/tambah-irs', {
                 method: 'POST',
                 headers: {
@@ -604,117 +603,22 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    return response.json().then(err => {throw err});
+                    return response.json().then(err => { throw new Error(err.message || 'Internal Server Error') });
                 }
                 return response.json();
             })
             .then(data => {
                 if (data.success) {
-                    alert(data.message); // IRS berhasil disimpan
+                    alert(data.message);
                 } else {
                     alert('Terjadi kesalahan saat menyimpan IRS.');
                 }
             })
-            .catch(error => {
-                // console.error('Error:', error);
-                // alert('Terjadi kesalahan saat menyimpan IRS: ' + (error.message || 'Internal Server Error'));
+                        .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menyimpan IRS: ' + (error.message || 'Internal Server Error'));
             });
         }
-
-
-        // function removeCourse(courseName, element) {
-        //     if (!selectedCourses[courseName]) return;
-        //     const sks = selectedCourses[courseName].sks;
-        //     currentSKS -= sks;
-        //     updateSKS();
-        //     element.classList.remove('bg-blue-200');
-
-        //     courseSchedules[courseName].forEach(schedule => {
-        //         const cell = document.getElementById(`${schedule.day}-${schedule.time}`);
-        //         Array.from(cell.children).forEach(child => {
-        //             if (child.innerText.includes(courseName)) {
-        //                 cell.removeChild(child);
-        //             }
-        //         });
-        //     });
-
-        //     delete selectedCourses[courseName];
-        //     disableConflictingClasses();
-        // }
-
-        // function selectClass(courseName, element, schedule) {
-        //     if (selectedCourses[courseName].selectedClass) {
-        //         const { day, time } = selectedCourses[courseName].selectedClass;
-        //         document.getElementById(`${day}-${time}`).querySelectorAll('.schedule-item').forEach(el => {
-        //             if (el.innerText.includes(courseName)) {
-        //                 el.classList.remove('bg-blue-400');
-        //             }
-        //         });
-        //     }
-
-        //     selectedCourses[courseName].selectedClass = schedule;
-        //     element.classList.add('bg-blue-400');
-        //     disableConflictingClasses();
-        // }
-
-        // function deselectClass(courseName, element, schedule) {
-        //     selectedCourses[courseName].selectedClass = null;
-        //     element.classList.remove('bg-blue-400');
-        //     disableConflictingClasses();
-        // }
-
-        // function disableConflictingClasses() {
-        //     // Hapus semua state konflik sebelumnya
-        //     Object.keys(courseSchedules).forEach(course => {
-        //         courseSchedules[course].forEach(schedule => {
-        //             const cell = document.getElementById(`${schedule.day}-${schedule.time}`);
-        //             Array.from(cell.children).forEach(el => {
-        //                 el.classList.remove('opacity-50', 'pointer-events-none');
-        //             });
-        //         });
-        //     });
-
-        //     // Cek konflik untuk semua mata kuliah yang sudah dipilih
-        //     Object.keys(selectedCourses).forEach(courseName => {
-        //         const selection = selectedCourses[courseName].selectedClass;
-        //         if (selection) {
-        //             Object.keys(courseSchedules).forEach(course => {
-        //                 courseSchedules[course].forEach(schedule => {
-        //                     // Jika ada bentrok, tambahkan state konflik kecuali untuk mata kuliah yang dipilih
-        //                     if (course !== courseName && schedule.day === selection.day && schedule.time === selection.time) {
-        //                         const cell = document.getElementById(`${schedule.day}-${schedule.time}`);
-        //                         Array.from(cell.children).forEach(el => {
-        //                             // Hanya tambahkan pointer-events: none jika bukan mata kuliah yang dipilih
-        //                             if (!el.innerText.includes(courseName)) {
-        //                                 el.classList.add('opacity-50', 'pointer-events-none');
-        //                             }
-        //                         });
-        //                     }
-        //                 });
-        //             });
-        //         }
-        //     });
-        // }
-
-        
-
-
-        // // Fungsi untuk menghapus mata kuliah dari daftar tersedia
-        // function removeAvailableCourse(event, courseName) {
-        //     event.stopPropagation(); // Hindari memicu klik pada elemen induk
-        //     const courseList = document.getElementById("courseList");
-        //     const courses = courseList.getElementsByClassName("course-option");
-
-        //     Array.from(courses).forEach(course => {
-        //         const span = course.querySelector("span");
-        //         if (span && span.innerText.includes(courseName)) {
-        //             course.remove();
-        //         }
-        //     });
-        // }
-
-        // // Fungsi untuk menambahkan mata kuliah secara dinamis
-        // // Anda bisa menambahkan ini jika ingin menambah mata kuliah dari pencarian
     </script>
 
 </body>

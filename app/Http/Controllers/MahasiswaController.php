@@ -230,15 +230,20 @@ class MahasiswaController extends Controller
         ]);
 
         // Menyimpan data IRS yang diterima
-        $data = $request->json('matakuliah_terdaftar'); // Ambil array matakuliah_terdaftar
+        $data = $request->input('matakuliah_terdaftar'); // Ambil array matakuliah_terdaftar
 
         // Insert data ke dalam tabel IRS
-        foreach ($data as $item) {
-            IRS::create([
-                'nim' => $item['nim'],
-                'id_jadwal' => $item['id_jadwal'],
-                'status' => $item['status'],
-            ]);
+        try {
+            foreach ($data as $item) {
+                IRS::create([
+                    'nim' => $item['nim'],
+                    'id_jadwal' => $item['id_jadwal'],
+                    'status' => $item['status'],
+                ]);
+            }
+            return response()->json(['success' => true, 'message' => 'IRS berhasil disimpan!']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
 
         // Kembalikan respon sukses
