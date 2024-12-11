@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\irs;
 use App\Models\dosen;
 use App\Models\jadwal;
-use App\Models\mahasiswa;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use PhpParser\Node\Expr\Clone_;
 use Illuminate\Support\Facades\DB;
@@ -163,7 +163,7 @@ class DosenController extends Controller
         ->join('tahun_ajaran as ta', 'j.id_tahun', '=', 'ta.id_tahun')
         ->select(
             'm.kode_mk',
-            'm.nama',
+            'm.nama_mk',
             'm.sks',
             'j.kelas',
             'r.id_ruang',
@@ -234,7 +234,7 @@ class DosenController extends Controller
         ->where('i.nim', '=', $nim)
         ->select(
             'm.kode_mk',
-            'm.nama',
+            'm.nama_mk',
             'm.sks',
             'j.kelas',
             'r.id_ruang',

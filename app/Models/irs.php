@@ -13,12 +13,16 @@ class irs extends Model
     protected $table = 'irs';
     public $incrementing = false;
     protected $keyType = 'string';
-
+    protected $fillable = [
+        'nim',
+        'id_jadwal',
+        'status',
+    ];
 
     // Relasi ke Mahasiswa
     public function mahasiswa()
     {
-        return $this->belongsTo(mahasiswa::class,'nim', 'nim');
+        return $this->belongsTo(Mahasiswa::class,'nim', 'nim');
     }
     
     public function jadwal()

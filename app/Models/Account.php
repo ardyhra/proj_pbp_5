@@ -23,7 +23,7 @@ class Account extends Authenticatable
 
     public function mahasiswa()
     {
-        return $this->belongsTo(mahasiswa::class, 'related_id', 'nim');
+        return $this->belongsTo(Mahasiswa::class, 'related_id', 'nim');
     }
 
     public function dosen()

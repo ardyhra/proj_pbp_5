@@ -101,7 +101,8 @@
             <div class="mb-6">
                 <div class="p-4 bg-gray-200 rounded-lg text-gray-700">
                     <p class="text-lg">Tahun Ajaran</p>
-                    <p class="text-2xl font-semibold">{{$tahun->tahun_ajaran}}</p>
+                    {{-- <p class="text-2xl font-semibold">{{$tahun->tahun_ajaran}}</p> --}}
+                    <p class="text-2xl font-semibold">Semester Ganjil 2024/2025</p>
                 </div>
             </div>
 
