@@ -47,6 +47,13 @@ class User extends Authenticatable
 
     // Misalkan user memiliki relasi dengan Prodi
     public function prodi() {
-        return $this->belongsTo(Programstudi::class, 'idprodi');
+        return $this->belongsTo(Programstudi::class, 'id_prodi');
     }
+
+    // Relasi ke Dosen
+    public function dosen()
+    {
+        return $this->belongsTo(Dosen::class, 'nidn', 'nidn');
+    }
+
 }

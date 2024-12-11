@@ -13,7 +13,11 @@ class dosen extends Model
     protected $primaryKey = 'nidn';
     public $incrementing = false;
     protected $keyType = 'string';
-
+    protected $fillable = [
+        'nidn', 
+        'nama', 
+        'id_prodi',
+    ];
     // Relasi ke Mahasiswa
     public function mahasiswa()
     {

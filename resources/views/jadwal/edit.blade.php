@@ -14,17 +14,6 @@
             <input type="text" id="kode_mk" name="kode_mk" value="{{ $jadwal->kode_mk }}" class="w-full p-2 border rounded">
         </div>
 
-        {{-- <div class="mb-4">
-            <label for="kelas" class="block">Kelas</label>
-            <select name="kelas" id="kelas" class="w-full p-2 border rounded">
-                <option value="{{ $jadwal->kelas }}" {{ $jadwal->kelas == $jadwal->kelas ? 'selected' : '' }} ></option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-                <option value="E">E</option>
-            </select>
-        </div> --}}
         <div class="mb-4">
             <label for="kelas" class="block">Kelas</label>
             <select name="kelas" id="kelas" class="w-full p-2 border rounded">
@@ -285,67 +274,6 @@
         }
 
     });
-
-    // // waktu selesai
-    // document.getElementById('kode_mk').addEventListener('input', function() {
-    //     const kodeMk = document.getElementById('kode_mk').value;
-
-    //     // Jika kode MK kosong, jangan lakukan apa-apa
-    //     if (!kodeMk) return;
-
-    //     // Lakukan AJAX untuk mendapatkan SKS berdasarkan kode MK
-    //     $.ajax({
-    //         url: "{{ route('jadwal.check-kode-mk') }}",
-    //         method: "POST",
-    //         data: {
-    //             "_token": "{{ csrf_token() }}",
-    //             "kode_mk": kodeMk
-    //         },
-    //         success: function(response) {
-
-    //             // Simpan SKS dari response
-    //             window.sks = response.sks;
-    //             // Jika waktu mulai sudah terisi, hitung waktu selesai
-    //             const waktuMulai = document.getElementById('waktu_mulai').value;
-    //             if (waktuMulai) {
-    //                 hitungWaktuSelesai(waktuMulai);
-    //             }
-    //         }
-    // });
-
-    // // Event listener untuk waktu mulai
-    // document.getElementById('waktu_mulai').addEventListener('input', function() {
-    //     const waktuMulai = document.getElementById('waktu_mulai').value;
-
-    //     // Jika waktu mulai kosong, jangan lakukan apa-apa
-    //     if (!waktuMulai || !window.sks) return;
-
-    //     // Hitung waktu selesai jika SKS sudah tersedia
-    //     hitungWaktuSelesai(waktuMulai);
-    // });
-
-    // // Fungsi untuk menghitung waktu selesai
-    // function hitungWaktuSelesai(waktuMulai) {
-    //     const sks = window.sks; // Mengambil SKS yang sudah diset
-
-    //     // Hitung waktu selesai berdasarkan SKS
-    //     let [hours, minutes] = waktuMulai.split(':').map(num => parseInt(num));
-    //     let startMinutes = (hours * 60) + minutes;
-
-    //     // Durasi berdasarkan SKS (1 SKS = 50 menit)
-    //     let duration = sks * 50;
-
-    //     // Hitung waktu selesai
-    //     let endMinutes = startMinutes + duration;
-    //     let endHours = Math.floor(endMinutes / 60);
-    //     let endMin = endMinutes % 60;
-
-    //     // Format waktu selesai menjadi HH:mm
-    //     let endTime = `${String(endHours).padStart(2, '0')}:${String(endMin).padStart(2, '0')}`;
-
-    //     // Set nilai waktu selesai di input form
-    //     document.getElementById('waktu_selesai').value = endTime;
-    // }
 
 </script>
 @endsection

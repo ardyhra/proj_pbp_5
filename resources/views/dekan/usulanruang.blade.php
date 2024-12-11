@@ -126,7 +126,7 @@
                 </table>
 
                 <!-- Tombol Aksi -->
-                <div id="tombol-aksi-container" class="mt-6 flex space-x-4 justify-end hidden">
+                <div id="tombol-aksi-container" class="mt-6 flex space-x-4 justify-end">
                     <button onclick="setujuiUsulan(currentIdTahun)" class="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600">
                         Setujui Usulan
                     </button>
