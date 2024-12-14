@@ -24,5 +24,10 @@ class dosen extends Model
         return $this->hasMany(Mahasiswa::class, 'nidn', 'nidn');
     }
 
+    public function account()
+    {
+        return $this->belongsTo(Account::class, 'related_id', 'nidn');
+    }
+
 
 }

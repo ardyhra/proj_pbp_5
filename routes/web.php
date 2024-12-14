@@ -147,12 +147,14 @@ Route::get('/usulanruang', function () {
 Route::get('/usulanjadwal', function () {
     return view('dekan/usulanjadwal');
 });
-
+//Route::post('/usulanruang/{id_tahun}/{id_prodi}/update-status', [DekanController::class, 'updateStatusUsulanProdiDekan'])->name('usulanruang.updateStatusProdiDekan');
+Route::post('/usulanruang/{id_tahun}/{id_prodi}/update-status', [DekanController::class, 'updateStatusUsulanDekan'])
+     ->name('usulanruang.updateStatusDekan');
 Route::get('/usulanruang', [DekanController::class, 'indexDekan'])->name('usulanruang.dekan');
 Route::post('/usulanruang/{id_tahun}/update-status', [DekanController::class, 'updateStatusUsulanDekan'])->name('usulanruang.updateStatusDekan');
 Route::get('/get-usulan/{id_tahun}', [DekanController::class, 'getUsulan'])->name('usulanruang.getUsulan');
 Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [DekanController::class, 'getUsulanDetail'])->name('usulanruang.getUsulanDetail');
-Route::post('/usulanruang/{id_tahun}/{id_prodi}/update-status', [DekanController::class, 'updateStatusUsulanProdiDekan'])->name('usulanruang.updateStatusProdiDekan');
+//Route::post('/usulanruang/{id_tahun}/{id_prodi}/update-status', [DekanController::class, 'updateStatusUsulanProdiDekan'])->name('usulanruang.updateStatusProdiDekan');
 
 // ========================================================================================================================
 // KETUA PROGRAM STUDI

@@ -30,16 +30,6 @@ class Account extends Authenticatable
     {
         return $this->belongsTo(dosen::class, 'related_id', 'nidn');
     }
+    
 }
 
-
-
-
-
-// use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Illuminate\Database\Eloquent\Model;
-
-// class Account extends Model
-// {
-//     use HasFactory;
-// }

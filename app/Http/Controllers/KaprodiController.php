@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class KaprodiController extends Controller
 {  
-
+    
     //UNTUK LIAT KE VIEW FILTER
     public function kaprodi(Request $request)
     {

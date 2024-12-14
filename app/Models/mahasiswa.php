@@ -23,7 +23,7 @@ class Mahasiswa extends Model
     // Relasi ke Prodi
     public function prodi()
     {
-        return $this->belongsTo(prodi::class, 'id_prodi', 'id_prodi');
+        return $this->belongsTo(programstudi::class, 'id_prodi', 'id_prodi');
     }
 
     // Relasi ke IRS
@@ -35,6 +35,6 @@ class Mahasiswa extends Model
     // Relasi ke Riwayat Status
     public function riwayat_status()
     {
-        return $this->hasMany(riwayat_status::class, 'nim', 'nim');
+        return $this->hasMany(riwayatstatus::class, 'nim', 'nim');
     }
 }
