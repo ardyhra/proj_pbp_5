@@ -3,8 +3,12 @@
 @section('title', 'SISKARA - Manajemen Jadwal')
 @section('content')
 <div class="container mx-auto mt-10">
-    <h1 class="text-3xl font-semibold mb-4">Manajemen Jadwal Kuliah Kaprodi</h1>
-
+    <div class="mb-5">
+        <h1 class="text-3xl font-semibold mb-4 text-center">
+            Manajemen Jadwal Kuliah Kaprodi
+        </h1>
+    </div>
+    
     <!-- Form untuk memilih Tahun Ajaran dan Program Studi -->
     <form action="{{ route('jadwal.view') }}" method="GET" class="mb-5">
         @csrf
@@ -37,6 +41,7 @@
         <button type="submit" class="mt-4 bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition">Filter Jadwal</button>
     </form>
 </div>
+
 @endsection
 
 

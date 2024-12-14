@@ -5,17 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Ruang;
 use App\Models\Dosen;
 use App\Models\MataKuliah;
-use App\Models\TahunAjaran;
+use App\Models\User;
 use App\Models\Jadwal;
+use App\Models\tahunajaran;
 use App\Models\ProgramStudi;
+use App\Models\Usulanjadwal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class KaprodiController extends Controller
-{   
+{  
+    
     //UNTUK LIAT KE VIEW FILTER
     public function kaprodi(Request $request)
     {
+        
         // Ambil data Tahun Ajaran dan Program Studi
         $tahunajarans = TahunAjaran::all();
         $prodis = Programstudi::all();
@@ -27,6 +31,7 @@ class KaprodiController extends Controller
         // Kirim data ke view
         return view('manajemen-jadwal-kaprodi', compact('tahunajarans', 'prodis', 'id_tahun', 'id_prodi'));
     }
+
     //FIX 
     public function dashboard() {
         // Ambil data pengguna yang sedang login
@@ -54,5 +59,34 @@ class KaprodiController extends Controller
         // Mengirim data ke view
         return view('kaprodi.manajemen-jadwal-kaprodi', compact('tahunajarans', 'prodis', 'jadwals', 'id_tahun', 'id_prodi'));
     }
+
+    public function rekapJadwal()
+    {
+        // Ambil data tahun ajaran dan program studi dari database
+        $tahunajarans = TahunAjaran::all(); // Model TahunAjaran
+        $prodis = Programstudi::all(); // Model Prodi
+
+        // Kirim data ke view
+        return view('kaprodi.rekapjadwal', compact('tahunajarans', 'prodis'));
+    }
+    // Menampilkan rekap jadwal berdasarkan tahun ajaran dan prodi
+    // public function rekapJadwal(Request $request)
+    // {
+    //     $tahunajaran = Tahunajaran::all(); // Ambil semua data tahun ajaran
+    //     $prodi = Programstudi::all(); // Ambil semua data prodi
+
+    //     $query = Usulanjadwal::query();
+
+    //     // Filter berdasarkan tahun ajaran dan prodi
+    //     if ($request->has('id_tahunajaran') && $request->has('id_prodi')) {
+    //         $query->where('id_tahunajaran', $request->id_tahunajaran)
+    //               ->where('id_prodi', $request->id_prodi);
+    //     }
+
+    //     $jadwals = $query->with(['tahunajaran', 'prodi'])->get(); // Ambil data jadwal dengan relasi
+
+    //     return view('kaprodi.rekapjadwal', compact('jadwals', 'tahunajaran', 'prodi'));
+    // }
+    
 }
 

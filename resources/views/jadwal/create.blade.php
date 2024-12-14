@@ -69,6 +69,9 @@
             <button type="button" id="submitButton" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
                 Buat Jadwal
             </button>
+            <a href="#" id="cancelButton" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 ml-2">
+                Cancel
+            </a>
         </div>
     </form>
 </div>
@@ -197,6 +200,24 @@
 
 
         });
+        // Menambahkan event listener untuk tombol cancel
+        document.getElementById('cancelButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Mencegah aksi default
+
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Semua perubahan yang belum disimpan akan hilang.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, keluar',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kembali ke halaman sebelumnya dengan parameter yang sesuai
+                    window.history.back(); // Menggunakan back agar kembali ke halaman sebelumnya
+                }
+            });
+        });
     });
     // waktu selesai
     document.getElementById('kode_mk').addEventListener('input', function() {
@@ -258,6 +279,8 @@
         // Set nilai waktu selesai di input form
         document.getElementById('waktu_selesai').value = endTime;
     }
+
+    
 });
 </script>
 

@@ -29,6 +29,7 @@ class JadwalController extends Controller
                     ->where('jadwal.id_tahun', $id_tahun)
                     ->where('jadwal.id_prodi', $id_prodi)
                     ->select('jadwal.*', 'matakuliah.nama_mk', 'ruang.id_ruang') // Pilih kolom yang ingin ditampilkan
+                    ->orderBy('hari')
                     ->get();
         //dd($jadwals); 
 
@@ -158,27 +159,6 @@ class JadwalController extends Controller
             ]);
         }
     }
-
-    // Fungsi untuk mengajukan jadwal ke Dekan
-    public function ajukanJadwal($id_tahun, $id_prodi)
-    {
-        // Cari jadwal yang sesuai dengan id_tahun dan id_prodi
-        $jadwals = Jadwal::where('id_tahun', $id_tahun)
-                         ->where('id_prodi', $id_prodi)
-                         ->get();
-
-        // Lakukan logika pengajuan jadwal ke Dekan
-        foreach ($jadwals as $jadwal) {
-            // Misalnya kita menambahkan status atau flag 'ajukan' ke jadwal
-            $jadwal->status = 'Diajukan ke Dekan';
-            $jadwal->save();
-        }
-
-        // Redirect kembali dengan pesan sukses
-        return redirect()->route('jadwal.index', ['id_tahun' => $id_tahun, 'id_prodi' => $id_prodi])
-                         ->with('success', 'Jadwal telah diajukan ke Dekan.');
-    }
-
 
     public function edit($id)
     {
@@ -334,57 +314,5 @@ class JadwalController extends Controller
 
         return response()->json(['duplicate' => $exists]);
     }
-
-
-
-    // public function manajemenJadwal(Request $request)
-    // {
-    //     // Ambil data tahun ajaran dan program studi
-    //     $tahunAjarans = TahunAjaran::all();
-    //     $prodis = ProgramStudi::all();  // Mengambil semua program studi
-    //     $id_tahun = $request->query('id_tahun');
-    //     $id_prodi = $request->query('id_prodi');
-
-    //     // Ambil data jadwal berdasarkan id_tahun dan id_prodi
-    //     $jadwals = Jadwal::where('id_tahun', $id_tahun)
-    //                      ->where('id_prodi', $id_prodi)
-    //                      ->get();
-
-    //     // Mengirim data ke view
-    //     return view('kaprodi.manajemen-jadwal-kaprodi', compact('tahunAjarans', 'prodis', 'jadwals', 'id_tahun', 'id_prodi'));
-    // }
-    // public function kaprodi(Request $request)
-    // {
-    //     // Ambil data Tahun Ajaran dan Program Studi untuk dropdown
-    //     $tahunajarans = TahunAjaran::all();
-    //     $prodis = ProgramStudi::all();
-
-    //     // Ambil jadwal berdasarkan filter id_tahun dan id_prodi
-    //     $jadwals = Jadwal::with(['prodi', 'tahunAjaran', 'matakuliah', 'ruang'])
-    //                     ->where('id_tahun', $request->input('id_tahun'))
-    //                     ->where('id_prodi', $request->input('id_prodi'))
-    //                     ->get();
-
-    //     // Return view dengan data jadwal dan pilihan tahun ajaran dan prodi
-    //     return view('manajemen-jadwal-kaprodi', compact('jadwals', 'tahun_ajaran', 'prodi'));
-    // }   
-
-    // public function dashboard() { 
-    //     $currentYear = TahunAjaran::orderBy('tahun_ajaran', 'desc')->orderBy('semester', 'desc')->first(); 
-    //     if (!$currentYear) { 
-    //         return redirect()->route('dashboard.kaprodi')->with('error', 'Tahun Ajaran belum tersedia.'); 
-    //     } 
-    //     $jumlahRuang = Jadwal::distinct('id_ruang')->count('id_ruang'); 
-    //     $jumlahDosen = 30; // Misal data dari tabel dosen 
-    //     $jumlahMahasiswa = 200; // Misal data dari tabel mahasiswa 
-    //     $jumlahMataKuliah = Jadwal::where('id_tahun', $currentYear->id)->distinct('kode_mk')->count('kode_mk'); 
-    //     $statusPenyusunan = [ 
-    //         'scheduled' => Jadwal::where('id_tahun', $currentYear->id)->count(), 
-    //         'not_scheduled' => 100 - Jadwal::where('id_tahun', $currentYear->id)->count() // Misal total 100 MK 
-    //     ]; 
-    //     return view('kaprodi.dashboard', compact('jumlahRuang', 'jumlahDosen', 'jumlahMahasiswa', 'jumlahMataKuliah', 'statusPenyusunan', 'currentYear'));
-    // }
-    
-
 }
 

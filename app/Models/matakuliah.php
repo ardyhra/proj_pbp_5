@@ -14,7 +14,7 @@ class matakuliah extends Model
     protected $primaryKey = 'kode_mk';  // Assuming 'kode_mk' is the primary key
 
     
-    protected $fillable = ['kode_mk', 'nama', 'sks', 'plot_semester','jenis'];
+    protected $fillable = ['kode_mk', 'nama_mk', 'sks', 'plot_semester','jenis'];
 
     public function jadwal()
     {
