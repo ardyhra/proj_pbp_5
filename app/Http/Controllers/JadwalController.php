@@ -260,36 +260,46 @@ class JadwalController extends Controller
         ])->with('success', 'Jadwal berhasil dihapus!');
     }
     
-    public function checkConflict(Request $request) {
+    public function checkConflict(Request $request)
+    {
         $id_tahun = $request->input('id_tahun');
         $id_prodi = $request->input('id_prodi');
-        $id_ruang = $request->input('id_ruang');
         $hari = $request->input('hari');
+        $id_ruang = $request->input('id_ruang');
         $waktu_mulai = $request->input('waktu_mulai');
         $waktu_selesai = $request->input('waktu_selesai');
-        $id_jadwal = $request->input('id_jadwal'); // optional jika untuk edit
-    
-        // Query untuk mengecek bentrok:
-        // Misal logika bentrok: jadwal lain di ruang sama, hari sama, dan jam overlap
-        $query = DB::table('jadwal')
-            ->where('id_tahun', $id_tahun)
+        $kode_mk = $request->input('kode_mk'); // Pastikan kode_mk juga dikirim saat AJAX check-conflict
+        $id_jadwal = $request->input('id_jadwal'); // jika dalam edit mode, agar tidak dibandingkan dengan dirinya sendiri
+
+        // Query untuk cek bentrok ruang berdasarkan hari, ruang, dan waktu
+        $bentrokRuang = Jadwal::where('id_tahun', $id_tahun)
             ->where('id_prodi', $id_prodi)
-            ->where('id_ruang', $id_ruang)
-            ->where('hari', $hari);
-    
-        // Jika sedang edit, exclude jadwal sekarang
-        if ($id_jadwal) {
-            $query->where('id_jadwal', '!=', $id_jadwal);
+            ->where('hari', $hari)
+            ->where(function($query) use ($waktu_mulai, $waktu_selesai) {
+                $query->whereBetween('waktu_mulai', [$waktu_mulai, $waktu_selesai])
+                    ->orWhereBetween('waktu_selesai', [$waktu_mulai, $waktu_selesai])
+                    ->orWhere(function($q) use ($waktu_mulai, $waktu_selesai) {
+                        $q->where('waktu_mulai', '<=', $waktu_mulai)
+                            ->where('waktu_selesai', '>=', $waktu_selesai);
+                    });
+            })
+            ->where(function($query) use ($id_ruang, $kode_mk) {
+                // Disini cek bentrok ruang DAN bentrok mk
+                // Bentrok ruang:
+                $query->where('id_ruang', $id_ruang)
+                    ->orWhere('kode_mk', $kode_mk);
+            });
+
+        // Jika edit, exclude jadwal ini sendiri
+        if (!empty($id_jadwal)) {
+            $bentrokRuang->where('id_jadwal', '!=', $id_jadwal);
         }
-    
-        // Cek overlap waktu: (waktu_mulai < jadwal_lain.waktu_selesai) AND (waktu_selesai > jadwal_lain.waktu_mulai)
-        $bentrok = $query->where(function($q) use ($waktu_mulai, $waktu_selesai) {
-            $q->where('waktu_mulai', '<', $waktu_selesai)
-              ->where('waktu_selesai', '>', $waktu_mulai);
-        })->exists();
-    
-        return response()->json(['conflict' => $bentrok]);
+
+        $conflictExists = $bentrokRuang->exists();
+
+        return response()->json(['conflict' => $conflictExists]);
     }
+
     
     public function checkDuplicate(Request $request)
     {

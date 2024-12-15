@@ -103,17 +103,6 @@
                         <!-- Data rekap prodi akan dimuat di sini -->
                     </tbody>
                 </table>
-
-                <!-- Tombol Aksi -->
-                <div id="tombol-aksi-container" class="mt-6 flex space-x-4 justify-end">
-                    <button onclick="setujuiUsulan(currentIdTahun)" class="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600">
-                        Setujui Usulan
-                    </button>
-                    <button onclick="tolakUsulan(currentIdTahun)" class="bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600">
-                        Tolak Usulan
-                    </button>
-                </div>
-
             </div>
 
             <!-- Tabel Detail Ruang Kuliah -->
@@ -279,42 +268,37 @@
                 actionContainer.innerHTML = `<span class="text-gray-700 font-semibold">Usulan belum diajukan.</span>`;
             }
         }
-        // Fungsi untuk menyetujui usulan
-        function setujuiUsulan(id_tahun) {
-            // Kirim permintaan untuk memperbarui status ke 'disetujui'
-            updateStatusUsulanDekan(id_tahun, id_prodi, 'disetujui');
+
+        function updateStatusUsulanProdiDekan(id_tahun, id_prodi, status) {
+            const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfMeta) {
+                console.error('Token CSRF tidak ditemukan.');
+                return;
+            }
+
+            const csrfToken = csrfMeta.getAttribute('content');
+
+            fetch(`/usulanruang/${id_tahun}/${id_prodi}/update-status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ status })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Gagal memperbarui status usulan prodi');
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat memperbarui status usulan prodi');
+            });
         }
-
-
-        // Fungsi untuk menolak usulan
-        function tolakUsulan(id_tahun) {
-            // Kirim permintaan untuk memperbarui status ke 'ditolak'
-            updateStatusUsulanDekan(id_tahun,id_prodi, 'ditolak');
-        }
-
-
-function updateStatusUsulanDekan(id_tahun, id_prodi, status) {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content'); // Mengambil CSRF Token
-    
-    fetch(`/usulanruang/${id_tahun}/${id_prodi}/update-status`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken // Menyertakan CSRF token di header
-        },
-        body: JSON.stringify({ status: status }) // Mengirimkan data status
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message); // Menampilkan pesan hasil update
-        location.reload(); // Reload halaman untuk memperbarui data
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan saat memperbarui status usulan prodi.');
-    });
-}
-
 
     </script>
 

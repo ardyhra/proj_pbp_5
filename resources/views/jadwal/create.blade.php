@@ -144,7 +144,8 @@
                                 "hari": hari,
                                 "id_ruang": ruang,
                                 "waktu_mulai": waktuMulai,
-                                "waktu_selesai": waktuSelesai
+                                "waktu_selesai": waktuSelesai,
+                                "kode_mk": kodeMk // Ditambahkan
                             },
                             success: function(conflictResponse) {
                                 if (conflictResponse.conflict) {

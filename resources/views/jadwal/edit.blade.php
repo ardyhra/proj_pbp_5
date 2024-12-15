@@ -155,6 +155,7 @@
                                 "id_ruang": ruang,
                                 "waktu_mulai": waktuMulai,
                                 "waktu_selesai": waktuSelesai,
+                                "kode_mk": kodeMk,
                                 "id_jadwal": "{{ $jadwal->id_jadwal }}" // Untuk mengecualikan jadwal ini sendiri saat edit
                             },
                             success: function(conflictResponse) {

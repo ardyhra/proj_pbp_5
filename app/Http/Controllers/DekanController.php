@@ -6,6 +6,7 @@ use App\Models\TahunAjaran;
 use App\Models\UsulanRuangKuliah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DekanController extends Controller
 {
@@ -41,95 +42,95 @@ class DekanController extends Controller
 
 
     // Mengupdate status usulan oleh Dekan
-    // public function updateStatusUsulanDekan(Request $request, $id_tahun)
-    // {
-    //     $validated = $request->validate([
-    //         'status' => 'required|in:disetujui,ditolak,batalkan',
-    //     ]);
-
-    //     if ($validated['status'] === 'batalkan') {
-    //         // Kembalikan status ke 'diajukan'
-    //         $newStatus = 'diajukan';
-    //     } else {
-    //         $newStatus = $validated['status'];
-    //     }
-
-    //     UsulanRuangKuliah::where('id_tahun', $id_tahun)
-    //         ->update(['status' => $newStatus]);
-
-    //     return response()->json(['message' => 'Status usulan berhasil diperbarui oleh Dekan.']);
-    // }
-    public function updateStatusUsulanDekan(Request $request, $id_tahun, $id_prodi)
+    public function updateStatusUsulanDekan(Request $request, $id_tahun)
     {
-        // Log atau Debug
-        Log::info("ID Tahun: $id_tahun, ID Prodi: $id_prodi");
-    
-        // Validasi status yang diterima
         $validated = $request->validate([
-            'status' => 'required|in:belum diajukan,diajukan,disetujui,ditolak',
+            'status' => 'required|in:disetujui,ditolak,batalkan',
         ]);
-    
-        // Mencari usulan ruang kuliah untuk tahun ajaran dan program studi yang dipilih
-        $usulan = UsulanRuangKuliah::where('id_tahun', $id_tahun)
-                                   ->where('id_prodi', $id_prodi)
-                                   ->first(); 
-    
-        // Jika usulan ditemukan, update statusnya
-        if ($usulan) {
-            Log::info("Usulan ditemukan, status sebelum update: " . $usulan->status);
-    
-            $usulan->status = $validated['status']; 
-            $usulan->save(); 
-    
-            return response()->json(['message' => 'Status usulan prodi berhasil diperbarui oleh Dekan.']);
+
+        if ($validated['status'] === 'batalkan') {
+            // Kembalikan status ke 'diajukan'
+            $newStatus = 'diajukan';
+        } else {
+            $newStatus = $validated['status'];
         }
-    
-        // Jika usulan tidak ditemukan
-        Log::error("Usulan tidak ditemukan untuk ID Tahun: $id_tahun dan ID Prodi: $id_prodi");
-        return response()->json(['message' => 'Usulan tidak ditemukan.'], 404);
+
+        UsulanRuangKuliah::where('id_tahun', $id_tahun)
+            ->update(['status' => $newStatus]);
+
+        return response()->json(['message' => 'Status usulan berhasil diperbarui oleh Dekan.']);
     }
+    // public function updateStatusUsulanDekan(Request $request, $id_tahun, $id_prodi)
+    // {
+    //     // Log atau Debug
+    //     Log::info("ID Tahun: $id_tahun, ID Prodi: $id_prodi");
+    
+    //     // Validasi status yang diterima
+    //     $validated = $request->validate([
+    //         'status' => 'required|in:belum diajukan,diajukan,disetujui,ditolak',
+    //     ]);
+    
+    //     // Mencari usulan ruang kuliah untuk tahun ajaran dan program studi yang dipilih
+    //     $usulan = UsulanRuangKuliah::where('id_tahun', $id_tahun)
+    //                                ->where('id_prodi', $id_prodi)
+    //                                ->first(); 
+    
+    //     // Jika usulan ditemukan, update statusnya
+    //     if ($usulan) {
+    //         Log::info("Usulan ditemukan, status sebelum update: " . $usulan->status);
+    
+    //         $usulan->status = $validated['status']; 
+    //         $usulan->save(); 
+    
+    //         return response()->json(['message' => 'Status usulan prodi berhasil diperbarui oleh Dekan.']);
+    //     }
+    
+    //     // Jika usulan tidak ditemukan
+    //     Log::error("Usulan tidak ditemukan untuk ID Tahun: $id_tahun dan ID Prodi: $id_prodi");
+    //     return response()->json(['message' => 'Usulan tidak ditemukan.'], 404);
+    // }
     
 
-
-    // public function updateStatusUsulanProdiDekan(Request $request, $id_tahun, $id_prodi)
-    // {
-    //     $validated = $request->validate([
-    //         'status' => 'required|in:belum diajukan,diajukan,disetujui,ditolak,batalkan',
-    //     ]);
-
-    //     $newStatus = $validated['status'];
-    //     if ($newStatus === 'batalkan') {
-    //         $newStatus = 'diajukan';
-    //     }
-
-    //     UsulanRuangKuliah::where('id_tahun', $id_tahun)
-    //         ->where('id_prodi', $id_prodi)
-    //         ->update(['status' => $newStatus]);
-
-    //     return response()->json(['message' => 'Status usulan prodi berhasil diperbarui oleh Dekan.']);
-    // }
 
     public function updateStatusUsulanProdiDekan(Request $request, $id_tahun, $id_prodi)
     {
-        // Validasi status yang diterima
         $validated = $request->validate([
-            'status' => 'required|in:belum diajukan,diajukan,disetujui,ditolak',
+            'status' => 'required|in:belum diajukan,diajukan,disetujui,ditolak,batalkan',
         ]);
-    
-        // Update status usulan ruang kuliah untuk tahun dan prodi yang dipilih
-        $usulan = UsulanRuangKuliah::where('id_tahun', $id_tahun)
-            ->where('id_prodi', $id_prodi)
-            ->first();
-    
-        if ($usulan) {
-            $usulan->status = $validated['status'];
-            $usulan->save();
-    
-            return response()->json(['message' => 'Status usulan prodi berhasil diperbarui oleh Dekan.']);
+
+        $newStatus = $validated['status'];
+        if ($newStatus === 'batalkan') {
+            $newStatus = 'diajukan';
         }
-    
-        return response()->json(['message' => 'Usulan tidak ditemukan.'], 404);
+
+        UsulanRuangKuliah::where('id_tahun', $id_tahun)
+            ->where('id_prodi', $id_prodi)
+            ->update(['status' => $newStatus]);
+
+        return response()->json(['message' => 'Status usulan prodi berhasil diperbarui oleh Dekan.']);
     }
+
+    // public function updateStatusUsulanProdiDekan(Request $request, $id_tahun, $id_prodi)
+    // {
+    //     // Validasi status yang diterima
+    //     $validated = $request->validate([
+    //         'status' => 'required|in:belum diajukan,diajukan,disetujui,ditolak',
+    //     ]);
+    
+    //     // Update status usulan ruang kuliah untuk tahun dan prodi yang dipilih
+    //     $usulan = UsulanRuangKuliah::where('id_tahun', $id_tahun)
+    //         ->where('id_prodi', $id_prodi)
+    //         ->first();
+    
+    //     if ($usulan) {
+    //         $usulan->status = $validated['status'];
+    //         $usulan->save();
+    
+    //         return response()->json(['message' => 'Status usulan prodi berhasil diperbarui oleh Dekan.']);
+    //     }
+    
+    //     return response()->json(['message' => 'Usulan tidak ditemukan.'], 404);
+    // }
     
 
     // Mendapatkan data usulan berdasarkan tahun ajaran
