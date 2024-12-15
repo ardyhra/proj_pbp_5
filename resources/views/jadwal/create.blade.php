@@ -82,7 +82,6 @@
         document.getElementById('submitButton').addEventListener('click', function(event) {
             event.preventDefault(); // Prevent form submission
 
-            // Initialize an array to hold the names of the missing fields
             let missingFields = [];
 
             // Get field values
@@ -94,7 +93,7 @@
             const waktuSelesai = document.getElementById('waktu_selesai').value;
             const kuota = document.getElementById('kuota').value;
 
-            // Add missing fields to the array
+          
             if (!kodeMk) missingFields.push("Kode MK");
             if (!kelas) missingFields.push("Kelas");
             if (!ruang) missingFields.push("Ruang");
@@ -103,7 +102,6 @@
             if (!waktuSelesai) missingFields.push("Waktu Selesai");
             if (!kuota) missingFields.push("Kuota");
 
-            // If there are any missing fields, show an alert
             if (missingFields.length > 0) {
                 Swal.fire({
                     icon: "error",
@@ -113,7 +111,6 @@
                 return;
             }
 
-            // Pastikan setelah memastikan kode_mk valid
             // Setelah cek kode_mk valid
             $.ajax({
                 url: "{{ route('jadwal.check-duplicate') }}",
@@ -201,9 +198,9 @@
 
 
         });
-        // Menambahkan event listener untuk tombol cancel
+    
         document.getElementById('cancelButton').addEventListener('click', function(event) {
-            event.preventDefault(); // Mencegah aksi default
+            event.preventDefault(); 
 
             Swal.fire({
                 title: 'Apakah Anda yakin?',
@@ -214,8 +211,8 @@
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Kembali ke halaman sebelumnya dengan parameter yang sesuai
-                    window.history.back(); // Menggunakan back agar kembali ke halaman sebelumnya
+                  
+                    window.history.back(); 
                 }
             });
         });
@@ -224,7 +221,6 @@
     document.getElementById('kode_mk').addEventListener('input', function() {
     const kodeMk = document.getElementById('kode_mk').value;
 
-    // Jika kode MK kosong, jangan lakukan apa-apa
     if (!kodeMk) return;
 
     // Lakukan AJAX untuk mendapatkan SKS berdasarkan kode MK
@@ -239,7 +235,7 @@
 
             // Simpan SKS dari response
             window.sks = response.sks;
-            // Jika waktu mulai sudah terisi, hitung waktu selesai
+            
             const waktuMulai = document.getElementById('waktu_mulai').value;
             if (waktuMulai) {
                 hitungWaktuSelesai(waktuMulai);
