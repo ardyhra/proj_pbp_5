@@ -237,9 +237,6 @@ class JadwalController extends Controller
         return redirect()->route('jadwal.view', ['id_tahun' => $id_tahun, 'id_prodi' => $id_prodi])->with('success', 'Jadwal berhasil diperbarui!');
     }
 
-
- 
-
     // Menghapus jadwal
     public function destroy($id, Request $request)
     {
