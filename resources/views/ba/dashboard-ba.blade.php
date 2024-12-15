@@ -134,5 +134,11 @@
             </div>
         </main>
     </div>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-sky-500 to-blue-600 text-white text-center p-4 absolute w-full">
+        <hr>
+        <p class="text-sm text-center">&copy; Siskara Inc. All rights reserved.</p>
+    </footer>
 </body>
 </html>
