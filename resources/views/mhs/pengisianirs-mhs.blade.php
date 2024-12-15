@@ -387,27 +387,60 @@
 
         // Fungsi untuk mengisi daftar mata kuliah
         function populateCourseList(filterQuery = '') {
+            // Versi 3
             const courseList = document.getElementById('courseList');
-            courseList.innerHTML = '';
+            courseList.innerHTML = ''; // Bersihkan daftar sebelum diisi ulang
 
-            Object.keys(listMatkul).forEach((kode_mk) => {
-                const matkul = listMatkul[kode_mk];
-                const isSameSemester = matkul.plot_semester === mahasiswa.semester;
+            // Jika sedang mencari, hanya tampilkan mata kuliah yang cocok
+            const isSearching = filterQuery.trim() !== '';
 
-                // Filter berdasarkan pencarian (query)
-                const isMatchedByQuery = filterQuery && (matkul.nama_mk.toLowerCase().includes(filterQuery) || kode_mk.toLowerCase().includes(filterQuery));
-                if (!isSameSemester && !isMatchedByQuery && !selectedCourses[kode_mk]) {
-                    // Jika bukan semester mahasiswa, tidak cocok dengan pencarian, dan belum dipilih, abaikan
-                    return;
-                }
+            // Buat array yang berisi mata kuliah untuk diurutkan dan ditampilkan
+            const filteredMatkul = Object.keys(listMatkul)
+                .map((kode_mk) => {
+                    const matkul = listMatkul[kode_mk];
+                    const isSameSemester = matkul.plot_semester === mahasiswa.semester;
+                    
+                    const matchesQuery =
+                        matkul.nama_mk.toLowerCase().includes(filterQuery.toLowerCase()) ||
+                        kode_mk.toLowerCase().includes(filterQuery.toLowerCase());
+                    const isRelevant = isSameSemester || selectedCourses[kode_mk] || (isSearching && matchesQuery);
+
+                    if (!isRelevant) return null; // Abaikan jika tidak relevan
+
+                    return {
+                        kode_mk,
+                        matkul,
+                        isSameSemester,
+                        isSelected: !!selectedCourses[kode_mk],
+                        matchesQuery,
+                    };
+                })
+                .filter((item) => item !== null) // Hapus item yang tidak relevan
+                .sort((a, b) => {
+                    // Urutkan hasil
+                    if (isSearching) {
+                        // Saat mencari, prioritaskan yang cocok dengan query
+                        return b.matchesQuery - a.matchesQuery;
+                    }
+                    // Prioritaskan mata kuliah pada semester mahasiswa
+                    return b.isSameSemester - a.isSameSemester;
+                });
+
+            // Iterasi array yang sudah difilter dan diurutkan
+            filteredMatkul.forEach(({ kode_mk, matkul, isSameSemester, isSelected }) => {
+                const isEnrolled = matakuliah_terdaftar.some(item => item.kode_mk === kode_mk);
+
+                // Tentukan warna latar berdasarkan kondisi
+                const bgColor = isEnrolled
+                    ? 'bg-blue-300'
+                    : isSelected
+                    ? 'bg-gray-100'
+                    : isSameSemester
+                    ? 'bg-white'
+                    : 'bg-gray-200';
 
                 const courseItem = document.createElement('div');
-                const isEnrolled = matakuliah_terdaftar.some(item => item.kode_mk === kode_mk);
-                const isOutsideSemester = !isSameSemester && !selectedCourses[kode_mk];
-
-                courseItem.className = `p-2 border rounded-lg shadow-none cursor-pointer' ${
-                    isEnrolled ? 'bg-blue-300' : isOutsideSemester ? 'bg-gray-100'  : 'bg-white'
-                } hover:bg-gray-200`;
+                courseItem.className = `p-2 border rounded-lg shadow-none cursor-pointer ${bgColor} hover:bg-gray-200`;
 
                 courseItem.dataset.kode_mk = kode_mk;
                 courseItem.dataset.nama = matkul.nama_mk;
@@ -421,6 +454,44 @@
 
                 courseList.appendChild(courseItem);
             });
+
+            // Versi 2
+            // const courseList = document.getElementById('courseList');
+            // courseList.innerHTML = '';
+
+            // Object.keys(listMatkul).forEach((kode_mk) => {
+            //     const matkul = listMatkul[kode_mk];
+            //     const isSameSemester = matkul.plot_semester === mahasiswa.semester;
+
+            //     // Filter berdasarkan pencarian (query)
+            //     const isMatchedByQuery = filterQuery && (matkul.nama_mk.toLowerCase().includes(filterQuery) || kode_mk.toLowerCase().includes(filterQuery));
+            //     if (!isSameSemester && !isMatchedByQuery && !selectedCourses[kode_mk]) {
+            //         // Jika bukan semester mahasiswa, tidak cocok dengan pencarian, dan belum dipilih, abaikan
+            //         return;
+            //     }
+
+            //     const courseItem = document.createElement('div');
+            //     const isEnrolled = matakuliah_terdaftar.some(item => item.kode_mk === kode_mk);
+            //     const isOutsideSemester = !isSameSemester && !selectedCourses[kode_mk];
+
+            //     courseItem.className = `p-2 border rounded-lg shadow-none cursor-pointer' ${
+            //         isEnrolled ? 'bg-blue-300' : isOutsideSemester ? 'bg-gray-100'  : 'bg-white'
+            //     } hover:bg-gray-200`;
+
+            //     courseItem.dataset.kode_mk = kode_mk;
+            //     courseItem.dataset.nama = matkul.nama_mk;
+
+            //     courseItem.innerHTML = `
+            //         <p class="font-bold">${matkul.nama_mk} (${matkul.sks} SKS)</p>
+            //         <p class="text-sm text-gray-500">Kode MK: ${kode_mk}</p>
+            //     `;
+
+            //     courseItem.onclick = () => toggleCourseSelection(courseItem, matkul);
+
+            //     courseList.appendChild(courseItem);
+            // });
+
+            // Versi 1
             // const courseList = document.getElementById('courseList');
             // courseList.innerHTML = ''; // Kosongkan daftar sebelum diisi ulang
 
