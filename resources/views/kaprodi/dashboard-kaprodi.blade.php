@@ -33,8 +33,8 @@
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
                     style="background-image: url({{ asset('img/fsm.jpg')  }})">
                 </div>
-                <h2 class="text-lg text-black font-bold">{{$dosen->nama}}</h2>
-                <p class="text-xs text-gray-800">NIDN {{ $dosen->nidn }}</p>
+                <h2 class="text-lg text-black font-bold">Dr. Aris Sugiharto, S.Si., M.Kom.</h2>
+                <p class="text-xs text-gray-800">NIDN 0011087104 </p>
                 <p class="text-sm bg-sky-700 rounded-full px-3 py-1 mt-2 font-semibold">Kaprodi</p>
                 <a href="{{ route('login') }}" class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
             </div>
@@ -61,34 +61,32 @@
         </aside>
 
         <main class="main-content">
-            <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
-
-            <section class="bg-gray-200 p-6 rounded-lg mb-6">
-                <h2 class="text-xl font-semibold mb-2">Tahun Ajaran</h2>
-                <p class="text-2xl font-bold">2024/2025 Ganjil</p>
-            </section>
+            <h1 class="text-3xl font-bold mb-6">Dashboard Kaprodi</h1>
 
             <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="p-6 bg-gray-300 rounded-lg text-center">
+                <!-- Jumlah Ruang -->
+                <div class="bg-gray-200 p-6 rounded-lg text-center">
                     <h3 class="text-lg font-semibold">Jumlah Ruang</h3>
-                    {{-- <p class="text-4xl font-bold">{{ $jumlahRuang }}</p> --}}
-                    <p class="text-4xl font-bold">10</p>
+                    <p class="text-2xl font-bold ">{{ $jumlahRuang }}</p>
                 </div>
-                <div class="p-6 bg-gray-300 rounded-lg text-center">
+
+                <!-- Jumlah Dosen -->
+                <div class="bg-gray-200 p-6 rounded-lg text-center">
                     <h3 class="text-lg font-semibold">Jumlah Dosen</h3>
-                    <p class="text-4xl font-bold">19</p>
-                    {{-- <p class="text-4xl font-bold">{{ $jumlahDosen }}</p> --}}
+                    <p class="text-2xl font-bold">{{ $jumlahDosen }}</p>
                 </div>
-                <div class="p-6 bg-gray-300 rounded-lg text-center">
+
+                <!-- Jumlah Mata Kuliah -->
+                <div class="bg-gray-200 p-6 rounded-lg text-center">
                     <h3 class="text-lg font-semibold">Jumlah Mata Kuliah</h3>
-                    <p class="text-4xl font-bold">9</p>
+                    <p class="text-2xl font-bold">{{ $jumlahMataKuliah }}</p>
                 </div>
             </section>
 
             <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="p-6 bg-gray-200 rounded-lg">
                     <h3 class="text-lg font-semibold mb-4 text-center">Jumlah Mahasiswa</h3>
-                    <canvas id="jumlahMahasiswaChart"></canvas>
+                    <canvas id="jumlahMahasiswaChart">{{  $jumlahMahasiswa  }}</canvas>
                 </div>
                 <div class="p-6 bg-gray-200 rounded-lg">
                     <h3 class="text-lg font-semibold mb-4 text-center">Status Penyusunan Mata Kuliah</h3>
@@ -115,7 +113,7 @@
                 labels: ['2021', '2022', '2023', '2024'],
                 datasets: [{
                     label: 'Jumlah Mahasiswa',
-                    data: [120, 150, 100, 200],
+                    data: [150, 165, 190, 200],
                     backgroundColor: ['#0284c7', '#034b6c', '#82c8e0', '#a1d6e2']
                 }]
             },
@@ -134,7 +132,7 @@
             data: {
                 labels: ['Scheduled', 'Not Scheduled'],
                 datasets: [{
-                    data: [52, 48],
+                    data: [500, 205],
                     backgroundColor: ['#0284c7', '#f5b700']
                 }]
             },

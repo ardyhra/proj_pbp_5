@@ -148,7 +148,7 @@ Route::get('/usulanjadwal', function () {
     return view('dekan/usulanjadwal');
 });
 //dashboard
-Route::get('/dashboard-dekan', [DekanController::class, 'dashboardDekan'])->name('dashboard.dekan');
+Route::get('/dashboard-dekan', [DekanController::class, 'dashboardDekan'])->name('dashboard-dekan');
 
 
 //usulan ruang
@@ -183,6 +183,7 @@ Route::post('/usulanjadwal/{id_tahun}/{id_prodi}/update-status', [UsulanjadwalCo
 // KETUA PROGRAM STUDI
 // Route untuk Dashboard Kaprodi
 Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboard'])->name('dashboard-kaprodi');
+Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboardKaprodi'])->name('dashboard.kaprodi');
 
 // Route untuk Manajemen Jadwal Kaprodi
 Route::get('/manajemen-jadwal-kaprodi', [KaprodiController::class, 'manajemenJadwal'])->name('manajemen-jadwal-kaprodi.index');
@@ -220,14 +221,6 @@ Route::get('/rekapjadwal', function () {
     return view('kaprodi.rekapjadwal'); // Mengarahkan ke Blade langsung
 })->name('rekapjadwal');
 Route::get('/rekapjadwal', [UsulanJadwalController::class, 'rekapJadwal'])->name('rekapjadwal');
-
-// // //rekap 
-// //Route::get('/kaprodi/rekapjadwal', [KaprodiController::class, 'rekapJadwal'])->name('kaprodi.rekapjadwal');
-// Route::post('/kaprodi/ajukan-jadwal/{id}', [KaprodiController::class, 'ajukanJadwal'])->name('kaprodi.submit-jadwal');
-
-// Route::get('/rekapjadwal', [KaprodiController::class, 'rekapJadwal'])->name('rekapjadwal.index');
-// Route::get('/rekapjadwal/{id_tahun}/{id_prodi}', [KaprodiController::class, 'rekapJadwal'])->name('rekapjadwal.index');
-
 
 // Route untuk melihat rekap jadwal
 Route::get('/rekapjadwal', [UsulanJadwalController::class, 'detailJadwal'])->name('rekapjadwal');
