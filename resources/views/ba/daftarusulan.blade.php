@@ -166,11 +166,15 @@
                 return 'Tahun Ajaran Tidak Diketahui';
             }
 
-            const semester = id_tahun.endsWith('1') ? 'Gasal' : 'Genap';
-            const tahunMulai = `20${id_tahun.slice(0, 2)}`;
-            const tahunAkhir = parseInt(tahunMulai) + 1;
+            // Ambil tahun penuh dari 4 digit pertama
+            const tahunMulai = parseInt(id_tahun.slice(0, 4));
+            const semester = id_tahun.endsWith('1') ? 'Ganjil' : 'Genap';
+            const tahunAkhir = tahunMulai + 1;
+
+            // Format Tahun Ajaran dengan semester
             return `${semester} ${tahunMulai}/${tahunAkhir}`;
         }
+
 
         function tampilkanRekap(id_tahun) {
             currentIdTahun = id_tahun;

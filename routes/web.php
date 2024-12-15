@@ -148,6 +148,7 @@ Route::get('/usulanjadwal', function () {
     return view('dekan/usulanjadwal');
 });
 
+//usulan ruang
 Route::post('/usulanruang/{id_tahun}/{id_prodi}/update-status', [DekanController::class, 'updateStatusUsulanDekan'])
      ->name('usulanruang.updateStatusDekan');
 Route::get('/usulanruang', [DekanController::class, 'indexDekan'])->name('usulanruang.dekan');
@@ -155,7 +156,25 @@ Route::post('/usulanruang/{id_tahun}/update-status', [DekanController::class, 'u
 Route::get('/get-usulan/{id_tahun}', [DekanController::class, 'getUsulan'])->name('usulanruang.getUsulan');
 Route::get('/get-usulan-detail/{id_tahun}/{id_prodi}', [DekanController::class, 'getUsulanDetail'])->name('usulanruang.getUsulanDetail');
 Route::post('/usulanruang/{id_tahun}/{id_prodi}/update-status', [DekanController::class, 'updateStatusUsulanProdiDekan'])->name('usulanruang.updateStatusProdiDekan');
+//usulan jadwal
+
 Route::post('/usulanjadwal/{id}/update-status', [UsulanjadwalController::class, 'updateStatus'])->name('usulanjadwal.update-status');
+Route::resource('usulanjadwal', UsulanjadwalController::class);
+Route::post('/usulanjadwal/ajukan', [UsulanJadwalController::class, 'ajukan'])->name('usulanjadwal.ajukan');
+Route::get('/usulanjadwal/detailJadwal', [UsulanJadwalController::class, 'detailJadwal'])
+    ->name('usulanjadwal.detailJadwal');
+
+// Route untuk menampilkan halaman utama usulan jadwal Dekan
+Route::get('/usulanjadwal', [UsulanjadwalController::class, 'index'])->name('usulanjadwal.index');
+
+// Route untuk mengambil usulan jadwal per tahun via AJAX
+Route::get('/get-usulan-jadwal-by-tahun/{id_tahun}', [UsulanjadwalController::class, 'getUsulanJadwalByTahun']);
+
+// Route untuk detail per prodi (jika diperlukan)
+Route::get('/get-usulan-jadwal-detail/{id_tahun}/{id_prodi}', [UsulanjadwalController::class, 'getUsulanJadwalDetail']);
+
+// Route untuk update status usulan jadwal oleh Dekan
+Route::post('/usulanjadwal/{id_tahun}/{id_prodi}/update-status', [UsulanjadwalController::class, 'updateStatusUsulanProdiDekan']);
 
 // ========================================================================================================================
 // KETUA PROGRAM STUDI
@@ -198,17 +217,14 @@ Route::get('/rekapjadwal', function () {
     return view('kaprodi.rekapjadwal'); // Mengarahkan ke Blade langsung
 })->name('rekapjadwal');
 Route::get('/rekapjadwal', [UsulanJadwalController::class, 'rekapJadwal'])->name('rekapjadwal');
-Route::post('/usulanjadwal/ajukan', [UsulanJadwalController::class, 'ajukan'])->name('usulanjadwal.ajukan');
+
 // // //rekap 
 // //Route::get('/kaprodi/rekapjadwal', [KaprodiController::class, 'rekapJadwal'])->name('kaprodi.rekapjadwal');
 // Route::post('/kaprodi/ajukan-jadwal/{id}', [KaprodiController::class, 'ajukanJadwal'])->name('kaprodi.submit-jadwal');
 
 // Route::get('/rekapjadwal', [KaprodiController::class, 'rekapJadwal'])->name('rekapjadwal.index');
 // Route::get('/rekapjadwal/{id_tahun}/{id_prodi}', [KaprodiController::class, 'rekapJadwal'])->name('rekapjadwal.index');
-Route::resource('usulanjadwal', UsulanjadwalController::class);
-// Route untuk melihat detail usulan jadwal
-Route::get('/usulanjadwal/detailJadwal', [UsulanJadwalController::class, 'detailJadwal'])
-    ->name('usulanjadwal.detailJadwal');
+
 
 // Route untuk melihat rekap jadwal
 Route::get('/rekapjadwal', [UsulanJadwalController::class, 'detailJadwal'])->name('rekapjadwal');

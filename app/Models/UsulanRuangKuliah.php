@@ -19,8 +19,10 @@ class UsulanRuangKuliah extends Model
 
     public function programStudi()
     {
-        return $this->belongsTo(ProgramStudi::class, 'id_prodi', 'id_prodi');
+        return $this->belongsTo(ProgramStudi::class, 'id_prodi', 'id_prodi')
+                    ->select('id_prodi', 'nama_prodi', 'strata'); // Tambahkan kolom kunci utama
     }
+
 
     public function ruang()
     {

@@ -127,7 +127,7 @@ class UsulanController extends Controller
 
         // Ambil data program studi berdasarkan pencarian
         $programStudi = ProgramStudi::where('nama_prodi', 'like', "%$search%")
-            ->select('id_prodi', 'nama_prodi', 'strata')
+            ->select('id_prodi', 'nama_prodi')
             ->get();
 
         // Return sebagai JSON
@@ -216,11 +216,10 @@ class UsulanController extends Controller
             ->map(function ($items, $id_prodi) {
                 $jumlah_ruang = $items->count();
                 $program_studi = $items->first()->programStudi->nama_prodi;
-                $strata = $items->first()->programStudi->strata;
                 $status = $items->first()->status ?? 'belum diajukan'; // Pastikan ambil status disini
                 return [
                     'id_prodi' => $id_prodi,
-                    'program_studi' => $strata . ' - ' . $program_studi,
+                    'program_studi' => $program_studi,
                     'jumlah_ruang' => $jumlah_ruang,
                     'status' => $status // Tambahkan status disini
                 ];
@@ -234,24 +233,24 @@ class UsulanController extends Controller
     {
         $usulanList = UsulanRuangKuliah::where('id_tahun', $id_tahun)
             ->where('id_prodi', $id_prodi)
-            ->with(['ruang', 'programStudi' => function ($query) {
-                $query->select('id_prodi', 'nama_prodi', 'strata'); // Pastikan 'strata' disertakan
-            }])
+            ->with('ruang', 'programStudi')
             ->get();
-            
+
         $data = [
-            'program_studi' => ($usulanList->first()->programStudi->strata ?? '') ,
+            'program_studi' => ($usulanList->first()->programStudi->nama_prodi ?? ''),
             'ruang' => $usulanList->map(function ($usulan) {
                 return [
                     'id_ruang' => $usulan->id_ruang,
                     'kapasitas' => $usulan->ruang->kapasitas ?? ''
                 ];
             }),
-            'status' => $usulanList->first()->status ?? 'belum diajukan', // Tambahkan ini
+            'status' => $usulanList->first()->status ?? 'belum diajukan', 
         ];
 
         return response()->json($data);
     }
+
+
 
 
 

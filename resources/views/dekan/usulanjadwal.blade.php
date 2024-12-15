@@ -1,9 +1,10 @@
+<!-- resources/views/dekan/usulanjadwal.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISKARA - Usulan Ruang Kuliah</title>
+    <title>SISKARA - Usulan Jadwal Kuliah</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Animasi untuk sidebar */
@@ -17,6 +18,7 @@
         .flex-container {
             min-height: 100vh;
         }
+
         /* Konten Utama */
         .table-container {
             max-height: 300px;
@@ -61,23 +63,25 @@
             </div>
             <nav class="space-y-4">
                 <a href="/dashboard-dekan" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Dashboard</a>
-                <a href="/usulanruang" class="block py-2 px-3 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">Usulan Ruang Kuliah</a>
-                <a href="/usulanjadwal" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Usulan Jadwal Kuliah</a>
+                <a href="/usulanruang" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Usulan Ruang Kuliah</a>
+                <a href="/usulanjadwal" class="block py-2 px-3 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">Usulan Jadwal Kuliah</a>
             </nav>
         </aside>
 
         <!-- Main Content -->
         <main class="w-full lg:w-4/5 lg:ml-auto p-8">
-            <h1 class="text-3xl font-bold mb-6">Usulan Ruang Kuliah</h1>
+            <h1 class="text-3xl font-bold mb-6">Usulan Jadwal Kuliah</h1>
 
+            <!-- Daftar Tahun Ajaran -->
             <div class="space-y-4">
-                @foreach($tahunAjaranList as $tahunAjaran)
-                    <div onclick="tampilkanRekap('{{ $tahunAjaran->id_tahun }}')" 
+                @foreach($tahunajarans as $tahun)
+                    <!-- Setiap tahun ajaran jika ada usulan jadwal, maka bisa ditampilkan -->
+                    <!-- Di sini kita asumsikan semua tahunAjaran ada, user bisa klik untuk melihat usulan jadwal -->
+                    <div onclick="tampilkanRekap('{{ $tahun->id_tahun }}')" 
                          class="bg-white p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100">
                         <div class="flex justify-between items-center">
                             <div>
-                                <h2 class="text-xl font-semibold">{{ $tahunAjaran->tahun_ajaran }}</h2>
-                                <!-- Status di level tahun ajaran sudah ditiadakan, hanya tampilkan tahun ajaran -->
+                                <h2 class="text-xl font-semibold">{{ $tahun->tahun_ajaran }}</h2>
                             </div>
                             <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Lihat</button>
                         </div>
@@ -85,39 +89,41 @@
                 @endforeach
             </div>
             
-
-            <!-- Container Rekap Ruang Kuliah -->
-            <div id="rekap-ruang-container" class="hidden mt-6">
+            <!-- Container Rekap Jadwal Kuliah -->
+            <div id="rekap-jadwal-container" class="hidden mt-6">
                 <h2 id="judul-rekap" class="text-2xl font-bold mb-4"></h2>
                 <table class="min-w-full bg-white border border-gray-200 text-sm">
                     <thead class="bg-gray-300">
                         <tr>
                             <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">No</th>
                             <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Program Studi</th>
-                            <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Jumlah Ruang</th>
                             <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Status</th>
                             <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="rekap-ruang">
+                    <tbody id="rekap-jadwal">
                         <!-- Data akan di-load dari server -->
                     </tbody>
                 </table>
             </div>
 
-            <!-- Tabel Detail Ruang Kuliah -->
-            <div id="detail-ruang-container" class="mt-6 hidden">
-                <h3 class="text-xl font-bold mb-2" id="judul-detail-ruang"></h3>
+            <!-- Tabel Detail Jadwal Kuliah -->
+            <div id="detail-jadwal-container" class="mt-6 hidden">
+                <h3 class="text-xl font-bold mb-2" id="judul-detail-jadwal"></h3>
                 <div class="table-container">
                     <table class="min-w-full bg-white border border-gray-200 text-sm">
                         <thead class="bg-gray-200">
                             <tr>
                                 <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">No</th>
-                                <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Nama Ruang</th>
-                                <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Kapasitas</th>
+                                <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Kode MK</th>
+                                <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Nama MK</th>
+                                <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Hari</th>
+                                <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Waktu</th>
+                                <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Ruang</th>
+                                <th class="px-2 py-2 border-b border-gray-200 text-center font-semibold text-gray-700">Kelas</th>
                             </tr>
                         </thead>
-                        <tbody id="detail-ruang">
+                        <tbody id="detail-jadwal">
                             <!-- Data akan di-load dari server -->
                         </tbody>
                     </table>
@@ -138,7 +144,7 @@
 
     <script>
         let currentIdTahun = null;
-        let currentIdProdi = null; // Untuk menyimpan prodi mana yang sedang dilihat detailnya
+        let currentIdProdi = null; 
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('sidebar-closed');
@@ -149,70 +155,46 @@
                 console.error('Format id_tahun tidak valid:', id_tahun);
                 return 'Tahun Ajaran Tidak Diketahui';
             }
-            const semester = id_tahun.endsWith('1') ? 'Gasal' : 'Genap';
-            const tahunMulai = `20${id_tahun.slice(0, 2)}`;
-            const tahunAkhir = parseInt(tahunMulai) + 1;
+
+            // Ambil tahun mulai (empat digit pertama)
+            const tahunMulai = id_tahun.slice(0, 4); // Misalnya "2024"
+            const semester = id_tahun.endsWith('1') ? 'Gasal' : 'Genap'; // Semester berdasarkan digit terakhir
+            const tahunAkhir = parseInt(tahunMulai) + 1; // Tahun akhir adalah tahun mulai + 1
+
             return `${semester} ${tahunMulai}/${tahunAkhir}`;
         }
 
-        function getStatusIcon(status) {
-            const icons = {
-                'belum diajukan': '⏳',
-                'diajukan': '🚀',
-                'disetujui': '✅',
-                'ditolak': '❌'
-            };
-            return icons[status] || '';
-        }
-
-        function capitalizeStatus(status) {
-            if (status === 'belum diajukan') return 'Belum diajukan';
-            return status.charAt(0).toUpperCase() + status.slice(1);
-        }
-
-        function getStatusColorClass(status) {
-            const colors = {
-                'belum diajukan': 'text-gray-600',
-                'diajukan': 'text-blue-600',
-                'disetujui': 'text-green-600',
-                'ditolak': 'text-red-600'
-            };
-            return colors[status] || 'text-gray-800';
-        }
 
         function tampilkanRekap(id_tahun) {
             currentIdTahun = id_tahun;
 
-            const rekapRuangContainer = document.getElementById('rekap-ruang-container');
+            const rekapJadwalContainer = document.getElementById('rekap-jadwal-container');
             const judulRekap = document.getElementById('judul-rekap');
 
-            rekapRuangContainer.classList.remove('hidden');
-            document.getElementById('detail-ruang-container').classList.add('hidden');
+            rekapJadwalContainer.classList.remove('hidden');
+            document.getElementById('detail-jadwal-container').classList.add('hidden');
             document.getElementById('detail-prodi-action-container').classList.add('hidden');
 
-            judulRekap.innerText = `Rekap Ruang Kuliah - ${formatTahunAjaran(id_tahun)}`;
+            judulRekap.innerText = `Rekap Jadwal Kuliah - ${formatTahunAjaran(id_tahun)}`;
 
             // Ambil data dari server
-            fetch(`/get-usulan-by-tahun/${id_tahun}`)
+            fetch(`/get-usulan-jadwal-by-tahun/${id_tahun}`)
                 .then(response => response.json())
                 .then(data => {
-                    const rekapRuangTabel = document.getElementById('rekap-ruang');
-                    rekapRuangTabel.innerHTML = '';
+                    const rekapJadwalTabel = document.getElementById('rekap-jadwal');
+                    rekapJadwalTabel.innerHTML = '';
 
                     data.forEach((item, index) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${index + 1}</td>
-                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.program_studi}</td>
-                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.jumlah_ruang}</td>
-                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center ${getStatusColorClass(item.status)}">
-                                ${getStatusIcon(item.status)} ${capitalizeStatus(item.status)}
-                            </td>
+                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.nama_prodi}</td>
+                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.status}</td>
                             <td class="px-2 py-1 border-b border-gray-200 text-center">
-                                <button onclick="lihatDetail('${item.id_prodi}', '${id_tahun}', '${item.status}')" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">Detail</button>
+                                <button onclick="lihatDetailJadwal('${item.id_prodi}', '${id_tahun}', '${item.status}')" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">Detail</button>
                             </td>
                         `;
-                        rekapRuangTabel.appendChild(row);
+                        rekapJadwalTabel.appendChild(row);
                     });
                 })
                 .catch(error => {
@@ -221,31 +203,36 @@
                 });
         }
 
-        function lihatDetail(id_prodi, id_tahun, status) {
+        function lihatDetailJadwal(id_prodi, id_tahun, status) {
             currentIdProdi = id_prodi;
 
-            const detailRuangContainer = document.getElementById('detail-ruang-container');
-            const judulDetailRuang = document.getElementById('judul-detail-ruang');
-            const detailRuangTabel = document.getElementById('detail-ruang');
+            const detailJadwalContainer = document.getElementById('detail-jadwal-container');
+            const judulDetailJadwal = document.getElementById('judul-detail-jadwal');
+            const detailJadwalTabel = document.getElementById('detail-jadwal');
 
-            detailRuangContainer.classList.remove('hidden');
+            detailJadwalContainer.classList.remove('hidden');
             document.getElementById('detail-prodi-action-container').classList.remove('hidden');
 
             // Ambil data detail dari server
-            fetch(`/get-usulan-detail/${id_tahun}/${id_prodi}`)
+            fetch(`/get-usulan-jadwal-detail/${id_tahun}/${id_prodi}`)
                 .then(response => response.json())
                 .then(data => {
-                    judulDetailRuang.innerText = `Daftar Ruang Kuliah - ${data.program_studi}`;
+                    console.log(data);
+                    judulDetailJadwal.innerText = `Detail Jadwal - ${data.program_studi}`;
 
-                    detailRuangTabel.innerHTML = '';
-                    data.ruang.forEach((item, index) => {
+                    detailJadwalTabel.innerHTML = '';
+                    data.jadwal.forEach((item, index) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${index + 1}</td>
-                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.id_ruang}</td>
-                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.kapasitas}</td>
+                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.kode_mk}</td>
+                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.nama_mk}</td>
+                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.hari}</td>
+                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.waktu}</td>
+                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.ruang}</td>
+                            <td class="px-2 py-1 border-b border-gray-200 text-sm text-gray-800 text-center">${item.kelas}</td>
                         `;
-                        detailRuangTabel.appendChild(row);
+                        detailJadwalTabel.appendChild(row);
                     });
 
                     showProdiActionsDekan(id_tahun, id_prodi, data.status);
@@ -258,19 +245,22 @@
 
         function showProdiActionsDekan(id_tahun, id_prodi, status) {
             const actionContainer = document.getElementById('detail-prodi-action-container');
+            actionContainer.classList.remove('hidden');
             actionContainer.innerHTML = '';
 
-            if (status === 'diajukan') {
+            // Status pada usulanjadwal adalah: Belum Diajukan, Diajukan, Disetujui, Ditolak
+            if (status === 'Diajukan') {
                 actionContainer.innerHTML = `
-                    <button onclick="updateStatusUsulanProdiDekan('${id_tahun}', '${id_prodi}', 'disetujui')" class="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600">Setujui</button>
-                    <button onclick="updateStatusUsulanProdiDekan('${id_tahun}', '${id_prodi}', 'ditolak')" class="bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600">Tolak</button>
+                    <button onclick="updateStatusUsulanProdiDekan('${id_tahun}', '${id_prodi}', 'Disetujui')" class="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600">Setujui</button>
+                    <button onclick="updateStatusUsulanProdiDekan('${id_tahun}', '${id_prodi}', 'Ditolak')" class="bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600">Tolak</button>
                 `;
-            } else if (status === 'disetujui' || status === 'ditolak') {
+            } else if (status === 'Disetujui' || status === 'Ditolak') {
+                // Jika sudah disetujui/ditolak, sediakan tombol untuk membatalkan (kembali ke Belum Diajukan)
                 actionContainer.innerHTML = `
-                    <button onclick="updateStatusUsulanProdiDekan('${id_tahun}', '${id_prodi}', 'belum diajukan')" class="bg-yellow-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">Batalkan</button>
+                    <button onclick="updateStatusUsulanProdiDekan('${id_tahun}', '${id_prodi}', 'Belum Diajukan')" class="bg-yellow-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">Batalkan</button>
                 `;
             } else {
-                // belum diajukan
+                // Belum Diajukan atau status lain
                 actionContainer.innerHTML = `<span class="text-gray-700 font-semibold">Usulan belum diajukan.</span>`;
             }
         }
@@ -278,7 +268,7 @@
         function updateStatusUsulanProdiDekan(id_tahun, id_prodi, status) {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             
-            fetch(`/usulan/${id_tahun}/${id_prodi}/update-status`, {
+            fetch(`/usulanjadwal/${id_tahun}/${id_prodi}/update-status`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

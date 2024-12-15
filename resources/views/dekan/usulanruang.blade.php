@@ -144,11 +144,15 @@
                 console.error('Format id_tahun tidak valid:', id_tahun);
                 return 'Tahun Ajaran Tidak Diketahui';
             }
-            const semester = id_tahun.endsWith('1') ? 'Gasal' : 'Genap';
-            const tahunMulai = `20${id_tahun.slice(0, 2)}`;
-            const tahunAkhir = parseInt(tahunMulai) + 1;
+
+            // Ambil tahun mulai (empat digit pertama)
+            const tahunMulai = id_tahun.slice(0, 4); // Misalnya "2024"
+            const semester = id_tahun.endsWith('1') ? 'Gasal' : 'Genap'; // Semester berdasarkan digit terakhir
+            const tahunAkhir = parseInt(tahunMulai) + 1; // Tahun akhir adalah tahun mulai + 1
+
             return `${semester} ${tahunMulai}/${tahunAkhir}`;
         }
+
 
         // Fungsi untuk ikon status (opsional)
         function getStatusIcon(status) {

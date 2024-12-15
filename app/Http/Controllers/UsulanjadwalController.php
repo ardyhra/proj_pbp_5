@@ -4,6 +4,7 @@ use App\Models\UsulanJadwal;
 use App\Models\tahunajaran;
 use App\Models\Jadwal;
 use App\Models\ProgramStudi;
+use App\Models\matakuliah;
 use Illuminate\Http\Request;
 
 
@@ -43,11 +44,20 @@ class UsulanjadwalController extends Controller
 
     public function index()
     {
-        $tahunajarans = TahunAjaran::all();
-        $usulanJadwals = UsulanJadwal::with('tahunAjaran', 'prodi')->get();
+        // Ambil id_tahun yang memiliki usulan jadwal
+        $tahunIds = UsulanJadwal::distinct()->pluck('id_tahun');
 
-        return view('usulan.jadwal.index', compact('tahunajarans', 'usulanJadwals'));
+        // Ambil hanya tahun ajaran yang ada usulannya
+        $tahunajarans = TahunAjaran::whereIn('id_tahun', $tahunIds)->get();
+
+        // Ambil semua usulan jadwal yang terkait dengan tahun-tahun tersebut
+        $usulanJadwals = UsulanJadwal::with('tahunAjaran', 'prodi')
+                        ->whereIn('id_tahun', $tahunIds)
+                        ->get();
+
+        return view('dekan.usulanjadwal', compact('tahunajarans', 'usulanJadwals'));
     }
+
 
     public function updateStatus(Request $request, $id)
     {
@@ -97,6 +107,101 @@ class UsulanjadwalController extends Controller
 
         // Kirim data ke view
         return view('kaprodi.rekapjadwal', compact('tahunajarans', 'prodis', 'usulanJadwals'));
+    }
+
+
+    // Sisi Dekan
+    public function getUsulanJadwalByTahun($id_tahun)
+    {
+        // Ambil semua usulan jadwal untuk tahun ajaran ini
+        $usulanJadwals = UsulanJadwal::with('prodi')
+            ->where('id_tahun', $id_tahun)
+            ->get();
+
+        // Map data agar mudah dibaca oleh frontend
+        $data = $usulanJadwals->map(function($item) {
+            return [
+                'id_prodi' => $item->id_prodi,
+                'nama_prodi' => ($item->prodi->strata ?? '').' - '.$item->prodi->nama_prodi,
+                'status' => $item->status,
+            ];
+        });
+
+        return response()->json($data);
+    }
+
+    // Detail untuk per prodi (jika diperlukan)
+    // Misalnya detail ini menampilkan jadwal kuliah yang sudah diusulkan oleh prodi tersebut.
+    public function getUsulanJadwalDetail($id_tahun, $id_prodi)
+    {
+        // Ambil semua jadwal dari tabel jadwal untuk prodi dan tahun ini (tanpa with('matakuliah'))
+        $jadwals = Jadwal::where('id_tahun', $id_tahun)
+            ->where('id_prodi', $id_prodi)
+            ->get();
+
+        // Ambil semua kode_mk yang ada di jadwal tersebut
+        $kodeMkList = $jadwals->pluck('kode_mk')->unique();
+
+        // Ambil data matakuliah dari tabel matakuliah untuk semua kode_mk yang ditemukan
+        $mkData = matakuliah::whereIn('kode_mk', $kodeMkList)
+            ->pluck('nama_mk', 'kode_mk');
+
+        // Ambil prodi
+        $prodi = ProgramStudi::find($id_prodi);
+
+        // Ambil status usulan jadwal
+        $status = UsulanJadwal::where('id_tahun', $id_tahun)
+                    ->where('id_prodi', $id_prodi)
+                    ->value('status') ?? 'Belum Diajukan';
+
+        $data = [
+            'program_studi' => $prodi->nama_prodi,
+            'jadwal' => $jadwals->map(function($j) use ($mkData) {
+                return [
+                    'kode_mk' => $j->kode_mk,
+                    'nama_mk' => $mkData[$j->kode_mk] ?? '', // Ambil nama_mk dari array $mkData
+                    'hari' => $this->formatHari($j->hari),
+                    'waktu' => $j->waktu_mulai.' - '.$j->waktu_selesai,
+                    'ruang' => $j->id_ruang,
+                    'kelas' => $j->kelas
+                ];
+            }),
+            'status' => $status,
+        ];
+
+        return response()->json($data);
+    }
+
+
+
+    private function formatHari($hariNum)
+    {
+        $hariMap = [
+            1 => 'Senin',
+            2 => 'Selasa',
+            3 => 'Rabu',
+            4 => 'Kamis',
+            5 => 'Jumat',
+            6 => 'Sabtu'
+        ];
+        return $hariMap[$hariNum] ?? 'Tidak Diketahui';
+    }
+
+    // Update status usulan jadwal pada level prodi (mirip dengan usulan ruang)
+    public function updateStatusUsulanProdiDekan(Request $request, $id_tahun, $id_prodi)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:Belum Diajukan,Diajukan,Disetujui,Ditolak'
+        ]);
+
+        $usulan = UsulanJadwal::where('id_tahun', $id_tahun)
+            ->where('id_prodi', $id_prodi)
+            ->firstOrFail();
+
+        $usulan->status = $validated['status'];
+        $usulan->save();
+
+        return response()->json(['message' => 'Status usulan jadwal berhasil diperbarui.']);
     }
 }
 

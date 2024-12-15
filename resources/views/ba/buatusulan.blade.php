@@ -89,7 +89,7 @@
                     <label for="program-studi" class="block text-lg font-semibold text-gray-700 mb-2">Program Studi</label>
                     <select id="program-studi" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         @foreach($programStudiList as $prodi)
-                            <option value="{{ $prodi->id_prodi }}">{{ $prodi->strata }} - {{ $prodi->nama_prodi }}</option>
+                            <option value="{{ $prodi->id_prodi }}">{{ $prodi->nama_prodi }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -141,7 +141,7 @@
                     @foreach($programStudiList as $index => $prodi)
                         <tr>
                             <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">{{ $index + 1 }}</td>
-                            <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">{{ $prodi->strata }} - {{ $prodi->nama_prodi }}</td>
+                            <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center">{{ $prodi->nama_prodi }}</td>
                             <td class="px-2 py-2 border-b border-gray-200 text-sm text-gray-800 text-center" id="jumlah-{{ $prodi->id_prodi }}">0</td>
                             <td class="px-2 py-2 border-b border-gray-200 text-center">
                                 <button onclick="tampilkanDetail('{{ $prodi->id_prodi }}')" class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600">Detail</button>
