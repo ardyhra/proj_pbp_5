@@ -14,7 +14,23 @@
         .sidebar-closed {
             transform: translateX(-100%);
         }
+
+        /* Memastikan sidebar dan konten utama memenuhi tinggi layar */
+        .flex-container {
+            min-height: 100vh;
+        }
+
+        /* Konten Utama */
+        .card {
+            background-color: white;
+            border: 1px solid #e2e2e2;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
     </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="bg-gray-100 font-sans">
 
@@ -23,12 +39,12 @@
         <div class="flex items-center space-x-3">
             <!-- Tombol menu untuk membuka sidebar -->
             <button onclick="toggleSidebar()" class="focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" 
+                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 6h16M4 12h16M4 18h16"></path>
+                          d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
-            <!-- Logo dan judul aplikasi -->
             <h1 class="text-xl font-bold">SISKARA</h1>
         </div>
         <nav class="space-x-4">
@@ -37,10 +53,9 @@
         </nav>
     </header>
 
-    <div class="flex">
+    <div class="flex flex-container">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 h-screen p-4 text-white sidebar-closed fixed lg:static">
-            <!-- profil -->
+        <aside id="sidebar" class="sidebar w-1/5 bg-sky-500 p-4 text-white sidebar fixed lg:static">
             <div class="p-3 pb-1 bg-gray-300 rounded-3xl text-center mb-6">
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
                      style="background-image: url(img/fsm.jpg)">
@@ -48,54 +63,80 @@
                 <h2 class="text-lg text-black font-bold">Prof. Dr. Kusworo Adi, S.Si., M.T.</h2>
                 <p class="text-xs text-gray-800">NIP 197203171998021001</p>
                 <p class="text-sm bg-sky-700 rounded-full px-3 py-1 mt-2 font-semibold">Dekan</p>
-                <a href="{{ route('login') }}" class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
+                <a href="{{ route('login') }}" 
+                   class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>
             </div>
             <nav class="space-y-4">
                 <a href="/dashboard-dekan" class="block py-2 px-3 bg-sky-800 rounded-xl text-white hover:bg-opacity-70">Dashboard</a>
                 <a href="/usulanruang" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Usulan Ruang Kuliah</a>
                 <a href="/usulanjadwal" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Usulan Jadwal Kuliah</a>
-                {{-- <a href="/aturgelombang" class="block py-2 px-3 bg-gray-300 rounded-xl text-gray-700 hover:bg-gray-700 hover:text-white">Atur Gelombang IRS</a>
-                <!-- Tombol Switch Role --> --}}
-                @if(Auth::user()->pembimbing_akademik)
-                <div class="mt-6">
-                    <a href="{{ route('switch.role') }}" class="flex items-center justify-center space-x-2 p-2 bg-green-500 rounded-xl text-white hover:bg-green-600">
-                        <span>Switch Role</span>
-                    </a>
-                </div>
-                @endif
             </nav>
         </aside>
 
         <!-- Main Content -->
         <main class="w-full lg:w-4/5 lg:ml-auto p-8">
-            <!-- Judul Halaman -->
             <h1 class="text-3xl font-bold mb-6">Dashboard Dekan</h1>
 
-            <!-- Academic Year Section -->
-            <section class="bg-gray-200 p-6 rounded-lg mb-6">
-                <h2 class="text-xl font-semibold mb-2">Tahun Ajaran</h2>
-                <p class="text-2xl font-bold">2024/2025 Ganjil</p>
-            </section>
+            <!-- Contoh ringkasan -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="card">
+                    <h2 class="text-xl font-semibold mb-2">Tahun Ajaran dengan Usulan Ruang</h2>
+                    <ul class="list-disc list-inside text-sm text-gray-700">
+                        @foreach($tahunAjaranRuang as $ta)
+                            <li>{{ $ta->tahun_ajaran }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                <div class="card">
+                    <h2 class="text-xl font-semibold mb-2">Tahun Ajaran dengan Usulan Jadwal</h2>
+                    <ul class="list-disc list-inside text-sm text-gray-700">
+                        @foreach($tahunAjaranJadwal as $tj)
+                            <li>{{ $tj->tahun_ajaran }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                <div class="card">
+                    <h2 class="text-xl font-semibold mb-2">Jumlah Program Studi</h2>
+                    <p class="text-2xl font-bold text-gray-800">{{ $jumlahProdi }}</p>
+                </div>
+            </div>
 
-            <!-- Stats Section -->
-            <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="p-6 bg-gray-300 rounded-lg text-center">
-                    <h3 class="text-lg font-semibold">Status Usulan Ruang Kuliah</h3>
-                    <p class="text-xl font-bold">Menunggu Persetujuan</p>
+            <!-- Contoh ringkasan status usulan -->
+            <div class="mt-6">
+                <h2 class="text-xl font-semibold mb-4">Ringkasan Status Usulan Ruang</h2>
+                <div class="flex space-x-4">
+                    <div class="card flex-1 text-center">
+                        <p class="font-semibold text-gray-700">Diajukan</p>
+                        <p class="text-2xl font-bold text-blue-600">{{ $countRuangDiajukan }}</p>
+                    </div>
+                    <div class="card flex-1 text-center">
+                        <p class="font-semibold text-gray-700">Disetujui</p>
+                        <p class="text-2xl font-bold text-green-600">{{ $countRuangDisetujui }}</p>
+                    </div>
+                    <div class="card flex-1 text-center">
+                        <p class="font-semibold text-gray-700">Ditolak</p>
+                        <p class="text-2xl font-bold text-red-600">{{ $countRuangDitolak }}</p>
+                    </div>
                 </div>
-                <div class="p-6 bg-gray-300 rounded-lg text-center">
-                    <h3 class="text-lg font-semibold">Jumlah Usulan Ruang</h3>
-                    <p class="text-4xl font-bold">2</p>
+            </div>
+
+            <div class="mt-6">
+                <h2 class="text-xl font-semibold mb-4">Ringkasan Status Usulan Jadwal</h2>
+                <div class="flex space-x-4">
+                    <div class="card flex-1 text-center">
+                        <p class="font-semibold text-gray-700">Diajukan</p>
+                        <p class="text-2xl font-bold text-blue-600">{{ $countJadwalDiajukan }}</p>
+                    </div>
+                    <div class="card flex-1 text-center">
+                        <p class="font-semibold text-gray-700">Disetujui</p>
+                        <p class="text-2xl font-bold text-green-600">{{ $countJadwalDisetujui }}</p>
+                    </div>
+                    <div class="card flex-1 text-center">
+                        <p class="font-semibold text-gray-700">Ditolak</p>
+                        <p class="text-2xl font-bold text-red-600">{{ $countJadwalDitolak }}</p>
+                    </div>
                 </div>
-                <div class="p-6 bg-gray-300 rounded-lg text-center">
-                    <h3 class="text-lg font-semibold">Status Usulan Jadwal Kuliah</h3>
-                    <p class="text-xl font-bold">Sudah Disetujui</p>
-                </div>
-                <div class="p-6 bg-gray-300 rounded-lg text-center">
-                    <h3 class="text-lg font-semibold">Jumlah Usulan Jadwal</h3>
-                    <p class="text-4xl font-bold">1</p>
-                </div>
-            </section>
+            </div>
         </main>
     </div>
 
@@ -105,12 +146,10 @@
         <p class="text-sm text-center">&copy; Siskara Inc. All rights reserved.</p>
     </footer>
 
-    <!-- Script -->
     <script>
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('sidebar-closed');
         }
     </script>
-
 </body>
 </html>

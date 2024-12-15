@@ -147,6 +147,9 @@ Route::get('/usulanruang', function () {
 Route::get('/usulanjadwal', function () {
     return view('dekan/usulanjadwal');
 });
+//dashboard
+Route::get('/dashboard-dekan', [DekanController::class, 'dashboardDekan'])->name('dashboard.dekan');
+
 
 //usulan ruang
 Route::post('/usulanruang/{id_tahun}/{id_prodi}/update-status', [DekanController::class, 'updateStatusUsulanDekan'])

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\TahunAjaran;
 use App\Models\UsulanRuangKuliah;
+use App\Models\Usulanjadwal;
+use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -11,6 +13,70 @@ use Illuminate\Support\Facades\Log;
 class DekanController extends Controller
 {
     // Metode untuk Dekan
+
+    public function dashboardDekan()
+    {
+        $tahunAjaranRuang = TahunAjaran::whereIn('id_tahun', function($q) {
+            $q->select('id_tahun')->from('usulan_ruang_kuliah');
+        })->get();
+
+        $tahunAjaranJadwal = TahunAjaran::whereIn('id_tahun', function($q) {
+            $q->select('id_tahun')->from('usulanjadwal');
+        })->get();
+
+        $jumlahProdi = ProgramStudi::where('id_fakultas', 20)
+            ->whereHas('fakultas', function ($query) {
+                $query->where('nama_fakultas', 'Fakultas Sains dan Matematika');
+            })
+            ->count();
+
+
+        // Hitung status usulan ruang
+        $countRuangDiajukan = DB::select("
+            SELECT COUNT(*) as total FROM (
+                SELECT DISTINCT id_prodi, id_tahun
+                FROM usulan_ruang_kuliah
+                WHERE status = 'diajukan'
+            ) as subquery
+        ")[0]->total;
+
+        $countRuangDisetujui = DB::select("
+            SELECT COUNT(*) as total FROM (
+                SELECT DISTINCT id_prodi, id_tahun
+                FROM usulan_ruang_kuliah
+                WHERE status = 'disetujui'
+            ) as subquery
+        ")[0]->total;
+        
+
+        $countRuangDitolak = DB::select("
+            SELECT COUNT(*) as total FROM (
+                SELECT DISTINCT id_prodi, id_tahun
+                FROM usulan_ruang_kuliah
+                WHERE status = 'ditolak'
+            ) as subquery
+        ")[0]->total;
+
+
+
+        // Hitung status usulan jadwal
+        $countJadwalDiajukan = Usulanjadwal::where('status', 'Diajukan')->count();
+        $countJadwalDisetujui = Usulanjadwal::where('status', 'Disetujui')->count();
+        $countJadwalDitolak = Usulanjadwal::where('status', 'Ditolak')->count();
+
+        return view('dekan.dashboard-dekan', compact(
+            'tahunAjaranRuang', 
+            'tahunAjaranJadwal', 
+            'jumlahProdi',
+            'countRuangDiajukan',
+            'countRuangDisetujui',
+            'countRuangDitolak',
+            'countJadwalDiajukan',
+            'countJadwalDisetujui',
+            'countJadwalDitolak'
+        ));
+    }
+
     public function indexDekan()
     {
          // Ambil semua tahun ajaran dengan usulan yang statusnya "diajukan"
