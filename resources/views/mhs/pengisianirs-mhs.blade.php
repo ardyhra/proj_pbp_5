@@ -174,28 +174,10 @@
                             <span id="sksCount" class="text-blue-600 font-bold">0 / {{ $maxsks }} SKS</span>
                         </h3>
                         <table id="scheduleTable" class="table-fixed w-full border-collapse border">
+                            <!-- Konten tabel akan diisi oleh JavaScript -->
                             <thead id="timeSlots"></thead>
                             <tbody></tbody>
                         </table>
-
-                        <!-- <table class="w-full bg-gray-50 rounded-lg shadow-md"> -->
-                            <!-- Konten tabel akan diisi oleh JavaScript -->
-                            <!-- <thead>
-                                <tr class="bg-blue-200">
-                                    <th class="py-3 px-4 text-center">Waktu</th>
-                                    <th class="py-3 px-4 text-center">Senin</th>
-                                    <th class="py-3 px-4 text-center">Selasa</th>
-                                    <th class="py-3 px-4 text-center">Rabu</th>
-                                    <th class="py-3 px-4 text-center">Kamis</th>
-                                    <th class="py-3 px-4 text-center">Jumat</th>
-                                    <th class="py-3 px-4 text-center">Sabtu</th>
-                                </tr>
-                            </thead>
-                            <tbody id="timeSlots"> -->
-                                <!-- Time slots akan diisi oleh JavaScript -->
-                            <!-- </tbody> -->
-                        <!-- </table> -->
-                        <!-- Tombol Simpan -->
                         <div class="mt-6">
                             <button id="lockButton" onclick="lockIRS()" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600">Simpan</button>
                         </div>
@@ -404,28 +386,6 @@
 
             table.appendChild(body);
         }
-        // function initializeScheduleTable() {
-        //     const timeSlots = ["06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"];
-        //     const days = ["senin", "selasa", "rabu", "kamis", "jumat", "sabtu"];
-        //     const timeSlotsContainer = document.getElementById('timeSlots');
-
-        //     timeSlots.forEach((time) => {
-        //         const row = document.createElement('tr');
-                
-        //         // Kolom pertama adalah waktu
-        //         row.innerHTML = `<td class="border px-4 py-2 font-semibold">${time}</td>`;
-
-        //         // Kolom berikutnya adalah jadwal per hari
-        //         days.forEach(day => {
-        //             const cell = document.createElement('td');
-        //             cell.className = 'border px-4 py-2 align-top';
-        //             cell.id = `${day}-${time}`; // Gunakan format 'senin-0600' agar cocok dengan waktu_mulai
-        //             row.appendChild(cell);
-        //         });
-
-        //         timeSlotsContainer.appendChild(row);
-        //     });
-        // }
 
         // Fungsi untuk mengisi daftar mata kuliah
         function populateCourseList() {
@@ -711,46 +671,6 @@
                     }
                 }
             });
-            // // Ambil semua jadwal untuk mata kuliah yang dipilih dengan kelas yang sama
-            // const schedules = schedulesByKodeMK[selectedMatkul.kode_mk];
-            
-            // // Tambahkan mata kuliah ke array matakuliah_terdaftar
-            // schedules.forEach(schedule => {
-            //     if (schedule.kelas === selectedMatkul.kelas) {
-            //         matakuliah_terdaftar.push({
-            //             // status: 'BARU',
-            //             nim: mahasiswa.nim, // Ganti dengan NIM yang sesuai
-            //             id_jadwal: schedule.id_jadwal,
-            //             hari: schedule.hari,
-            //             waktu_mulai: schedule.waktu_mulai.substring(0, 5),
-            //             waktu_selesai: schedule.waktu_selesai.substring(0, 5),
-            //             kode_mk: selectedMatkul.kode_mk,
-            //             kelas: selectedMatkul.kelas
-            //         });
-            //     }
-            // });
-
-            // currentSKS += selectedMatkul.sks;
-            // updateSKS();
-
-            // const allCourseItems = document.querySelectorAll('[data-kode-mk="' + selectedMatkul.kode_mk + '"]');
-            // allCourseItems.forEach(item => {
-            //     // Periksa apakah kelas item sama dengan kelas yang dipilih
-            //     item.classList.remove('bg-gray-200');
-            //     if (item.dataset.kelas === selectedMatkul.kelas) {
-            //         item.classList.add('bg-blue-300');
-            //     } else {
-            //         item.classList.add('bg-blue-100');
-            //     }
-            // });
-
-            // alert(`Mata kuliah ${selectedMatkul.nama} berhasil didaftarkan.`);
-
-            // // Perbarui daftar mata kuliah
-            // populateCourseList();
-
-            // // Tutup modal
-            // closeModal();
         }
 
         function disenrollCourse() {
@@ -796,26 +716,6 @@
                     alert(xhr.responseJSON.message || 'Gagal membatalkan pendaftaran mata kuliah.');
                 }
             });
-            // // Menghapus semua item yang memiliki kode_mk yang sama dengan selectedMatkul.kode_mk
-            // matakuliah_terdaftar = matakuliah_terdaftar.filter(item => item.kode_mk !== selectedMatkul.kode_mk);
-
-            // currentSKS -= selectedMatkul.sks;
-            // updateSKS();
-
-            // const allCourseItems = document.querySelectorAll('[data-kode-mk="' + selectedMatkul.kode_mk + '"]');
-            // allCourseItems.forEach(item => {
-            //     item.classList.remove('bg-blue-300');
-            //     item.classList.remove('bg-blue-100');
-            //     item.classList.add('bg-gray-200');
-            // });
-
-            // alert(`Pendaftaran mata kuliah ${selectedMatkul.nama} dibatalkan.`);
-
-            // // Perbarui daftar mata kuliah
-            // populateCourseList();
-            
-            // // Tutup modal
-            // closeModal();
         }
 
         // Menghubungkan tombol dengan fungsi
@@ -840,44 +740,6 @@
                 button.classList.add("bg-red-500", "hover:bg-red-600");
                 button.innerText = 'Buka IRS';
             }
-            // if (matakuliah_terdaftar.length === 0) {
-            //     alert("Tidak ada mata kuliah yang terdaftar.");
-            //     return;
-            // }
-
-            // // Pastikan CSRF token ada di halaman
-            // const csrfToken = document.querySelector('meta[name="csrf-token"]');
-            
-            // if (!csrfToken) {
-            //     alert('CSRF token tidak ditemukan!');
-            //     return;
-            // }
-            
-            // fetch('/tambah-irs', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'X-CSRF-TOKEN': csrfToken.getAttribute('content'), // Ambil token dari meta tag
-            //     },
-            //     body: JSON.stringify({ matakuliah_terdaftar: matakuliah_terdaftar }),
-            // })
-            // .then(response => {
-            //     if (!response.ok) {
-            //         return response.json().then(err => { throw new Error(err.message || 'Internal Server Error') });
-            //     }
-            //     return response.json();
-            // })
-            // .then(data => {
-            //     if (data.success) {
-            //         alert(data.message);
-            //     } else {
-            //         alert('Terjadi kesalahan saat menyimpan IRS.');
-            //     }
-            // })
-            //             .catch(error => {
-            //     console.error('Error:', error);
-            //     alert('Terjadi kesalahan saat menyimpan IRS: ' + (error.message || 'Internal Server Error'));
-            // });
         }
     </script>
 

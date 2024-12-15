@@ -306,12 +306,6 @@ class IrsController extends Controller
 
             if ($currentKuota == $maxKuota) {
                 $this->handleKuotaPenuh($mahasiswa, $jadwal);
-                // $currentKuota = Irs::where('id_jadwal', $jadwal->id_jadwal)->count();
-                // if ($currentKuota >= $maxKuota) {
-                //     return response()->json([
-                //         'message' => "Mata kuliah {$jadwal->matakuliah->nama} penuh. Tidak dapat mendaftarkan.",
-                //     ], 400); // Gagal mendaftar karena kuota penuh
-                // }
             }
 
             // Menambahkan mata kuliah ke IRS
