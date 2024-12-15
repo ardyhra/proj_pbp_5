@@ -163,7 +163,8 @@ Route::post('/usulanruang/{id_tahun}/{id_prodi}/update-status', [DekanController
 
 Route::post('/usulanjadwal/{id}/update-status', [UsulanjadwalController::class, 'updateStatus'])->name('usulanjadwal.update-status');
 Route::resource('usulanjadwal', UsulanjadwalController::class);
-Route::post('/usulanjadwal/ajukan', [UsulanJadwalController::class, 'ajukan'])->name('usulanjadwal.ajukan');
+
+
 Route::get('/usulanjadwal/detailJadwal', [UsulanJadwalController::class, 'detailJadwal'])
     ->name('usulanjadwal.detailJadwal');
 
@@ -182,7 +183,7 @@ Route::post('/usulanjadwal/{id_tahun}/{id_prodi}/update-status', [UsulanjadwalCo
 // ========================================================================================================================
 // KETUA PROGRAM STUDI
 // Route untuk Dashboard Kaprodi
-Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboard'])->name('dashboard-kaprodi');
+// Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboard'])->name('dashboard-kaprodi');
 Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboardKaprodi'])->name('dashboard.kaprodi');
 
 // Route untuk Manajemen Jadwal Kaprodi
@@ -223,7 +224,12 @@ Route::get('/rekapjadwal', function () {
 Route::get('/rekapjadwal', [UsulanJadwalController::class, 'rekapJadwal'])->name('rekapjadwal');
 
 // Route untuk melihat rekap jadwal
+// Route::get('/jadwal/view', [KaprodiController::class, 'viewJadwal'])->name('jadwal.view');
 Route::get('/rekapjadwal', [UsulanJadwalController::class, 'detailJadwal'])->name('rekapjadwal');
+Route::get('/rekapjadwal', [UsulanjadwalController::class, 'rekapJadwal'])->name('rekapjadwal');
+
+Route::post('/usulanjadwal/ajukan', [UsulanJadwalController::class, 'ajukan'])->name('usulanjadwal.ajukan');
+Route::post('/usulanjadwal/batalkan', [UsulanjadwalController::class, 'batalkanUsulan'])->name('usulanjadwal.batalkan');
 
 Route::post('/jadwal/check-conflict', [JadwalController::class, 'checkConflict'])->name('jadwal.check-conflict');
 Route::post('/jadwal/check-duplicate', [JadwalController::class, 'checkDuplicate'])->name('jadwal.check-duplicate');

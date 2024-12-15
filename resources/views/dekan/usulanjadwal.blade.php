@@ -257,7 +257,7 @@
             } else if (status === 'Disetujui' || status === 'Ditolak') {
                 // Jika sudah disetujui/ditolak, sediakan tombol untuk membatalkan (kembali ke Belum Diajukan)
                 actionContainer.innerHTML = `
-                    <button onclick="updateStatusUsulanProdiDekan('${id_tahun}', '${id_prodi}', 'Belum Diajukan')" class="bg-yellow-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">Batalkan</button>
+                    <button onclick="updateStatusUsulanProdiDekan('${id_tahun}', '${id_prodi}', 'Diajukan')" class="bg-yellow-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">Batalkan</button>
                 `;
             } else {
                 // Belum Diajukan atau status lain

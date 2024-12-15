@@ -34,15 +34,15 @@ class KaprodiController extends Controller
     }
 
     //FIX 
-    public function dashboard() {
-        // Ambil data pengguna yang sedang login
-        $user = Auth::user();
+    // public function dashboard() {
+    //     // Ambil data pengguna yang sedang login
+    //     $user = Auth::user();
     
-        // Ambil data dosen atau kaprodi berdasarkan role atau related_id
-        $dosen = $user->role == 'kaprodi' ? $user->kaprodi : $user->dosen;
+    //     // Ambil data dosen atau kaprodi berdasarkan role atau related_id
+    //     $dosen = $user->role == 'kaprodi' ? $user->kaprodi : $user->dosen;
     
-        return view('kaprodi.dashboard-kaprodi', compact('dosen'));
-    }
+    //     return view('kaprodi.dashboard-kaprodi', compact('dosen'));
+    // }
     public function dashboardKaprodi()
     {
         $jumlahRuang = Ruang::count();
@@ -77,6 +77,8 @@ class KaprodiController extends Controller
         // Mengirim data ke view
         return view('kaprodi.manajemen-jadwal-kaprodi', compact('tahunajarans', 'prodis', 'jadwals', 'id_tahun', 'id_prodi'));
     }
+
+
 
     public function rekapJadwal()
     {

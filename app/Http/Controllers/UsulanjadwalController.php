@@ -30,17 +30,49 @@ class UsulanjadwalController extends Controller
             ->first();
 
         if ($usulan) {
-            return redirect()->back()->with('error', 'Usulan jadwal sudah diajukan.');
-        }
+            // Cek status usulan saat ini
+            if (in_array($usulan->status, ['Diajukan', 'Disetujui'])) {
+                // Jika sudah diajukan atau disetujui, tidak bisa diajukan lagi
+                return redirect()->back()->with('error', 'Usulan jadwal sudah diajukan atau sudah disetujui.');
+            } else {
+                // Status 'Belum Diajukan' atau 'Ditolak', bisa diajukan kembali
+                $usulan->status = 'Diajukan';
+                $usulan->save();
+                return redirect()->back()->with('success', 'Usulan jadwal berhasil diajukan kembali.');
+            }
+        } else {
+            // Belum pernah ada usulan, maka buat usulan baru dengan status 'Diajukan'
+            UsulanJadwal::create([
+                'id_tahun' => $request->id_tahun,
+                'id_prodi' => $request->id_prodi,
+                'status' => 'Diajukan',
+            ]);
 
-        UsulanJadwal::create([
-            'id_tahun' => $request->id_tahun,
-            'id_prodi' => $request->id_prodi,
-            'status' => 'Diajukan',
+            return redirect()->back()->with('success', 'Usulan jadwal berhasil diajukan.');
+        }
+    }
+
+    public function batalkanUsulan(Request $request)
+    {
+        $request->validate([
+            'id_tahun' => 'required|exists:tahun_ajaran,id_tahun',
+            'id_prodi' => 'required|exists:prodi,id_prodi',
         ]);
 
-        return redirect()->back()->with('success', 'Usulan jadwal berhasil diajukan.');
+        $usulan = UsulanJadwal::where('id_tahun', $request->id_tahun)
+            ->where('id_prodi', $request->id_prodi)
+            ->first();
+
+        if ($usulan && $usulan->status == 'Diajukan') {
+            $usulan->status = 'Belum Diajukan';
+            $usulan->save();
+            return redirect()->back()->with('success', 'Usulan jadwal berhasil dibatalkan.');
+        }
+
+        return redirect()->back()->with('error', 'Usulan tidak dalam status diajukan atau tidak ditemukan.');
     }
+
+
 
     public function index()
     {
@@ -203,5 +235,7 @@ class UsulanjadwalController extends Controller
 
         return response()->json(['message' => 'Status usulan jadwal berhasil diperbarui.']);
     }
+
+    
 }
 

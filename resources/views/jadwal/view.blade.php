@@ -1,32 +1,49 @@
-
-{{-- coba ajuin jadwal ke dekan --}}
 @extends('layouts.app')
 @section('title', 'SISKARA - View Jadwal')
 @section('content')
 <div class="container mx-auto mt-10">
     <div class="mb-8">
         @if($prodi)
-        <h1 class="text-3xl font-semibold mb-4 text-center">
-            Jadwal Kuliah {{$prodi->strata}} - {{ $prodi->nama_prodi }} {{ $tahun_ajaran->tahun_ajaran }}
-        </h1>
+            <h1 class="text-3xl font-semibold mb-4 text-center">
+                Jadwal Kuliah {{$prodi->strata}} - {{ $prodi->nama_prodi }} {{ $tahun_ajaran->tahun_ajaran }}
+            </h1>
         @else
             <p>Program Studi tidak ditemukan.</p>
         @endif
     </div>
     
+    <!-- Keterangan Status Usulan -->
+    @if($statusUsulan)
+    <div class="mb-4 text-center">
+        @if($statusUsulan == 'Disetujui')
+            <span class="inline-block bg-green-500 text-white px-4 py-2 rounded-md">Status Usulan: Sudah Disetujui</span>
+        @elseif($statusUsulan == 'Diajukan')
+            <span class="inline-block bg-yellow-500 text-white px-4 py-2 rounded-md">Status Usulan: Sudah Diajukan</span>
+        @elseif($statusUsulan == 'Ditolak')
+            <span class="inline-block bg-red-500 text-white px-4 py-2 rounded-md">Status Usulan: Ditolak</span>
+        @elseif($statusUsulan == 'Belum Diajukan')
+            <span class="inline-block bg-gray-500 text-white px-4 py-2 rounded-md">Status Usulan: Belum Diajukan</span>
+        @endif
+    </div>
+    @endif
 
-    <!-- Tombol untuk menambah jadwal baru dan tombol ajukan -->
+    <!-- Tombol untuk menambah jadwal baru -->
     <div class="flex justify-between mb-4">
-        <!-- Tombol Tambah Jadwal Baru -->
         <div class="mb-2">
-            <a href="{{ route('jadwal.create', ['id_tahun' => $id_tahun, 'id_prodi' => $id_prodi]) }}" class="inline-block bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600">Tambah Jadwal Baru</a>
-
+            <!-- Jika status bukan 'Diajukan' atau 'Disetujui', tampilkan tombol tambah -->
+            @if(!in_array($statusUsulan, ['Diajukan','Disetujui']))
+                <a href="{{ route('jadwal.create', ['id_tahun' => $id_tahun, 'id_prodi' => $id_prodi]) }}" class="inline-block bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600">
+                    Tambah Jadwal Baru
+                </a>
+            @endif
         </div>
         <!-- Input Pencarian -->
-        <div class="mb-2">
+        <div class="mb-2 relative">
             <input type="text" id="search" placeholder="Cari Jadwal..." class="w-full p-2 border-2 border-black hover:border-gray-500 px-6 py-2 rounded-md" onkeyup="searchTable()">
-            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a7 7 0 0114 14A7 7 0 0111 4zm0 0a7 7 0 10-14 14 7 7 0 0014-14z" />
+            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" fill="none" stroke="currentColor" 
+                 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                       d="M11 4a7 7 0 0114 14A7 7 0 0111 4zm0 0a7 7 0 10-14 14 7 7 0 0014-14z" />
             </svg>
         </div>
     </div>
@@ -66,13 +83,14 @@
                         <td class="px-4 py-3 text-sm text-center">{{ $jadwal->id_ruang }}</td>
                         <td class="px-4 py-3 text-sm text-center">{{ $jadwal->kuota }}</td>
                         <td class="px-4 py-3 text-sm text-center">
-                            <a href="{{ route('jadwal.edit', $jadwal->id_jadwal) }}" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">Edit</a>
-                            <!-- Tombol Delete -->
-                            <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600" onclick="deleteJadwal({{ $jadwal->id_jadwal }})">Delete</button>
+                            <!-- Hanya tampilkan tombol Edit/Delete jika status tidak diajukan atau disetujui -->
+                            @if(!in_array($statusUsulan, ['Diajukan','Disetujui']))
+                                <a href="{{ route('jadwal.edit', $jadwal->id_jadwal) }}" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">Edit</a>
+                                <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600" onclick="deleteJadwal({{ $jadwal->id_jadwal }})">Delete</button>
+                            @endif
                         </td>
                     </tr>
                 @empty
-                    <!-- Tampilkan pesan jika tidak ada jadwal -->
                     <tr>
                         <td colspan="10" class="px-6 py-4 text-center text-sm text-gray-500">Tidak ada jadwal yang ditemukan.</td>
                     </tr>
@@ -138,6 +156,7 @@
             }
         });
     }
+
     // Fungsi untuk mencari di tabel
     function searchTable() {
         let input = document.getElementById("search");
@@ -161,4 +180,3 @@
     }
 </script>
 @endsection
-

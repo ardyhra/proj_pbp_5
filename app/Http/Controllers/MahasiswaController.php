@@ -176,14 +176,25 @@ class MahasiswaController extends Controller
             }
         }
 
-        $listmk = Jadwal::where('id_tahun', $ta_skrg->id_tahun)
+        $listmk = Jadwal::join('usulanjadwal', function($join) use ($ta_skrg) {
+                $join->on('jadwal.id_prodi', '=', 'usulanjadwal.id_prodi')
+                    ->on('jadwal.id_tahun', '=', 'usulanjadwal.id_tahun')
+                    ->where('usulanjadwal.status', 'Disetujui');
+            })
+            ->where('jadwal.id_tahun', $ta_skrg->id_tahun)
             ->join('matakuliah', 'matakuliah.kode_mk', '=', 'jadwal.kode_mk')
             ->select('matakuliah.nama_mk', 'matakuliah.kode_mk', 'matakuliah.sks')
             ->distinct('matakuliah.kode_mk')
             ->get()
             ->keyBy('kode_mk');
+    
 
-        $jadwalmk = Jadwal::where('id_tahun', $ta_skrg->id_tahun)
+        $jadwalmk = Jadwal::join('usulanjadwal', function($join) use ($ta_skrg) {
+                $join->on('jadwal.id_prodi', '=', 'usulanjadwal.id_prodi')
+                     ->on('jadwal.id_tahun', '=', 'usulanjadwal.id_tahun')
+                     ->where('usulanjadwal.status', 'Disetujui');
+            })
+            ->where('jadwal.id_tahun', $ta_skrg->id_tahun)
             ->join('matakuliah', 'matakuliah.kode_mk', '=', 'jadwal.kode_mk')
             ->select(
                 'jadwal.id_jadwal',
@@ -218,6 +229,7 @@ class MahasiswaController extends Controller
             ->orderBy('jadwal.id_jadwal')
             ->get()
             ->keyBy('id_jadwal');
+        
 
         // Kirim data ke view
         return view('mhs/pengisianirs-mhs', compact('mhs', 'ta_skrg', 'status_lalu', 'ipslalu', 'maxsks', 'listmk', 'jadwalmk'));        

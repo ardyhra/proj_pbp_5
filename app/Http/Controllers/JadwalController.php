@@ -5,6 +5,7 @@ use App\Models\Jadwal;
 use App\Models\TahunAjaran;
 use App\Models\Ruang;
 use App\Models\Dosen;
+use App\Models\Usulanjadwal;
 use App\Models\MataKuliah;
 use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
@@ -33,7 +34,11 @@ class JadwalController extends Controller
                     ->get();
         //dd($jadwals); 
 
-        return view('jadwal.view', compact('jadwals',  'prodi', 'tahun_ajaran', 'id_tahun', 'id_prodi'));
+        $statusUsulan = UsulanJadwal::where('id_tahun', $id_tahun)
+            ->where('id_prodi', $id_prodi)
+            ->value('status') ?? 'Belum Diajukan';
+
+        return view('jadwal.view', compact('jadwals',  'prodi', 'tahun_ajaran', 'id_tahun', 'id_prodi', 'statusUsulan'));
     }
     
     // Menampilkan form untuk menambah jadwal
