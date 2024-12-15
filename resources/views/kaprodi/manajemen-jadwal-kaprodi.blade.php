@@ -31,7 +31,7 @@
                     <option value="" disabled selected>Pilih Program Studi</option>
                     @foreach($prodis as $prodi)
                         <option value="{{ $prodi->id_prodi }}" {{ request('id_prodi') == $prodi->id_prodi ? 'selected' : '' }}>
-                            {{ $prodi->nama_prodi }}
+                            {{$prodi->strata  }} - {{ $prodi->nama_prodi }}
                         </option>
                     @endforeach
                 </select>

@@ -7,7 +7,7 @@
     <div class="mb-8">
         @if($prodi)
         <h1 class="text-3xl font-semibold mb-4 text-center">
-            Jadwal Kuliah {{ $prodi->nama_prodi }} {{ $tahun_ajaran->tahun_ajaran }}
+            Jadwal Kuliah {{$prodi->strata}} - {{ $prodi->nama_prodi }} {{ $tahun_ajaran->tahun_ajaran }}
         </h1>
         @else
             <p>Program Studi tidak ditemukan.</p>
