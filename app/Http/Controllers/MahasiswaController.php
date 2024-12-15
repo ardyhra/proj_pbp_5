@@ -112,6 +112,10 @@ class MahasiswaController extends Controller
         // Ambil data mahasiswa  dari database
         $mhs = Mahasiswa::where('nim', $nim)->first() ?? 'Unknown';
             
+        if ($mhs) {
+            $mhs->nama = ucwords(strtolower($mhs->nama));
+        }
+
         $tahun_ajaran = RiwayatStatus::where('nim',$nim)
             -> join('tahun_ajaran', 'riwayat_status.id_tahun', '=', 'tahun_ajaran.id_tahun')
             -> orderBy('tahun_ajaran.id_tahun', 'desc')

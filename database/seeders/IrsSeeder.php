@@ -56,20 +56,20 @@ class IrsSeeder extends Seeder
             // test
 
             // Fitri
-            ['status' => 'BARU', 'nilai' => 85, 'nim' => '24060122130051', 'id_jadwal' => '202412007101', 'tanggal_disetujui' => null],
-            ['status' => 'BARU', 'nilai' => 85, 'nim' => '24060122130051', 'id_jadwal' => '202412007102', 'tanggal_disetujui' => null],
-            ['status' => 'BARU', 'nilai' => 85, 'nim' => '24060122130051', 'id_jadwal' => '202412007103', 'tanggal_disetujui' => null],
-            ['status' => 'BARU', 'nilai' => 85, 'nim' => '24060122130051', 'id_jadwal' => '202412007104', 'tanggal_disetujui' => null],
-            ['status' => 'BARU', 'nilai' => 85, 'nim' => '24060122130051', 'id_jadwal' => '202412007105', 'tanggal_disetujui' => null],
-            ['status' => 'BARU', 'nilai' => 85, 'nim' => '24060122130051', 'id_jadwal' => '202412007106', 'tanggal_disetujui' => null],
+            // ['status' => 'BARU', 'nilai' => 85, 'nim' => '24060122130051', 'id_jadwal' => '202412007101', 'tanggal_disetujui' => null],
+            // ['status' => 'BARU', 'nilai' => 85, 'nim' => '24060122130051', 'id_jadwal' => '202412007102', 'tanggal_disetujui' => null],
+            // ['status' => 'BARU', 'nilai' => 85, 'nim' => '24060122130051', 'id_jadwal' => '202412007103', 'tanggal_disetujui' => null],
+            // ['status' => 'BARU', 'nilai' => 85, 'nim' => '24060122130051', 'id_jadwal' => '202412007104', 'tanggal_disetujui' => null],
+            // ['status' => 'BARU', 'nilai' => 85, 'nim' => '24060122130051', 'id_jadwal' => '202412007105', 'tanggal_disetujui' => null],
+            // ['status' => 'BARU', 'nilai' => 85, 'nim' => '24060122130051', 'id_jadwal' => '202412007106', 'tanggal_disetujui' => null],
             
             // Elisa
-            ['status' => 'BARU', 'nilai' => 91, 'nim' => '24060123140061', 'id_jadwal' => '202412007110', 'tanggal_disetujui' => null],
-            ['status' => 'BARU', 'nilai' => 72, 'nim' => '24060123140061', 'id_jadwal' => '202412007111', 'tanggal_disetujui' => null],
-            ['status' => 'BARU', 'nilai' => 76, 'nim' => '24060123140061', 'id_jadwal' => '202412007112', 'tanggal_disetujui' => null],
-            ['status' => 'BARU', 'nilai' => 91, 'nim' => '24060123140061', 'id_jadwal' => '202412007113', 'tanggal_disetujui' => null],
-            ['status' => 'BARU', 'nilai' => 72, 'nim' => '24060123140061', 'id_jadwal' => '202412007114', 'tanggal_disetujui' => null],
-            ['status' => 'BARU', 'nilai' => 76, 'nim' => '24060123140061', 'id_jadwal' => '202412007115', 'tanggal_disetujui' => null],
+            // ['status' => 'BARU', 'nilai' => 91, 'nim' => '24060123140061', 'id_jadwal' => '202412007110', 'tanggal_disetujui' => null],
+            // ['status' => 'BARU', 'nilai' => 72, 'nim' => '24060123140061', 'id_jadwal' => '202412007111', 'tanggal_disetujui' => null],
+            // ['status' => 'BARU', 'nilai' => 76, 'nim' => '24060123140061', 'id_jadwal' => '202412007112', 'tanggal_disetujui' => null],
+            // ['status' => 'BARU', 'nilai' => 91, 'nim' => '24060123140061', 'id_jadwal' => '202412007113', 'tanggal_disetujui' => null],
+            // ['status' => 'BARU', 'nilai' => 72, 'nim' => '24060123140061', 'id_jadwal' => '202412007114', 'tanggal_disetujui' => null],
+            // ['status' => 'BARU', 'nilai' => 76, 'nim' => '24060123140061', 'id_jadwal' => '202412007115', 'tanggal_disetujui' => null],
             
 
         ]);

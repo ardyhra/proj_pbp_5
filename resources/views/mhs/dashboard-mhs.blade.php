@@ -66,7 +66,7 @@
             <div class="p-3 pb-1 bg-gray-300 rounded-3xl text-center mb-6">
                 <div class="w-24 h-24 mx-auto bg-gray-400 rounded-full mb-3 bg-center bg-contain bg-no-repeat"
                      style="background-image: url(img/fsm.jpg)"></div>
-                <h2 class="text-lg text-black font-bold">{{ $mhs->nama_mhs }}</h2>
+                <h2 class="text-lg text-black font-bold">{{ $mhs->nama }}</h2>
                 <p class="text-xs text-gray-800">NIM {{ $mhs->nim }}</p>
                 <p class="text-sm bg-sky-700 rounded-full px-3 py-1 mt-2 font-semibold">Mahasiswa</p>
                 <a href="{{ route('login') }}" class="text-sm w-full bg-red-700 py-1 rounded-full mb-4 mt-2 text-center block font-semibold hover:bg-opacity-70">Logout</a>

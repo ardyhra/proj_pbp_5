@@ -13,7 +13,7 @@ class AccountSeeder extends Seeder
         DB::table('accounts')->insert([
             [
                 // akun FITRI ANGGRAINI
-                'email' => 'mahasiswa@example.com',
+                'email' => 'mahasiswa1@example.com',
                 'password' => Hash::make('password123'),
                 'mahasiswa' => true,
                 'pembimbing_akademik' => false,
@@ -21,6 +21,28 @@ class AccountSeeder extends Seeder
                 'dekan' => false,
                 'bagian_akademik' => false,
                 'related_id' => '24060122130051',
+            ],
+            [
+                // akun ELISA HANDAYANI
+                'email' => 'mahasiswa2@example.com',
+                'password' => Hash::make('password123'),
+                'mahasiswa' => true,
+                'pembimbing_akademik' => false,
+                'ketua_program_studi' => false,
+                'dekan' => false,
+                'bagian_akademik' => false,
+                'related_id' => '24060123140061',
+            ],
+            [
+                // akun DINA PERMATA
+                'email' => 'mahasiswa3@example.com',
+                'password' => Hash::make('password123'),
+                'mahasiswa' => true,
+                'pembimbing_akademik' => false,
+                'ketua_program_studi' => false,
+                'dekan' => false,
+                'bagian_akademik' => false,
+                'related_id' => '24060124120001',
             ],
             [
                 // akun pak Guruh
