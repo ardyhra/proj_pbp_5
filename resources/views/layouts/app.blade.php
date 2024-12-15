@@ -55,10 +55,12 @@
                     <span>Dashboard</span>
                 </a>
                 <a href="{{ url('/manajemen-jadwal-kaprodi') }}"
-                   class="flex items-center space-x-2 p-2 rounded-xl 
-                   {{ request()->is('manajemen-jadwal-kaprodi') ? 'bg-sky-800 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white' }}">
-                    <span>Manajemen Jadwal</span>
+                    class="flex items-center space-x-2 p-2 rounded-xl 
+                    {{ request()->is('jadwal/*') || request()->is('manajemen-jadwal-kaprodi') ? 'bg-sky-800 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white' }}">
+                        <span>Manajemen Jadwal</span>
                 </a>
+
+                
                 <a href="{{ url('/rekapjadwal') }}"
                    class="flex items-center space-x-2 p-2 rounded-xl 
                    {{ request()->is('rekapjadwal') ? 'bg-sky-800 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-700 hover:text-white' }}">
