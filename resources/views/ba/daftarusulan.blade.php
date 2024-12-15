@@ -192,7 +192,7 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log(data); // Pastikan ini, bukan hanya data.ruang
+                    // console.log(data); // Pastikan ini, bukan hanya data.ruang
                     const rekapRuangTabel = document.getElementById('rekap-ruang');
                     rekapRuangTabel.innerHTML = '';
 
