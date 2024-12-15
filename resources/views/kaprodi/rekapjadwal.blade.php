@@ -29,10 +29,11 @@
                     <option value="" disabled selected>Pilih Program Studi</option>
                     @foreach($prodis as $prodi)
                         <option value="{{ $prodi->id_prodi }}" {{ request('id_prodi') == $prodi->id_prodi ? 'selected' : '' }}>
-                            {{ $prodi->nama_prodi }}
+                            {{ $prodi->strata }} - {{ $prodi->nama_prodi }} 
                         </option>
                     @endforeach
                 </select>
+                
             </div>
         </div>
         
@@ -67,7 +68,7 @@
                     <tr class="hover:bg-gray-100 border-b border-gray-200">
                         <td class="px-4 py-3 text-sm  text-center">{{ $loop->iteration }}</td>
                         <td class="px-4 py-3 text-sm  text-center">{{ $jadwal->tahun_ajaran }}</td>
-                        <td class="px-4 py-3 text-sm  text-center">{{ $jadwal->nama_prodi }}</td>
+                        <td class="px-4 py-3 text-sm  text-center">{{ $jadwal->prodi->strata }} - {{ $jadwal->nama_prodi }}</td>
                         <td class="px-4 py-3 text-sm  text-center">
                             @if($jadwal->status == 'Diajukan')
                                 <span class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">Diajukan</span>
