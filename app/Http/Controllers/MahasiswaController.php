@@ -178,7 +178,7 @@ class MahasiswaController extends Controller
 
         $listmk = Jadwal::where('id_tahun', $ta_skrg->id_tahun)
             ->join('matakuliah', 'matakuliah.kode_mk', '=', 'jadwal.kode_mk')
-            ->select('matakuliah.nama_mk', 'matakuliah.kode_mk', 'matakuliah.sks')
+            ->select('matakuliah.nama_mk', 'matakuliah.kode_mk', 'matakuliah.sks', 'matakuliah.plot_semester')
             ->distinct('matakuliah.kode_mk')
             ->get()
             ->keyBy('kode_mk');

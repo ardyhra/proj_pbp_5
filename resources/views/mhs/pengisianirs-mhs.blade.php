@@ -329,8 +329,6 @@
         let selectedCourseItem = null;
         let selectedMatkul = null;
 
-        // const courseSchedules = {};
-
         let schedulesByKodeMK = {};
 
         Object.values(jadwalMatkul).forEach(jadwal => {
@@ -388,49 +386,107 @@
         }
 
         // Fungsi untuk mengisi daftar mata kuliah
-        function populateCourseList() {
+        function populateCourseList(filterQuery = '') {
             const courseList = document.getElementById('courseList');
-            courseList.innerHTML = ''; // Kosongkan daftar sebelum diisi ulang
+            courseList.innerHTML = '';
 
-            // Iterasi mata kuliah dari data PHP (listMatkul)
             Object.keys(listMatkul).forEach((kode_mk) => {
                 const matkul = listMatkul[kode_mk];
+                const isSameSemester = matkul.plot_semester === mahasiswa.semester;
+
+                // Filter berdasarkan pencarian (query)
+                const isMatchedByQuery = filterQuery && (matkul.nama_mk.toLowerCase().includes(filterQuery) || kode_mk.toLowerCase().includes(filterQuery));
+                if (!isSameSemester && !isMatchedByQuery && !selectedCourses[kode_mk]) {
+                    // Jika bukan semester mahasiswa, tidak cocok dengan pencarian, dan belum dipilih, abaikan
+                    return;
+                }
+
                 const courseItem = document.createElement('div');
                 const isEnrolled = matakuliah_terdaftar.some(item => item.kode_mk === kode_mk);
-                courseItem.className = `p-2 border rounded-lg shadow-none cursor-pointer ${
-                    isEnrolled ? 'bg-blue-300' : 'bg-white hover:bg-gray-100'
-                }`;
-                // courseItem.className = 'p-2 border rounded-lg bg-white shadow-none hover:bg-gray-100 cursor-pointer';
+                const isOutsideSemester = !isSameSemester && !selectedCourses[kode_mk];
+
+                courseItem.className = `p-2 border rounded-lg shadow-none cursor-pointer' ${
+                    isEnrolled ? 'bg-blue-300' : isOutsideSemester ? 'bg-gray-100'  : 'bg-white'
+                } hover:bg-gray-200`;
+
                 courseItem.dataset.kode_mk = kode_mk;
                 courseItem.dataset.nama = matkul.nama_mk;
 
-                // Konten mata kuliah
                 courseItem.innerHTML = `
                     <p class="font-bold">${matkul.nama_mk} (${matkul.sks} SKS)</p>
                     <p class="text-sm text-gray-500">Kode MK: ${kode_mk}</p>
                 `;
 
-                // Event saat diklik
                 courseItem.onclick = () => toggleCourseSelection(courseItem, matkul);
 
                 courseList.appendChild(courseItem);
             });
+            // const courseList = document.getElementById('courseList');
+            // courseList.innerHTML = ''; // Kosongkan daftar sebelum diisi ulang
+
+            // // Iterasi mata kuliah dari data PHP (listMatkul)
+            // Object.keys(listMatkul).forEach((kode_mk) => {
+            //     const matkul = listMatkul[kode_mk];
+
+            //     // Hanya tampilkan mata kuliah dengan plot semester yang sesuai dengan semester mahasiswa
+            //     if (matkul.plot_semester !== {{ $mhs->semester }}) {
+            //         return; // Lewati mata kuliah yang tidak sesuai plot semester
+            //     }
+
+            //     const courseItem = document.createElement('div');
+            //     const isEnrolled = matakuliah_terdaftar.some(item => item.kode_mk === kode_mk);
+            //     courseItem.className = `p-2 border rounded-lg shadow-none cursor-pointer ${
+            //         isEnrolled ? 'bg-blue-300' : 'bg-white hover:bg-gray-100'
+            //     }`;
+            //     // courseItem.className = 'p-2 border rounded-lg bg-white shadow-none hover:bg-gray-100 cursor-pointer';
+            //     courseItem.dataset.kode_mk = kode_mk;
+            //     courseItem.dataset.nama = matkul.nama_mk;
+
+            //     // Konten mata kuliah
+            //     courseItem.innerHTML = `
+            //         <p class="font-bold">${matkul.nama_mk} (${matkul.sks} SKS)</p>
+            //         <p class="text-sm text-gray-500">Kode MK: ${kode_mk}</p>
+            //     `;
+
+            //     // Event saat diklik
+            //     courseItem.onclick = () => toggleCourseSelection(courseItem, matkul);
+
+            //     courseList.appendChild(courseItem);
+            // });
         }
 
         function toggleCourseSelection(courseItem, matkul) {
             const kodeMK = courseItem.dataset.kode_mk;
 
             if (selectedCourses[kodeMK]) {
-                // Jika sudah dipilih, hapus dari tabel dan batalkan pemilihan
+                // Jika sudah dipilih, hapus dari tabel dan daftar
                 delete selectedCourses[kodeMK];
                 courseItem.classList.remove('course-selected');
                 removeCourseFromSchedule(matkul);
+
+                // Hapus dari daftar jika bukan semester mahasiswa
+                if (matkul.plot_semester !== mahasiswa.semester) {
+                    courseItem.remove();
+                }
             } else {
-                // Jika belum dipilih, tambahkan ke tabel dan tandai sebagai dipilih
+                // Jika belum dipilih, tambahkan ke tabel dan daftar
                 selectedCourses[kodeMK] = matkul;
                 courseItem.classList.add('course-selected');
                 addCourseToSchedule(matkul);
             }
+            // const kodeMK = courseItem.dataset.kode_mk;
+
+            // if (selectedCourses[kodeMK]) {
+            //     // Jika sudah dipilih, hapus dari tabel dan batalkan pemilihan
+            //     delete selectedCourses[kodeMK];
+            //     courseItem.classList.remove('course-selected');
+            //     removeCourseFromSchedule(matkul);
+            // } else {
+            //     // Jika belum dipilih, tambahkan ke tabel dan tandai sebagai dipilih
+            //     selectedCourses[kodeMK] = matkul;
+            //     courseItem.classList.add('course-selected');
+            //     addCourseToSchedule(matkul);
+            // }
         }
 
         function addCourseToSchedule(matkul) {
@@ -494,17 +550,19 @@
         // Fungsi untuk memfilter daftar mata kuliah
         function filterCourses() {
             const query = document.getElementById('searchCourse').value.toLowerCase();
-            const courses = document.querySelectorAll('#courseList > div');
+            populateCourseList(query);
+            // const query = document.getElementById('searchCourse').value.toLowerCase();
+            // const courses = document.querySelectorAll('#courseList > div');
 
-            courses.forEach(course => {
-                const name = course.dataset.nama.toLowerCase();
-                const kode = course.dataset.kode_mk.toLowerCase();
-                if (name.includes(query) || kode.includes(query)) {
-                    course.style.display = 'block';
-                } else {
-                    course.style.display = 'none';
-                }
-            });
+            // courses.forEach(course => {
+            //     const name = course.dataset.nama.toLowerCase();
+            //     const kode = course.dataset.kode_mk.toLowerCase();
+            //     if (name.includes(query) || kode.includes(query)) {
+            //         course.style.display = 'block';
+            //     } else {
+            //         course.style.display = 'none';
+            //     }
+            // });
         }
 
         function openModal(courseItem) {
