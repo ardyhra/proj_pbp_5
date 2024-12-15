@@ -18,7 +18,7 @@ class IrsSeeder extends Seeder
             ['status' => 'BARU', 'nilai' => 39, 'nim' => '24060123140061', 'id_jadwal' => '202312007105', 'tanggal_disetujui' => null],
             ['status' => 'BARU', 'nilai' => 72, 'nim' => '24060123140061', 'id_jadwal' => '202312007111', 'tanggal_disetujui' => null],
             ['status' => 'BARU', 'nilai' => 82, 'nim' => '24060123140061', 'id_jadwal' => '202312007127', 'tanggal_disetujui' => null],
-            ['status' => 'BARU', 'nilai' => 86, 'nim' => '24060123140061', 'id_jadwal' => '202312007204', 'tanggal_disetujui' => null],
+            ['status' => 'BARU', 'nilai' => 86, 'nim' => '24060123140061', 'id_jadwal' => '202312007203', 'tanggal_disetujui' => null],
             ['status' => 'BARU', 'nilai' => 77, 'nim' => '24060123140061', 'id_jadwal' => '202312007211', 'tanggal_disetujui' => null],
             ['status' => 'BARU', 'nilai' => 88, 'nim' => '24060123140061', 'id_jadwal' => '202312007305', 'tanggal_disetujui' => null],
             ['status' => 'BARU', 'nilai' => 90, 'nim' => '24060123140061', 'id_jadwal' => '202312007314', 'tanggal_disetujui' => null],

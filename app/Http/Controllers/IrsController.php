@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\dosen;
 use App\Models\irs;
+use App\Models\mahasiswa;
+use App\Models\Jadwal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -280,34 +282,138 @@ class IrsController extends Controller
         return response()->json(['irs' => array_values($array_irs)]);
     }
 
-    public function tambahIRS(Request $request)
+    public function tambahMataKuliahIrs(Request $request)
     {
-        // Validasi data yang diterima (optional)
-        $request->validate([
-            'matakuliah_terdaftar' => 'required|array',
-            'matakuliah_terdaftar.*.nim' => 'required|string',
-            'matakuliah_terdaftar.*.id_jadwal' => 'required|string',
-            'matakuliah_terdaftar.*.status' => 'required|string',
-        ]);
+        $mahasiswa = Mahasiswa::find($request->nim);
+        $idThn = $request->id_Tahun;
+        $idJadwalList = $request->id_jadwal_list; // List of ID jadwal from request
 
-        // Menyimpan data IRS yang diterima
-        $data = $request->input('matakuliah_terdaftar'); // Ambil array matakuliah_terdaftar
+        foreach ($idJadwalList as $id_jadwal) {
+            $jadwal = Jadwal::find($id_jadwal);
 
-        // Insert data ke dalam tabel IRS
-        try {
-            foreach ($data as $item) {
-                IRS::create([
-                    'nim' => $item['nim'],
-                    'id_jadwal' => $item['id_jadwal'],
-                    'status' => $item['status'],
-                ]);
+            // Cek apakah mata kuliah dengan jadwal ini sudah terdaftar
+            $existingIrs = Irs::where('nim', $mahasiswa->nim)
+                            ->where('id_jadwal', $jadwal->id_jadwal)
+                            ->first();
+
+            if ($existingIrs) {
+                continue; // Jika sudah terdaftar, skip ke jadwal berikutnya
             }
-            return response()->json(['success' => true, 'message' => 'IRS berhasil disimpan!']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+
+            $status = $this->tentukanStatusIrs($mahasiswa->nim, $jadwal->kode_mk, $idThn);
+            $currentKuota = Irs::where('id_jadwal', $jadwal->id_jadwal)->count();
+            $maxKuota = $jadwal->kuota;
+
+            if ($currentKuota == $maxKuota) {
+                $this->handleKuotaPenuh($mahasiswa, $jadwal);
+                // $currentKuota = Irs::where('id_jadwal', $jadwal->id_jadwal)->count();
+                // if ($currentKuota >= $maxKuota) {
+                //     return response()->json([
+                //         'message' => "Mata kuliah {$jadwal->matakuliah->nama} penuh. Tidak dapat mendaftarkan.",
+                //     ], 400); // Gagal mendaftar karena kuota penuh
+                // }
+            }
+
+            // Menambahkan mata kuliah ke IRS
+            $irs = new Irs();
+            $irs->nim = $mahasiswa->nim;
+            $irs->id_jadwal = $jadwal->id_jadwal;
+            $irs->status = $status;
+            $irs->save();
         }
 
-        // Kembalikan respon sukses
-        return response()->json(['success' => true, 'message' => 'IRS berhasil disimpan!']);
+        return response()->json(['message' => 'Mata kuliah berhasil didaftarkan.']);
+    }
+
+    private function tentukanStatusIrs($nim, $kode_mk, $idThn)
+    {
+        // Mengecek riwayat nilai mahasiswa
+        $riwayatNilai = Irs::where('nim', $nim)
+                            ->join('jadwal', 'jadwal.id_jadwal', '=', 'irs.id_jadwal')
+                            ->where('jadwal.kode_mk', $kode_mk)
+                            ->where('jadwal.id_tahun', 'NOT LIKE', $idThn)
+                            ->orderBy('irs.id_jadwal', 'desc')
+                            ->first();
+
+        if (!$riwayatNilai) {
+            return 'BARU';  // Belum pernah mengambil mata kuliah
+        } else if ($riwayatNilai->nilai >= 60) {
+            return 'PERBAIKAN';  // Sudah pernah mengambil dan lulus (≥ 60)
+        } else {
+            return 'MENGULANG';  // Sudah pernah mengambil tapi tidak lulus (< 60)
+        }
+    }
+
+    private function handleKuotaPenuh(Mahasiswa $mahasiswa, Jadwal $jadwal)
+    {
+        // Ambil semua IRS yang terdaftar pada kelas yang sama
+        $irss = Irs::where('id_jadwal', $jadwal->id_jadwal)->get();
+
+        // Urutkan IRS berdasarkan prioritas mahasiswa
+        $irss = $irss->sortBy(function ($irs) use ($jadwal) {
+            $existingMahasiswa = Mahasiswa::find($irs->nim);
+            return $this->getPrioritas($existingMahasiswa, $jadwal);
+        });
+
+        // Cari mahasiswa dengan prioritas lebih tinggi untuk dihapus
+        foreach ($irss as $irs) {
+            $existingMahasiswa = Mahasiswa::find($irs->nim);
+
+            // Bandingkan prioritas
+            if ($this->getPrioritas($mahasiswa, $jadwal) < $this->getPrioritas($existingMahasiswa, $jadwal)) {
+                // Hapus IRS mahasiswa dengan prioritas lebih tinggi
+                Irs::where('nim', $irs->nim)
+                    ->where('id_jadwal', $irs->id_jadwal)
+                    ->delete();
+                return; // Hanya perlu menghapus satu mahasiswa
+            }
+        }
+    }
+
+    private function getPrioritas(Mahasiswa $mahasiswa, Jadwal $jadwal)
+    {
+        $jenisMataKuliah = $jadwal->matakuliah->jenis; // W = Wajib, P = Pilihan
+        $semesterPlot = $jadwal->matakuliah->plot_semester;
+
+        if ($jenisMataKuliah == 'W') {
+            if ($mahasiswa->semester == $semesterPlot) {
+                return 1; // WAJIB mengambil matkul di semester ini
+            } elseif ($mahasiswa->semester > $semesterPlot) {
+                // Cek status IRS mahasiswa
+                $irsMhs = Irs::where('nim', $mahasiswa->nim)
+                    ->join('jadwal', 'jadwal.id_jadwal', '=', 'irs.id_jadwal')
+                    ->where('jadwal.kode_mk', $jadwal->kode_mk)
+                    ->where('jadwal.id_tahun', 'NOT LIKE', $jadwal->id_tahun)
+                    ->orderBy('irs.id_jadwal', 'desc')
+                    ->first();
+                    
+                if ($irsMhs->nilai < 60) {
+                    return 2; // Semester atas yang mengulang
+                } else {
+                    return 3; // Semester atas yang perbaikan
+                }
+            } elseif ($mahasiswa->semester < $semesterPlot) {
+                return 4; // Semester bawah
+            }
+        } else {
+            if ($mahasiswa->semester >= 5) {
+                return 1; // Semester ≥ 5 (FCFS)
+            } else {
+                return 2; // Semester < 5
+            }
+        }
+    }
+
+    public function hapusMataKuliahIrs(Request $request)
+    {
+        $idJadwalList = $request->id_jadwal_list; // List of ID jadwal from request
+
+        foreach ($idJadwalList as $id_jadwal) {
+            $irs = Irs::where('nim', $request->nim)
+                    ->where('id_jadwal', $id_jadwal)
+                    ->delete();
+        }
+
+        return response()->json(['message' => 'Pendaftaran Mata Kuliah berhasil dibatalkan.']);
     }
 }
