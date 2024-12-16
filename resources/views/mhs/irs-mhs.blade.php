@@ -97,6 +97,7 @@
     <div class="modal-content bg-white p-6 rounded-lg max-w-7xl w-full relative">
       <button class="close-btn text-white bg-blue-500 px-3 py-1 rounded-full absolute top-4 right-4 hover:bg-blue-600" onclick="closeModal()">Tutup</button>
       <h2 class="text-xl font-bold mb-4" id="semester-title">Isian Rencana Semester</h2>
+      <p class="text-lg font-semibold mb-2" id="status-persetujuan">Status Persetujuan:</p>
       <table class="w-full border border-gray-300" id="irs-table">
         <thead>
           <tr class="bg-gray-200">
@@ -150,6 +151,20 @@
         success: function(response) {
           var irsHtml = '';
           var totalSks = 0;
+          
+          // Default status persetujuan
+          var persetujuanStatus = 'Belum Disetujui Dosen Wali'; // Default
+          
+          // Periksa jika ada data IRS dan nilai tanggal_disetujui
+          if (response.irs.length > 0) {
+            const tanggalDisetujui = response.irs[0].tanggal_disetujui; // Ambil dari record pertama
+            if (tanggalDisetujui !== null && tanggalDisetujui !== undefined && tanggalDisetujui !== "") {
+              persetujuanStatus = 'Telah Disetujui Dosen Wali';
+            }
+          }
+
+          // Tampilkan status persetujuan
+          $('#status-persetujuan').text('Status Persetujuan: ' + persetujuanStatus);
 
           // Cek apakah response.irs kosong
           if (response.irs.length === 0) {
@@ -161,14 +176,11 @@
             totalSks = 0;
             $('#cetak-irs').addClass('hidden');
           } else {
-            // Iterasi melalui data IRS dan buat baris tabel
             $.each(response.irs, function(index, irs) {
-              var waktuMulai = irs.waktu_mulai.slice(0, 5);
-              var waktuSelesai = irs.waktu_selesai.slice(0, 5);
-              // Menampilkan daftar dosen dalam format yang sesuai, setiap dosen di baris baru
+              // Menampilkan daftar dosen dalam format yang sesuai
               var dosenList = '';
               $.each(irs.dosen, function(i, dosen) {
-                dosenList += dosen + "<br>"; // Menambahkan <br> agar nama dosen berada di baris baru
+                dosenList += dosen + "<br>";
               });
 
               irsHtml += `
@@ -176,11 +188,11 @@
                   <td class="p-1 border text-center">${index + 1}</td>
                   <td class="p-1 border text-left">${irs.kode_mk}</td>
                   <td class="p-1 border text-left">${irs.nama_mk}</td>
-                  <td class="p-1 border text-left">${irs.hari}, <br> ${waktuMulai}-${waktuSelesai}</td>
+                  <td class="p-1 border text-left">${irs.hari_waktu}</td>
                   <td class="p-1 border text-center">${irs.kelas}</td>
                   <td class="p-1 border text-center">${irs.sks}</td>
                   <td class="p-1 border text-left">${irs.id_ruang}</td>
-                  <td class="p-1 border text-left">${irs.status}</td>
+                  <td class="p-1 border text-left">${irs.status}</td>                    
                   <td class="p-1 border text-left">${dosenList}</td>
                 </tr>
               `;
@@ -199,10 +211,6 @@
         }
       });
     }
-
-    // function showModal() {
-    //   document.getElementById('modal').classList.remove('hidden');
-    // }
 
     function closeModal() {
       document.getElementById('modal').classList.add('hidden');
@@ -238,8 +246,11 @@
       $('#irs-table tbody tr').each(function() {
         var row = [];
         $(this).find('td').each(function(index) {
-          if (index === 8) {
-            // Kolom Nama Dosen, gabungkan dosen yang berada dalam baris baru
+          if (index === 3) {
+            // Kolom "Waktu", gabungkan nilai yang dipisahkan dengan baris baru
+            row.push($(this).html().replace(/<br>/g, '\n').trim());
+          } else if (index === 8) {
+            // Kolom "Nama Dosen", gabungkan nilai yang dipisahkan dengan baris baru
             row.push($(this).html().replace(/<br>/g, '\n').trim());
           } else {
             row.push($(this).text().trim());
@@ -253,10 +264,10 @@
         startY: 70,
         head: [['No', 'Kode', 'Mata Kuliah', 'Waktu', 'Kelas', 'SKS', 'Ruang', 'Status', 'Nama Dosen']],
         body: irsData,
-        styles: { fontSize: 10, font: 'TimesNewRoman', lineColor: [0, 0, 0], lineWidth: 0.1 },  // Menggunakan font Times New Roman dan border hitam
-        headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0] },  // Header tabel dengan warna putih dan teks hitam
-        bodyStyles: { textColor: [0, 0, 0] },  // Teks tabel hitam
-        theme: 'grid',  // Menggunakan tema grid dengan garis border
+        styles: { fontSize: 10, font: 'TimesNewRoman', lineColor: [0, 0, 0], lineWidth: 0.1 },
+        headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0] },
+        bodyStyles: { textColor: [0, 0, 0] },
+        theme: 'grid',
       });
 
       // Tanda tangan dan tanggal dinamis
