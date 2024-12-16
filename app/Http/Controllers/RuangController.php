@@ -24,13 +24,17 @@ class RuangController extends Controller
 
     public function store(Request $request)
     {
+        $cap = $request->kapasitas;
+        if($cap<0){
+            return response()->json(['message' => 'Kapasitas tidak boleh kurang dari 0']);
+        }
         $validated = $request->validate([
             'id_ruang' => 'required|unique:ruang|max:4',
             'blok_gedung' => 'required|max:1',
             'lantai' => 'required|integer',
-            'kapasitas' => 'required|integer',
+            'kapasitas' => 'required|integer|min:0',
         ]);
-
+        
         $ruang = Ruang::create($validated);
 
         return response()->json([
