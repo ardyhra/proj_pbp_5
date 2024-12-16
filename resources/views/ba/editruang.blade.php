@@ -21,6 +21,18 @@
             min-height: 100vh;
         }
 
+        /* State normal (sidebar terbuka) */
+        #main-content {
+            transition: width 0.3s ease, margin-left 0.3s ease;
+            /* width sudah diatur oleh utility classes tailwind (w-full lg:w-4/5) */
+        }
+
+        /* Ketika sidebar ditutup, buat main-content memenuhi lebar penuh */
+        .sidebar-closed ~ #main-content {
+            width: 100% !important;
+            margin-left: 0 !important;
+        }
+
         /* Modal Styling */
         .modal {
             display: none;
@@ -173,7 +185,19 @@
         let originalIdRuang = null;
 
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('sidebar-closed');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            sidebar.classList.toggle('sidebar-closed');
+
+            if (sidebar.classList.contains('sidebar-closed')) {
+                // Sidebar tertutup
+                mainContent.classList.remove('lg:ml-auto', 'lg:w-4/5');
+                mainContent.classList.add('w-full');
+            } else {
+                // Sidebar terbuka
+                mainContent.classList.remove('w-full');
+                mainContent.classList.add('lg:ml-auto', 'lg:w-4/5');
+            }
         }
 
         function openModal(mode, index = null) {
