@@ -7,12 +7,7 @@
     <title>@yield('title', 'SISKARA - Dashboard Kaprodi')</title>
     @vite('resources/css/app.css')
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .flex-container { display: flex; min-height: 100vh; }
-        .sidebar { transition: transform 0.3s ease; width: 20%; background-color: #0284c7; color: white; }
-        .sidebar-closed { transform: translateX(-100%); }
-        .main-content { flex: 1; padding: 2rem; background-color: #f3f4f6; }
-    </style>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- CDN TailwindCSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,7 +20,7 @@
 
     <header class="bg-gradient-to-r from-sky-500 to-blue-600 text-white p-4 flex justify-between items-center">
         <div class="flex items-center space-x-3">
-            <button onclick="toggleSidebar()" class="focus:outline-none">
+            <button onclick="toggleSidebar()" class="toogle-btn">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
@@ -91,7 +86,8 @@
 
     <script>
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('sidebar-closed');
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('sidebar-closed');
         }
 
     </script>
