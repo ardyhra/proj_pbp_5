@@ -43,18 +43,20 @@ Route::get('/about', function () {
 });
 
 // ========================================================================================================================
+
+// Mahasiswa
+
 Route::get('/dashboard-mhs', [MahasiswaController::class, 'dashboard'])->name('dashboard-mhs');
 
 Route::get('/pengisianirs-mhs', [MahasiswaController::class, 'pengisianIrs'])->name('pengisianirs-mhs');
 
-Route::post('/tambah-irs', [IrsController::class, 'tambahIRS'])->name('tambah-irs');
+Route::post('/pengisianirs-mhs/tambah-mata-kuliah-irs', [IrsController::class, 'tambahMataKuliahIrs'])->name('tambah-matkul-irs');
+
+Route::post('/pengisianirs-mhs/hapus-mata-kuliah-irs', [IrsController::class, 'hapusMataKuliahIrs'])->name('hapus-matkul-irs');
 
 Route::get('/irs-mhs', [MahasiswaController::class, 'irs'])->name('irs-mhs');
 
 Route::get('/irs-mhs/get-irs-detail', [IrsController::class, 'getIrsDetail'])->name('getIrsDetail');
-
-
-
 // ========================================================================================================================
 
 // Pembimbing Akademik -- Doswal

@@ -148,14 +148,14 @@ class MahasiswaController extends Controller
             ->orderBy('jadwal.id_tahun', 'desc')
             ->first();
 
-        $ipslalu = $ips->total_bobot / $ips->total_sks ?? 0;
-
+        $ipslalu = ($ips && $ips->total_bobot) ? ($ips->total_bobot / ($ips->total_sks ?? 0)) : 0;
+        
         // Menentukan batas SKS
         $maxsks = 20; // Default batas SKS
 
         if ($mhs->semester == 1 || $mhs->semester == 2) {
             // Semester pertama dan kedua
-            if ($ipslalu < 2.00) {
+            if ($ipslalu < 2.00 && $mhs->semester == 2) {
                 $maxsks = 18; // Semester kedua jika IPS < 2.00
             }
         } else {
@@ -183,7 +183,7 @@ class MahasiswaController extends Controller
             })
             ->where('jadwal.id_tahun', $ta_skrg->id_tahun)
             ->join('matakuliah', 'matakuliah.kode_mk', '=', 'jadwal.kode_mk')
-            ->select('matakuliah.nama_mk', 'matakuliah.kode_mk', 'matakuliah.sks')
+            ->select('matakuliah.nama_mk', 'matakuliah.kode_mk', 'matakuliah.sks', 'matakuliah.plot_semester')
             ->distinct('matakuliah.kode_mk')
             ->get()
             ->keyBy('kode_mk');
