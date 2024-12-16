@@ -35,3 +35,59 @@ table tbody tr:hover {
     background-color: #dc3545;
     border-color: #dc3545;
 }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Flex container untuk layout */
+.flex-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 20%; /* Lebar sidebar */
+    background-color: #0284c7;
+    color: white;
+    transition: width 0.5s ease;
+    overflow: hidden; /* Sembunyikan konten saat lebar 0 */
+    flex-shrink: 0; /* Sidebar tidak mengecil */
+}
+
+.sidebar-closed {
+    width: 0; /* Sidebar tertutup sempurna */
+    padding: 0; /* Hapus padding */
+    margin: 0; /* Hapus margin */
+    transform: translateX(-100%); 
+}
+
+/* Main content */
+.main-content {
+    flex: 1; /* Mengisi seluruh ruang sisa */
+    background-color: #f3f4f6;
+    padding: 1rem; /* Tambahkan padding */
+    transition: all 0.5s ease;
+    margin-left: 0; /* Pastikan tidak ada margin kiri */
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: linear-gradient(to right, #0284c7, #027bb5);
+    color: white;
+}
+
+/* Tombol toggle */
+.toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}

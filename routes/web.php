@@ -184,7 +184,7 @@ Route::post('/usulanjadwal/{id_tahun}/{id_prodi}/update-status', [UsulanjadwalCo
 // KETUA PROGRAM STUDI
 // Route untuk Dashboard Kaprodi
 // Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboard'])->name('dashboard-kaprodi');
-Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboardKaprodi'])->name('dashboard.kaprodi');
+Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboardKaprodi'])->name('dashboard-kaprodi');
 
 // Route untuk Manajemen Jadwal Kaprodi
 Route::get('/manajemen-jadwal-kaprodi', [KaprodiController::class, 'manajemenJadwal'])->name('manajemen-jadwal-kaprodi.index');
