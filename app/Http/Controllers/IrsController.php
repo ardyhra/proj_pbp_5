@@ -228,6 +228,7 @@ class IrsController extends Controller
             ->orderBy('jadwal.id_jadwal', 'asc')
             ->select(
                 'irs.status',
+                'irs.tanggal_disetujui',
                 DB::raw("
                     CASE jadwal.hari
                         WHEN 1 THEN 'Senin'
@@ -258,14 +259,13 @@ class IrsController extends Controller
         // Mengubah data $irs menjadi array dengan format yang diinginkan
         $array_irs = [];
         foreach ($irs as $ir) {
-            // Periksa apakah mata kuliah sudah ada dalam array
-            if (!isset($array_irs[$ir->kode_mk])) {
-                // Jika mata kuliah belum ada dalam array, buat entri baru
-                $array_irs[$ir->kode_mk] = [
+            $key = $ir->kode_mk . '_' . $ir->kelas; // Kunci berdasarkan kode MK dan kelas
+            
+            if (!isset($array_irs[$key])) {
+                $array_irs[$key] = [
                     'status' => $ir->status,
-                    'hari' => $ir->hari,
-                    'waktu_mulai' => $ir->waktu_mulai,
-                    'waktu_selesai' => $ir->waktu_selesai,
+                    'tanggal_disetujui' => $ir->tanggal_disetujui,
+                    'hari_waktu' => [], // Untuk menyimpan kombinasi hari dan waktu
                     'kelas' => $ir->kelas,
                     'id_ruang' => $ir->id_ruang,
                     'kode_mk' => $ir->kode_mk,
@@ -274,8 +274,26 @@ class IrsController extends Controller
                     'dosen' => [] // Menyimpan dosen sebagai array
                 ];
             }
-            // Tambahkan dosen ke dalam array dosen
-            $array_irs[$ir->kode_mk]['dosen'][] = $ir->nama;
+            
+            // Format waktu menjadi 5 karakter (hh:mm)
+            $waktuMulai = substr($ir->waktu_mulai, 0, 5);
+            $waktuSelesai = substr($ir->waktu_selesai, 0, 5);
+            
+            // Tambahkan kombinasi hari dan waktu jika belum ada
+            $hariWaktu = $ir->hari . ', ' . $waktuMulai . '-' . $waktuSelesai;
+            if (!in_array($hariWaktu, $array_irs[$key]['hari_waktu'])) {
+                $array_irs[$key]['hari_waktu'][] = $hariWaktu;
+            }
+
+            // Tambahkan dosen jika belum ada
+            if (!in_array($ir->nama, $array_irs[$key]['dosen'])) {
+                $array_irs[$key]['dosen'][] = $ir->nama;
+            }
+        }
+    
+        // Ubah struktur hari_waktu menjadi string
+        foreach ($array_irs as &$ir) {
+            $ir['hari_waktu'] = implode('<br>', $ir['hari_waktu']);
         }
 
         // Mengembalikan data dalam format JSON
