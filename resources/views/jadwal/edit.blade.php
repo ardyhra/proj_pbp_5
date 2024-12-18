@@ -71,9 +71,7 @@
             <button type="button" id="updateButton" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
                 Update Jadwal
             </button>
-            
-            <!-- Tombol Cancel -->
-            <!-- Tombol Cancel -->
+
             <a href="#" id="cancelButton" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 ml-2">
                 Cancel
             </a>
@@ -112,7 +110,14 @@
             if (!waktuMulai) missingFields.push("Waktu Mulai");
             if (!waktuSelesai) missingFields.push("Waktu Selesai");
             if (!kuota) missingFields.push("Kuota");
-
+            if (kuota < 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Kuota tidak boleh kurang dari 0!',
+            });
+            return; // Jangan lanjutkan jika kuota tidak valid
+            }   
             // If there are any missing fields, show an alert
             if (missingFields.length > 0) {
                 Swal.fire({

@@ -101,7 +101,14 @@
             if (!waktuMulai) missingFields.push("Waktu Mulai");
             if (!waktuSelesai) missingFields.push("Waktu Selesai");
             if (!kuota) missingFields.push("Kuota");
-
+            if (kuota < 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Kuota tidak boleh kurang dari 0!',
+            });
+            return; // Jangan lanjutkan jika kuota tidak valid
+            }
             if (missingFields.length > 0) {
                 Swal.fire({
                     icon: "error",

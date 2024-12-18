@@ -36,11 +36,6 @@ table tbody tr:hover {
     border-color: #dc3545;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
 /* Flex container untuk layout */
 .flex-container {
@@ -62,6 +57,7 @@ table tbody tr:hover {
     padding: 0; /* Hapus padding */
     margin: 0; /* Hapus margin */
     transform: translateX(-100%); 
+    transition: width 1s ease;
 }
 
 /* Main content */

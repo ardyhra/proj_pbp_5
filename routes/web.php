@@ -1,26 +1,20 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IrsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
-
 use App\Http\Controllers\MahasiswaController;
-
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KaprodiController;
+use App\Http\Controllers\MataKuliahController;
 use App\Http\Controllers\RuangController;
-
-
 use App\Http\Controllers\DashboardControllerBA;
 use App\Http\Controllers\UsulanController;
-
 use App\Http\Controllers\DekanController;
 use App\Http\Controllers\UsulanjadwalController;
-
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('login');
@@ -28,14 +22,6 @@ Route::get('/', function () {
 
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-// Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-// Route::post('/login', [AuthController::class, 'login']);
-
-//! Default route
-// Route::get('/', function () {
-//     return view('login');
-// });
-
 
 // Semua User
 Route::get('/about', function () {
@@ -191,7 +177,6 @@ Route::get('/dashboard-kaprodi', [KaprodiController::class, 'dashboardKaprodi'])
 // Route untuk Manajemen Jadwal Kaprodi
 Route::get('/manajemen-jadwal-kaprodi', [KaprodiController::class, 'manajemenJadwal'])->name('manajemen-jadwal-kaprodi.index');
 
-
 // Route untuk melihat jadwal setelah filter
 Route::get('/jadwal/view', [JadwalController::class, 'index'])->name('jadwal.view');
 
@@ -236,6 +221,28 @@ Route::post('/usulanjadwal/batalkan', [UsulanjadwalController::class, 'batalkanU
 Route::post('/jadwal/check-conflict', [JadwalController::class, 'checkConflict'])->name('jadwal.check-conflict');
 Route::post('/jadwal/check-duplicate', [JadwalController::class, 'checkDuplicate'])->name('jadwal.check-duplicate');
 
+
+Route::get('/manajemen-matkul-kaprodi', [KaprodiController::class, 'manajemenMatkul'])->name('manajemen-matkul-kaprodi');
+
+// Menampilkan daftar mata kuliah
+Route::get('matkul', [MataKuliahController::class, 'index'])->name('matkul.index');
+
+// Menampilkan form tambah mata kuliah
+Route::get('matkul/create', [MataKuliahController::class, 'create'])->name('matkul.create');
+
+// Menyimpan data mata kuliah ke database
+Route::post('/matkul', [MataKuliahController::class, 'store'])->name('matkul.store');
+
+// Route untuk tampilkan form edit mata kuliah
+Route::get('/matkul/edit/{kode_mk}', [MataKuliahController::class, 'edit'])->name('matkul.edit');
+
+// Route untuk update data mata kuliah ke database
+Route::put('/matkul/update/{kode_mk}', [MataKuliahController::class, 'update'])->name('matkul.update');
+
+// Menghapus mata kuliah
+Route::delete('/matkul/{kode_mk}', [MataKuliahController::class, 'destroy'])->name('matkul.destroy');
+
+Route::post('/matkul/check-unique', [MatakuliahController::class, 'checkUnique'])->name('matkul.check-unique');
 
 // ========================================================================================================================
 

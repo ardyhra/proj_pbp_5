@@ -13,6 +13,7 @@ use App\Models\ProgramStudi;
 use App\Models\Usulanjadwal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB; 
 
 class KaprodiController extends Controller
 {  
@@ -33,16 +34,6 @@ class KaprodiController extends Controller
         return view('manajemen-jadwal-kaprodi', compact('tahunajarans', 'prodis', 'id_tahun', 'id_prodi'));
     }
 
-    //FIX 
-    // public function dashboard() {
-    //     // Ambil data pengguna yang sedang login
-    //     $user = Auth::user();
-    
-    //     // Ambil data dosen atau kaprodi berdasarkan role atau related_id
-    //     $dosen = $user->role == 'kaprodi' ? $user->kaprodi : $user->dosen;
-    
-    //     return view('kaprodi.dashboard-kaprodi', compact('dosen'));
-    // }
     public function dashboardKaprodi()
     {
         $jumlahRuang = Ruang::count();
@@ -78,7 +69,16 @@ class KaprodiController extends Controller
         return view('kaprodi.manajemen-jadwal-kaprodi', compact('tahunajarans', 'prodis', 'jadwals', 'id_tahun', 'id_prodi'));
     }
 
-
+    public function manajemenMatkul(Request $request)
+    {
+        // Ambil semua data mata kuliah
+        $mataKuliah = matakuliah::all();
+        $matkuls = DB::table('matakuliah')
+                    ->orderBy('kode_mk')
+                    ->get();
+        // Kirim data ke view 'kaprodi.manajemen-matkul'
+        return view('kaprodi.manajemen-matkul-kaprodi', compact('mataKuliah', 'matkuls'));
+    }
 
     public function rekapJadwal()
     {
