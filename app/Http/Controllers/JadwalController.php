@@ -94,9 +94,11 @@ class JadwalController extends Controller
             'hari' => 'required',
             'waktu_mulai' => 'required',
             'waktu_selesai' => 'required',
-            'kuota' => 'required',
+            'kuota' => 'required|min:0',
         ]);
-
+        if('kuota' < 0 ){
+            return response()->json(['message' => 'Kuota tidak boleh kurang dari 0']);
+        }
         $id_tahun = $request->id_tahun;
         $id_prodi = $request->id_prodi;
 
@@ -199,9 +201,11 @@ class JadwalController extends Controller
             'waktu_mulai' => 'required',
             'waktu_selesai' => 'required',
             'id_ruang' => 'required',
-            'kuota' => 'required|integer',
+            'kuota' => 'required|integer|min:0',
         ]);
-
+        if('kuota' < 0 ){
+            return response()->json(['message' => 'Kuota tidak boleh kurang dari 0']);
+        }
         $jadwal = Jadwal::findOrFail($id);
         $id_tahun = $jadwal->id_tahun;
         $id_prodi = $jadwal->id_prodi;

@@ -10,10 +10,9 @@ class matakuliah extends Model
     use HasFactory;
 
     protected $table = 'matakuliah';
-
     protected $primaryKey = 'kode_mk';  // Assuming 'kode_mk' is the primary key
-
-    
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $fillable = ['kode_mk', 'nama_mk', 'sks', 'plot_semester','jenis'];
 
     public function jadwal()
